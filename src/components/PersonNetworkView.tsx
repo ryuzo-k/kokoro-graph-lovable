@@ -1,15 +1,15 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import {
   ReactFlow,
   Node,
   Edge,
   Background,
   Controls,
-  MiniMap,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import PersonNode from './PersonNode';
 import ConnectionEdge from './ConnectionEdge';
+import PersonProfile from './PersonProfile';
 import { Person } from '@/hooks/usePeople';
 import { Meeting } from '@/hooks/useMeetings';
 import { Community } from '@/hooks/useCommunities';
@@ -37,6 +37,8 @@ const edgeTypes = {
 };
 
 const PersonNetworkView = ({ centerPerson, connectedPeople, userCommunities }: PersonNetworkViewProps) => {
+  const [selectedPerson, setSelectedPerson] = useState<any>(null);
+  
   // Create nodes with center person at the center
   const nodes: Node[] = useMemo(() => {
     const centerNode: Node = {
@@ -130,6 +132,17 @@ const PersonNetworkView = ({ centerPerson, connectedPeople, userCommunities }: P
     });
   }, [centerPerson, connectedPeople]);
 
+  const handleNodeClick = useCallback((event: any, node: Node) => {
+    if (node.id === centerPerson.id) {
+      setSelectedPerson(centerPerson);
+    } else {
+      const person = connectedPeople.find(p => p.id === node.id);
+      if (person) {
+        setSelectedPerson(person);
+      }
+    }
+  }, [centerPerson, connectedPeople]);
+
   return (
     <div className="w-full h-48 border border-border rounded-lg overflow-hidden">
       <ReactFlow
@@ -137,17 +150,21 @@ const PersonNetworkView = ({ centerPerson, connectedPeople, userCommunities }: P
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
+        onNodeClick={handleNodeClick}
         fitView
         attributionPosition="bottom-left"
-        panOnDrag={false}
-        zoomOnScroll={false}
-        zoomOnPinch={false}
+        panOnDrag={true}
+        zoomOnScroll={true}
+        zoomOnPinch={true}
         zoomOnDoubleClick={false}
         nodesDraggable={false}
         nodesConnectable={false}
-        elementsSelectable={false}
+        elementsSelectable={true}
+        minZoom={0.5}
+        maxZoom={1.5}
       >
         <Background color="hsl(var(--network-edge))" gap={10} size={0.5} />
+        <Controls position="bottom-right" className="bg-card border border-border" showInteractive={false} />
         <style>
           {`
             .center-person .react-flow__node {
@@ -161,6 +178,13 @@ const PersonNetworkView = ({ centerPerson, connectedPeople, userCommunities }: P
           `}
         </style>
       </ReactFlow>
+
+      {selectedPerson && (
+        <PersonProfile
+          person={selectedPerson}
+          onClose={() => setSelectedPerson(null)}
+        />
+      )}
     </div>
   );
 };
