@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import * as React from 'react';
 import {
   forceSimulation,
   forceManyBody,
@@ -280,9 +281,18 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
       }));
   }, [connections, filteredPeople]);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
+  // Update nodes when layout or data changes
+  React.useEffect(() => {
+    setNodes(initialNodes);
+  }, [initialNodes, setNodes]);
+
+  // Update edges when data changes  
+  React.useEffect(() => {
+    setEdges(initialEdges);
+  }, [initialEdges, setEdges]);
   const onConnect = useCallback(
     async (params: Connection) => {
       if (!params.source || !params.target) return;
@@ -351,15 +361,6 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
       onNodeClick?.(person);
     }
   }, [people, onNodeClick]);
-
-  // Update nodes when data changes
-  useMemo(() => {
-    setNodes(initialNodes);
-  }, [initialNodes, setNodes]);
-
-  useMemo(() => {
-    setEdges(initialEdges);
-  }, [initialEdges, setEdges]);
 
   return (
     <div className="w-full h-full relative">
