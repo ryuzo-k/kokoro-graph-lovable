@@ -19,6 +19,16 @@ export interface MeetingData {
   otherName: string;
   location: string;
   rating: number;
+  // Multi-dimensional scores
+  trustworthiness?: number;
+  expertise?: number;
+  communication?: number;
+  collaboration?: number;
+  leadership?: number;
+  innovation?: number;
+  integrity?: number;
+  // AI analysis
+  detailed_feedback?: string;
 }
 
 export const useMeetings = () => {
@@ -65,7 +75,15 @@ export const useMeetings = () => {
           my_name: meetingData.myName,
           other_name: meetingData.otherName,
           location: meetingData.location,
-          rating: meetingData.rating
+          rating: meetingData.rating,
+          trustworthiness: meetingData.trustworthiness,
+          expertise: meetingData.expertise,
+          communication: meetingData.communication,
+          collaboration: meetingData.collaboration,
+          leadership: meetingData.leadership,
+          innovation: meetingData.innovation,
+          integrity: meetingData.integrity,
+          detailed_feedback: meetingData.detailed_feedback
         })
         .select()
         .single();

@@ -2,7 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { MapPin, Users, Star, Calendar } from 'lucide-react';
+import { MapPin, Users, Star, Calendar, X, TrendingUp } from 'lucide-react';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
 interface Meeting {
   id: string;
@@ -10,6 +11,15 @@ interface Meeting {
   location: string;
   rating: number;
   date: string;
+  // Multi-dimensional scores
+  trustworthiness?: number;
+  expertise?: number;
+  communication?: number;
+  collaboration?: number;
+  leadership?: number;
+  innovation?: number;
+  integrity?: number;
+  detailed_feedback?: string;
 }
 
 interface PersonProfileData {
@@ -19,6 +29,16 @@ interface PersonProfileData {
   totalMeetings: number;
   locations: string[];
   recentMeetings: Meeting[];
+  // Multi-dimensional averages
+  dimensionalScores?: {
+    trustworthiness: number;
+    expertise: number;
+    communication: number;
+    collaboration: number;
+    leadership: number;
+    innovation: number;
+    integrity: number;
+  };
 }
 
 interface PersonProfileProps {
@@ -36,6 +56,17 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
 
   const trustColor = getTrustBadgeColor(person.averageRating);
 
+  // Prepare radar chart data
+  const radarData = person.dimensionalScores ? [
+    { dimension: '信頼性', score: person.dimensionalScores.trustworthiness, fullMark: 5 },
+    { dimension: '専門性', score: person.dimensionalScores.expertise, fullMark: 5 },
+    { dimension: 'コミュニケーション', score: person.dimensionalScores.communication, fullMark: 5 },
+    { dimension: '協力性', score: person.dimensionalScores.collaboration, fullMark: 5 },
+    { dimension: 'リーダーシップ', score: person.dimensionalScores.leadership, fullMark: 5 },
+    { dimension: '革新性', score: person.dimensionalScores.innovation, fullMark: 5 },
+    { dimension: '誠実性', score: person.dimensionalScores.integrity, fullMark: 5 },
+  ] : null;
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-md bg-card shadow-card max-h-[90vh] overflow-y-auto">
@@ -44,9 +75,9 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
             <div></div>
             <button
               onClick={onClose}
-              className="text-muted-foreground hover:text-foreground transition-colors text-xl"
+              className="text-muted-foreground hover:text-foreground transition-colors"
             >
-              ×
+              <X className="w-5 h-5" />
             </button>
           </div>
           
@@ -72,6 +103,43 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
         </CardHeader>
 
         <CardContent className="space-y-4">
+          {/* Multi-dimensional Radar Chart */}
+          {radarData && (
+            <div className="mb-6">
+              <h4 className="font-semibold text-sm text-muted-foreground mb-4 flex items-center gap-1">
+                <TrendingUp className="w-4 h-4" />
+                多次元評価
+              </h4>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart data={radarData}>
+                    <PolarGrid gridType="polygon" className="opacity-30" />
+                    <PolarAngleAxis 
+                      dataKey="dimension" 
+                      fontSize={11}
+                      tick={{ fill: 'hsl(var(--foreground))' }}
+                    />
+                    <PolarRadiusAxis 
+                      domain={[0, 5]} 
+                      fontSize={9}
+                      tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                      tickCount={6}
+                    />
+                    <Radar
+                      name="評価"
+                      dataKey="score"
+                      stroke="hsl(var(--primary))"
+                      fill="hsl(var(--primary))"
+                      fillOpacity={0.15}
+                      strokeWidth={2}
+                      dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 3 }}
+                    />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+
           {person.locations.length > 0 && (
             <div>
               <h4 className="font-semibold text-sm text-muted-foreground mb-2 flex items-center gap-1">

@@ -16,30 +16,57 @@ export type Database = {
     Tables: {
       meetings: {
         Row: {
+          ai_analysis_scores: Json | null
+          collaboration: number | null
+          communication: number | null
           created_at: string
+          detailed_feedback: string | null
+          expertise: number | null
           id: string
+          innovation: number | null
+          integrity: number | null
+          leadership: number | null
           location: string
           my_name: string
           other_name: string
           rating: number
+          trustworthiness: number | null
           user_id: string
         }
         Insert: {
+          ai_analysis_scores?: Json | null
+          collaboration?: number | null
+          communication?: number | null
           created_at?: string
+          detailed_feedback?: string | null
+          expertise?: number | null
           id?: string
+          innovation?: number | null
+          integrity?: number | null
+          leadership?: number | null
           location: string
           my_name: string
           other_name: string
           rating: number
+          trustworthiness?: number | null
           user_id: string
         }
         Update: {
+          ai_analysis_scores?: Json | null
+          collaboration?: number | null
+          communication?: number | null
           created_at?: string
+          detailed_feedback?: string | null
+          expertise?: number | null
           id?: string
+          innovation?: number | null
+          integrity?: number | null
+          leadership?: number | null
           location?: string
           my_name?: string
           other_name?: string
           rating?: number
+          trustworthiness?: number | null
           user_id?: string
         }
         Relationships: []
@@ -76,7 +103,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_overall_trust_score: {
+        Args: {
+          p_trustworthiness: number
+          p_expertise: number
+          p_communication: number
+          p_collaboration: number
+          p_leadership: number
+          p_innovation: number
+          p_integrity: number
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
