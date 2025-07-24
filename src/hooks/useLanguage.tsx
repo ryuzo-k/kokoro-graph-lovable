@@ -57,6 +57,20 @@ const translations = {
     'settings.language': '言語設定',
     'settings.language.japanese': '日本語',
     'settings.language.english': 'English',
+    'settings.account': 'アカウント情報',
+    'settings.email': 'メールアドレス',
+    'settings.userId': 'ユーザーID',
+    'settings.back': '戻る',
+    'settings.selected': '選択中',
+    'settings.displayJapanese': '日本語で表示します',
+    'settings.displayEnglish': 'Display in English',
+    
+    // Search
+    'search.people': '人を検索...',
+    'search.location': '場所',
+    'search.all': 'すべて',
+    'search.results': '件',
+    'search.connections': 'つながり',
   },
   en: {
     // Header
@@ -104,6 +118,20 @@ const translations = {
     'settings.language': 'Language Settings',
     'settings.language.japanese': '日本語',
     'settings.language.english': 'English',
+    'settings.account': 'Account Information',
+    'settings.email': 'Email Address',
+    'settings.userId': 'User ID',
+    'settings.back': 'Back',
+    'settings.selected': 'Selected',
+    'settings.displayJapanese': '日本語で表示します',
+    'settings.displayEnglish': 'Display in English',
+    
+    // Search
+    'search.people': 'Search people...',
+    'search.location': 'Location',
+    'search.all': 'All',
+    'search.results': 'results',
+    'search.connections': 'connections',
   },
 };
 

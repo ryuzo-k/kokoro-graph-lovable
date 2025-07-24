@@ -20,6 +20,7 @@ import PersonProfile from './PersonProfile';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, Filter } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 import { Person } from '@/hooks/usePeople';
 import { Meeting } from '@/hooks/useMeetings';
 
@@ -44,6 +45,7 @@ const edgeTypes = {
 };
 
 const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) => {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
   const [selectedPerson, setSelectedPerson] = useState<PersonWithStats | null>(null);
@@ -172,7 +174,7 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
-              placeholder="人を検索..."
+              placeholder={t('search.people')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 bg-card/95 backdrop-blur-sm"
@@ -186,7 +188,7 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
                 className="cursor-pointer text-xs"
                 onClick={() => setLocationFilter('')}
               >
-                All
+                {t('search.all')}
               </Badge>
               {locations.map((location) => (
                 <Badge
@@ -206,10 +208,10 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
           <div className="bg-card/95 backdrop-blur-sm p-3 rounded-lg border border-border shadow-soft">
             <div className="text-sm space-y-1">
               <div className="font-semibold text-foreground">
-                {filteredPeople.length} 人
+                {filteredPeople.length} {t('stats.totalPeople')}
               </div>
               <div className="text-muted-foreground">
-                {connections.length} つながり
+                {connections.length} {t('search.connections')}
               </div>
             </div>
           </div>

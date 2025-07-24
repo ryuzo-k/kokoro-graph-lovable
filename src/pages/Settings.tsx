@@ -29,7 +29,7 @@ const Settings = () => {
               className="hover-scale"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              戻る
+              {t('settings.back')}
             </Button>
             <div className="flex items-center gap-3">
               <SettingsIcon className="w-6 h-6 text-primary" />
@@ -59,10 +59,10 @@ const Settings = () => {
                   <div className="flex items-center gap-2 w-full">
                     <span className="text-lg">🇯🇵</span>
                     <span className="font-medium">{t('settings.language.japanese')}</span>
-                    {language === 'ja' && <Badge variant="secondary" className="ml-auto">選択中</Badge>}
+                    {language === 'ja' && <Badge variant="secondary" className="ml-auto">{t('settings.selected')}</Badge>}
                   </div>
                   <p className="text-xs text-muted-foreground text-left">
-                    日本語で表示します
+                    {t('settings.displayJapanese')}
                   </p>
                 </Button>
 
@@ -74,10 +74,10 @@ const Settings = () => {
                   <div className="flex items-center gap-2 w-full">
                     <span className="text-lg">🇺🇸</span>
                     <span className="font-medium">{t('settings.language.english')}</span>
-                    {language === 'en' && <Badge variant="secondary" className="ml-auto">Selected</Badge>}
+                    {language === 'en' && <Badge variant="secondary" className="ml-auto">{t('settings.selected')}</Badge>}
                   </div>
                   <p className="text-xs text-muted-foreground text-left">
-                    Display in English
+                    {t('settings.displayEnglish')}
                   </p>
                 </Button>
               </div>
@@ -87,15 +87,15 @@ const Settings = () => {
           {/* Account Info */}
           <Card className="bg-card/50 backdrop-blur-sm border-border/50 shadow-lg">
             <CardHeader>
-              <CardTitle>アカウント情報</CardTitle>
+              <CardTitle>{t('settings.account')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="text-sm text-muted-foreground">メールアドレス</label>
+                <label className="text-sm text-muted-foreground">{t('settings.email')}</label>
                 <p className="text-foreground font-medium">{user.email}</p>
               </div>
               <div>
-                <label className="text-sm text-muted-foreground">ユーザーID</label>
+                <label className="text-sm text-muted-foreground">{t('settings.userId')}</label>
                 <p className="text-xs text-muted-foreground font-mono">{user.id}</p>
               </div>
             </CardContent>

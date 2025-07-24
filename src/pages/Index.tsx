@@ -198,7 +198,7 @@ const Index = () => {
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     <span className="hidden sm:inline">{t('nav.record')}</span>
-                    <span className="sm:hidden">記録</span>
+                    <span className="sm:hidden">{t('nav.record')}</span>
                   </Button>
                   <Button 
                     onClick={signOut}
@@ -308,11 +308,10 @@ const Index = () => {
                       </div>
                       <div>
                         <h3 className="text-xl font-semibold text-foreground mb-2">
-                          ネットワークを作成しましょう
+                          {t('network.create')}
                         </h3>
                         <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
-                          最初の出会いを記録してあなたの人間関係ネットワークを可視化してください。
-                          一つ一つの出会いが美しいグラフになります。
+                          {t('network.firstRecord')}
                         </p>
                       </div>
                       <Button 
@@ -321,7 +320,7 @@ const Index = () => {
                         size="lg"
                       >
                         <Plus className="w-5 h-5 mr-2" />
-                        最初の出会いを記録
+                        {t('network.firstMeeting')}
                       </Button>
                     </div>
                   </div>
@@ -336,7 +335,7 @@ const Index = () => {
               <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800 hover-scale transition-all duration-300">
                 <CardHeader className="pb-2 flex flex-row items-center space-y-0">
                   <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                    総人数
+                    {t('stats.totalPeople')}
                   </CardTitle>
                   <Users className="w-4 h-4 text-blue-600 dark:text-blue-400 ml-auto" />
                 </CardHeader>
@@ -345,7 +344,7 @@ const Index = () => {
                     {stats.totalPeople}
                   </div>
                   <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                    あなたの人脈
+                    {t('stats.yourNetwork')}
                   </p>
                 </CardContent>
               </Card>
@@ -353,7 +352,7 @@ const Index = () => {
               <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800 hover-scale transition-all duration-300">
                 <CardHeader className="pb-2 flex flex-row items-center space-y-0">
                   <CardTitle className="text-sm font-medium text-green-700 dark:text-green-300">
-                    つながり
+                    {t('stats.connections')}
                   </CardTitle>
                   <Network className="w-4 h-4 text-green-600 dark:text-green-400 ml-auto" />
                 </CardHeader>
@@ -362,7 +361,7 @@ const Index = () => {
                     {stats.totalConnections}
                   </div>
                   <p className="text-xs text-green-600 dark:text-green-400 mt-1">
-                    関係性の数
+                    {t('stats.relationships')}
                   </p>
                 </CardContent>
               </Card>
@@ -370,7 +369,7 @@ const Index = () => {
               <Card className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900 border-amber-200 dark:border-amber-800 hover-scale transition-all duration-300">
                 <CardHeader className="pb-2 flex flex-row items-center space-y-0">
                   <CardTitle className="text-sm font-medium text-amber-700 dark:text-amber-300">
-                    平均信頼度
+                    {t('stats.averageTrust')}
                   </CardTitle>
                   <Star className="w-4 h-4 text-amber-600 dark:text-amber-400 ml-auto" />
                 </CardHeader>
@@ -379,7 +378,7 @@ const Index = () => {
                     {stats.averageTrust.toFixed(1)}★
                   </div>
                   <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
-                    信頼レベル
+                    {t('stats.trustLevel')}
                   </p>
                 </CardContent>
               </Card>
@@ -387,7 +386,7 @@ const Index = () => {
               <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800 hover-scale transition-all duration-300">
                 <CardHeader className="pb-2 flex flex-row items-center space-y-0">
                   <CardTitle className="text-sm font-medium text-purple-700 dark:text-purple-300">
-                    総出会い数
+                    {t('stats.totalMeetings')}
                   </CardTitle>
                   <Calendar className="w-4 h-4 text-purple-600 dark:text-purple-400 ml-auto" />
                 </CardHeader>
@@ -396,7 +395,7 @@ const Index = () => {
                     {stats.totalMeetings}
                   </div>
                   <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
-                    記録された出会い
+                    {t('stats.recorded')}
                   </p>
                 </CardContent>
               </Card>
