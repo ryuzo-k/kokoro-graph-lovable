@@ -14,11 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
+      communities: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          is_public: boolean | null
+          member_count: number | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          member_count?: number | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          member_count?: number | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      community_memberships: {
+        Row: {
+          community_id: string
+          id: string
+          joined_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          community_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          community_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_memberships_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       meetings: {
         Row: {
           ai_analysis_scores: Json | null
           collaboration: number | null
           communication: number | null
+          community_id: string | null
           created_at: string
           detailed_feedback: string | null
           expertise: number | null
@@ -37,6 +103,7 @@ export type Database = {
           ai_analysis_scores?: Json | null
           collaboration?: number | null
           communication?: number | null
+          community_id?: string | null
           created_at?: string
           detailed_feedback?: string | null
           expertise?: number | null
@@ -55,6 +122,7 @@ export type Database = {
           ai_analysis_scores?: Json | null
           collaboration?: number | null
           communication?: number | null
+          community_id?: string | null
           created_at?: string
           detailed_feedback?: string | null
           expertise?: number | null
@@ -69,7 +137,15 @@ export type Database = {
           trustworthiness?: number | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "meetings_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
