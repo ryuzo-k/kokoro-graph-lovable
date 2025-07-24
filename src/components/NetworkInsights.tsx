@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLanguage } from '@/hooks/useLanguage';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -29,6 +30,7 @@ interface AnalysisResult {
 const NetworkInsights = ({ communityId, userId }: NetworkInsightsProps) => {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useLanguage();
 
   const analyzeNetwork = async () => {
     setIsLoading(true);
@@ -39,15 +41,15 @@ const NetworkInsights = ({ communityId, userId }: NetworkInsightsProps) => {
 
       if (error) {
         console.error('Analysis error:', error);
-        toast.error('分析に失敗しました');
+        toast.error(t('network.analysis.failed'));
         return;
       }
 
       setAnalysis(data);
-      toast.success('ネットワーク分析が完了しました');
+      toast.success(t('network.analysis.complete'));
     } catch (error) {
       console.error('Network analysis error:', error);
-      toast.error('分析中にエラーが発生しました');
+      toast.error(t('network.analysis.error'));
     } finally {
       setIsLoading(false);
     }
@@ -55,10 +57,10 @@ const NetworkInsights = ({ communityId, userId }: NetworkInsightsProps) => {
 
   const getSkillColor = (category: string) => {
     const colors = {
-      '技術スキル': 'bg-blue-100 text-blue-800',
-      'コミュニケーション': 'bg-green-100 text-green-800',
-      '専門知識': 'bg-purple-100 text-purple-800',
-      'その他': 'bg-orange-100 text-orange-800'
+      'Technical Skills': 'bg-blue-100 text-blue-800',
+      'Communication': 'bg-green-100 text-green-800',
+      'Expertise': 'bg-purple-100 text-purple-800',
+      'Other': 'bg-orange-100 text-orange-800'
     };
     return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
@@ -69,10 +71,10 @@ const NetworkInsights = ({ communityId, userId }: NetworkInsightsProps) => {
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center gap-2">
             <Brain className="w-6 h-6 text-primary" />
-            AI人脈分析
+            {t('network.analysis.title')}
           </CardTitle>
           <CardDescription>
-            あなたの人脈ネットワークをAIが分析し、強み・弱み・改善提案を提供します
+            {t('network.analysis.description')}
           </CardDescription>
         </CardHeader>
         <CardContent className="text-center">
@@ -81,7 +83,7 @@ const NetworkInsights = ({ communityId, userId }: NetworkInsightsProps) => {
             disabled={isLoading}
             className="bg-gradient-primary hover:opacity-90"
           >
-            {isLoading ? '分析中...' : '人脈を分析する'}
+            {isLoading ? t('network.analysis.analyzing') : t('network.analysis.analyze')}
           </Button>
         </CardContent>
       </Card>
@@ -94,58 +96,58 @@ const NetworkInsights = ({ communityId, userId }: NetworkInsightsProps) => {
         <CardHeader>
           <CardTitle className="flex items-center justify-center gap-2">
             <Brain className="w-6 h-6 text-primary" />
-            AI人脈分析結果
+            {t('network.analysis.results')}
           </CardTitle>
           <CardDescription className="text-center">
-            {new Date(analysis.analysisDate).toLocaleDateString('ja-JP')} に分析
+            {t('network.analysis.analyzedOn')} {new Date(analysis.analysisDate).toLocaleDateString()}
           </CardDescription>
         </CardHeader>
       </Card>
 
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">概要</TabsTrigger>
-          <TabsTrigger value="skills">スキル分析</TabsTrigger>
-          <TabsTrigger value="strengths">強み・弱み</TabsTrigger>
-          <TabsTrigger value="recommendations">提案</TabsTrigger>
+          <TabsTrigger value="overview">{t('network.analysis.overview')}</TabsTrigger>
+          <TabsTrigger value="skills">{t('network.analysis.skills')}</TabsTrigger>
+          <TabsTrigger value="strengths">{t('network.analysis.strengths')}</TabsTrigger>
+          <TabsTrigger value="recommendations">{t('network.analysis.recommendations')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">総つながり数</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('network.stats.totalConnections')}</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{analysis.networkInsights.totalConnections}</div>
-                <p className="text-xs text-muted-foreground">記録された出会い</p>
+                <p className="text-xs text-muted-foreground">{t('stats.recorded')}</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">平均信頼度</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('stats.averageTrust')}</CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
                   {analysis.networkInsights.averageTrust.toFixed(1)}/5
                 </div>
-                <p className="text-xs text-muted-foreground">全体の評価平均</p>
+                <p className="text-xs text-muted-foreground">{t('network.analysis.overallAverage')}</p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">分析スキル数</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('network.analysis.skillsCount')}</CardTitle>
                 <Target className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
                   {Object.values(analysis.skills).flat().length}
                 </div>
-                <p className="text-xs text-muted-foreground">識別されたスキル</p>
+                <p className="text-xs text-muted-foreground">{t('network.analysis.identifiedSkills')}</p>
               </CardContent>
             </Card>
           </div>
@@ -154,9 +156,9 @@ const NetworkInsights = ({ communityId, userId }: NetworkInsightsProps) => {
         <TabsContent value="skills" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>スキル分析</CardTitle>
+              <CardTitle>{t('network.analysis.skillAnalysis')}</CardTitle>
               <CardDescription>
-                あなたの人脈から識別されたスキルカテゴリ
+                {t('network.analysis.skillCategories')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -186,7 +188,7 @@ const NetworkInsights = ({ communityId, userId }: NetworkInsightsProps) => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-green-600">
                   <TrendingUp className="w-5 h-5" />
-                  強み
+                  {t('network.analysis.strengths')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -205,7 +207,7 @@ const NetworkInsights = ({ communityId, userId }: NetworkInsightsProps) => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-orange-600">
                   <AlertTriangle className="w-5 h-5" />
-                  改善ポイント
+                  {t('network.analysis.improvements')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -227,10 +229,10 @@ const NetworkInsights = ({ communityId, userId }: NetworkInsightsProps) => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-blue-600">
                 <Lightbulb className="w-5 h-5" />
-                改善提案
+                {t('network.analysis.recommendations')}
               </CardTitle>
               <CardDescription>
-                AIが分析したあなたの人脈強化のための具体的な提案
+                {t('network.analysis.recommendationsDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -257,7 +259,7 @@ const NetworkInsights = ({ communityId, userId }: NetworkInsightsProps) => {
           className="gap-2"
         >
           <Brain className="w-4 h-4" />
-          {isLoading ? '再分析中...' : '再分析する'}
+          {isLoading ? t('network.analysis.reanalyzing') : t('network.analysis.reanalyze')}
         </Button>
       </div>
     </div>

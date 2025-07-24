@@ -279,6 +279,30 @@ const translations = {
     
     'profile.aboutScore': 'スコアについて',
     
+    // Network Analysis
+    'network.analysis.title': 'AI人脈分析',
+    'network.analysis.description': 'あなたの人脈ネットワークをAIが分析し、強み・弱み・改善提案を提供します',
+    'network.analysis.analyze': '人脈を分析する',
+    'network.analysis.analyzing': '分析中...',
+    'network.analysis.results': 'AI人脈分析結果',
+    'network.analysis.analyzedOn': 'に分析',
+    'network.analysis.overview': '概要',
+    'network.analysis.skills': 'スキル分析',
+    'network.analysis.strengths': '強み',
+    'network.analysis.improvements': '改善ポイント',
+    'network.analysis.recommendations': '提案',
+    'network.analysis.overallAverage': '全体の評価平均',
+    'network.analysis.skillsCount': '分析スキル数',
+    'network.analysis.identifiedSkills': '識別されたスキル',
+    'network.analysis.skillAnalysis': 'スキル分析',
+    'network.analysis.skillCategories': 'あなたの人脈から識別されたスキルカテゴリ',
+    'network.analysis.recommendationsDesc': 'AIが分析したあなたの人脈強化のための具体的な提案',
+    'network.analysis.reanalyze': '再分析する',
+    'network.analysis.reanalyzing': '再分析中...',
+    'network.analysis.failed': '分析に失敗しました',
+    'network.analysis.complete': 'ネットワーク分析が完了しました',
+    'network.analysis.error': '分析中にエラーが発生しました',
+    
     // Profile error messages
     'profile.saveComplete': '保存完了',
     'profile.profileUpdated': 'プロフィールが更新されました',
