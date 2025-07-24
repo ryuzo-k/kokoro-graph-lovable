@@ -2,9 +2,10 @@ import { useState, useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import MeetingForm from '@/components/MeetingForm';
 import NetworkGraph from '@/components/NetworkGraph';
-import { Heart, Network, Plus, BarChart3, LogIn, LogOut, User, Users } from 'lucide-react';
+import { Heart, Network, Plus, BarChart3, LogIn, LogOut, User, Users, Sparkles, TrendingUp, MapPin, Calendar, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
@@ -141,56 +142,67 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-bg">
       {/* Header */}
-      <header className="bg-card/95 backdrop-blur-sm border-b border-border shadow-soft">
+      <header className="bg-card/95 backdrop-blur-sm border-b border-border shadow-soft animate-fade-in">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Heart className="w-8 h-8 text-primary" />
-              <h1 className="text-2xl font-bold text-foreground">Kokoro Graph</h1>
+            <div className="flex items-center gap-3 hover-scale cursor-pointer" onClick={() => navigate('/')}>
+              <div className="relative">
+                <Heart className="w-8 h-8 text-primary animate-pulse" />
+                <Sparkles className="w-4 h-4 text-primary/60 absolute -top-1 -right-1" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">Kokoro Graph</h1>
+                <p className="text-xs text-muted-foreground">信頼関係の可視化プラットフォーム</p>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               {user ? (
                 <>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <User className="w-4 h-4" />
-                    {user.email}
+                  <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg text-sm">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <User className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-foreground font-medium">{user.email?.split('@')[0]}</span>
                   </div>
                   <Button 
                     onClick={() => navigate('/communities')}
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
+                    className="hover-scale"
                   >
                     <Users className="w-4 h-4 mr-2" />
                     コミュニティ
                   </Button>
                   <Button 
                     onClick={() => navigate('/profile')}
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
+                    className="hover-scale"
                   >
                     <User className="w-4 h-4 mr-2" />
                     プロフィール
                   </Button>
                   <Button 
                     onClick={() => setShowForm(true)}
-                    className="bg-gradient-primary hover:opacity-90 transition-opacity"
+                    className="bg-gradient-primary hover:opacity-90 transition-all duration-300 hover-scale shadow-lg"
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    出会いを記録
+                    <span className="hidden sm:inline">出会いを記録</span>
+                    <span className="sm:hidden">記録</span>
                   </Button>
                   <Button 
                     onClick={signOut}
                     variant="outline"
                     size="sm"
+                    className="hover-scale"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
-                    ログアウト
+                    <span className="hidden sm:inline">ログアウト</span>
                   </Button>
                 </>
               ) : (
                 <Button 
                   onClick={() => navigate('/auth')}
-                  className="bg-gradient-primary hover:opacity-90 transition-opacity"
+                  className="bg-gradient-primary hover:opacity-90 transition-all duration-300 hover-scale shadow-lg"
                 >
                   <LogIn className="w-4 h-4 mr-2" />
                   ログイン
@@ -203,23 +215,56 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-6">
         {!user ? (
-          <div className="text-center py-12">
-            <div className="max-w-md mx-auto space-y-6">
-              <div className="space-y-4">
-                <Heart className="w-16 h-16 text-primary mx-auto" />
-                <h2 className="text-3xl font-bold text-foreground">
-                  あなたの人間関係を
-                  <br />
-                  可視化しませんか？
-                </h2>
-                <p className="text-muted-foreground">
-                  Kokoro Graphで出会いを記録し、信頼関係のネットワークを築いていきましょう。
-                </p>
+          <div className="text-center py-12 animate-fade-in">
+            <div className="max-w-2xl mx-auto space-y-8">
+              <div className="space-y-6">
+                <div className="relative">
+                  <Heart className="w-20 h-20 text-primary mx-auto animate-pulse" />
+                  <div className="absolute inset-0 w-20 h-20 mx-auto border-2 border-primary/20 rounded-full animate-ping"></div>
+                </div>
+                <div className="space-y-4">
+                  <h2 className="text-4xl font-bold text-foreground leading-tight">
+                    あなたの人間関係を
+                    <br />
+                    <span className="bg-gradient-primary bg-clip-text text-transparent">
+                      可視化しませんか？
+                    </span>
+                  </h2>
+                  <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+                    Kokoro Graphで出会いを記録し、信頼関係のネットワークを築いていきましょう。
+                    あなたの人脈を美しく可視化し、新たな発見を。
+                  </p>
+                </div>
+                
+                {/* Feature highlights */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                  <div className="p-6 bg-card/50 rounded-xl backdrop-blur-sm border border-border/50 hover-scale">
+                    <Network className="w-8 h-8 text-primary mx-auto mb-3" />
+                    <h3 className="font-semibold text-foreground mb-2">ネットワーク可視化</h3>
+                    <p className="text-sm text-muted-foreground">
+                      人間関係を美しいグラフで表示
+                    </p>
+                  </div>
+                  <div className="p-6 bg-card/50 rounded-xl backdrop-blur-sm border border-border/50 hover-scale">
+                    <TrendingUp className="w-8 h-8 text-primary mx-auto mb-3" />
+                    <h3 className="font-semibold text-foreground mb-2">信頼度分析</h3>
+                    <p className="text-sm text-muted-foreground">
+                      AI による詳細な信頼度評価
+                    </p>
+                  </div>
+                  <div className="p-6 bg-card/50 rounded-xl backdrop-blur-sm border border-border/50 hover-scale">
+                    <Sparkles className="w-8 h-8 text-primary mx-auto mb-3" />
+                    <h3 className="font-semibold text-foreground mb-2">インサイト発見</h3>
+                    <p className="text-sm text-muted-foreground">
+                      人脈から新たな気づきを発見
+                    </p>
+                  </div>
+                </div>
               </div>
               <Button 
                 onClick={() => navigate('/auth')}
                 size="lg"
-                className="bg-gradient-primary hover:opacity-90 transition-opacity"
+                className="bg-gradient-primary hover:opacity-90 transition-all duration-300 hover-scale shadow-lg px-8 py-4 text-lg"
               >
                 <LogIn className="w-5 h-5 mr-2" />
                 今すぐ始める
@@ -227,20 +272,21 @@ const Index = () => {
             </div>
           </div>
         ) : (
+        <div className="animate-fade-in">
         <Tabs defaultValue="network" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:w-400">
-            <TabsTrigger value="network" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-2 lg:w-400 bg-card/50 backdrop-blur-sm">
+            <TabsTrigger value="network" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Network className="w-4 h-4" />
               ネットワーク
             </TabsTrigger>
-            <TabsTrigger value="stats" className="flex items-center gap-2">
+            <TabsTrigger value="stats" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <BarChart3 className="w-4 h-4" />
-              統計
+              統計・分析
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="network">
-            <Card className="h-[calc(100vh-200px)] bg-card/50 backdrop-blur-sm border-border/50">
+          <TabsContent value="network" className="animate-fade-in">
+            <Card className="h-[calc(100vh-200px)] bg-card/50 backdrop-blur-sm border-border/50 shadow-lg overflow-hidden">
               <CardContent className="p-0 h-full">
                 {people.length > 0 ? (
                   <NetworkGraph 
@@ -249,22 +295,27 @@ const Index = () => {
                   />
                 ) : (
                   <div className="h-full flex items-center justify-center">
-                    <div className="text-center space-y-4">
-                      <Network className="w-16 h-16 text-muted-foreground mx-auto" />
+                    <div className="text-center space-y-6 animate-scale-in">
+                      <div className="relative">
+                        <Network className="w-16 h-16 text-muted-foreground mx-auto" />
+                        <div className="absolute inset-0 w-16 h-16 mx-auto border-2 border-muted-foreground/20 rounded-full animate-ping"></div>
+                      </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-foreground">
+                        <h3 className="text-xl font-semibold text-foreground mb-2">
                           ネットワークを作成しましょう
                         </h3>
-                        <p className="text-muted-foreground">
-                          最初の出会いを記録してネットワークグラフを作成してください
+                        <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
+                          最初の出会いを記録してあなたの人間関係ネットワークを可視化してください。
+                          一つ一つの出会いが美しいグラフになります。
                         </p>
                       </div>
                       <Button 
                         onClick={() => setShowForm(true)}
-                        className="bg-gradient-primary hover:opacity-90 transition-opacity"
+                        className="bg-gradient-primary hover:opacity-90 transition-all duration-300 hover-scale shadow-lg"
+                        size="lg"
                       >
-                        <Plus className="w-4 h-4 mr-2" />
-                        出会いを記録
+                        <Plus className="w-5 h-5 mr-2" />
+                        最初の出会いを記録
                       </Button>
                     </div>
                   </div>
@@ -273,89 +324,143 @@ const Index = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="stats">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <Card className="bg-card/80 backdrop-blur-sm shadow-card">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+          <TabsContent value="stats" className="animate-fade-in">
+            {/* Quick Stats Overview */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800 hover-scale transition-all duration-300">
+                <CardHeader className="pb-2 flex flex-row items-center space-y-0">
+                  <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-300">
                     総人数
                   </CardTitle>
+                  <Users className="w-4 h-4 text-blue-600 dark:text-blue-400 ml-auto" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-foreground">
+                  <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">
                     {stats.totalPeople}
                   </div>
+                  <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                    あなたの人脈
+                  </p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-card/80 backdrop-blur-sm shadow-card">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+              <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800 hover-scale transition-all duration-300">
+                <CardHeader className="pb-2 flex flex-row items-center space-y-0">
+                  <CardTitle className="text-sm font-medium text-green-700 dark:text-green-300">
                     つながり
                   </CardTitle>
+                  <Network className="w-4 h-4 text-green-600 dark:text-green-400 ml-auto" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-foreground">
+                  <div className="text-2xl font-bold text-green-900 dark:text-green-100">
                     {stats.totalConnections}
                   </div>
+                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                    関係性の数
+                  </p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-card/80 backdrop-blur-sm shadow-card">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+              <Card className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900 border-amber-200 dark:border-amber-800 hover-scale transition-all duration-300">
+                <CardHeader className="pb-2 flex flex-row items-center space-y-0">
+                  <CardTitle className="text-sm font-medium text-amber-700 dark:text-amber-300">
                     平均信頼度
                   </CardTitle>
+                  <Star className="w-4 h-4 text-amber-600 dark:text-amber-400 ml-auto" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-foreground">
+                  <div className="text-2xl font-bold text-amber-900 dark:text-amber-100">
                     {stats.averageTrust.toFixed(1)}★
                   </div>
+                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                    信頼レベル
+                  </p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-card/80 backdrop-blur-sm shadow-card">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+              <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800 hover-scale transition-all duration-300">
+                <CardHeader className="pb-2 flex flex-row items-center space-y-0">
+                  <CardTitle className="text-sm font-medium text-purple-700 dark:text-purple-300">
                     総出会い数
                   </CardTitle>
+                  <Calendar className="w-4 h-4 text-purple-600 dark:text-purple-400 ml-auto" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-foreground">
+                  <div className="text-2xl font-bold text-purple-900 dark:text-purple-100">
                     {stats.totalMeetings}
                   </div>
+                  <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                    記録された出会い
+                  </p>
                 </CardContent>
               </Card>
             </div>
 
-            <Card className="bg-card/80 backdrop-blur-sm shadow-card">
-              <CardHeader>
-                <CardTitle>最近の出会い</CardTitle>
+            {/* Recent Meetings */}
+            <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-border/50">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-primary" />
+                  <CardTitle className="text-lg">最近の出会い</CardTitle>
+                </div>
+                <p className="text-sm text-muted-foreground">あなたの最新のネットワーク活動</p>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
-                  {meetings.slice(-10).reverse().map((meeting) => (
+                <div className="space-y-3">
+                  {meetings.slice(-10).reverse().map((meeting, index) => (
                     <div 
                       key={meeting.id}
-                      className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+                      className="group flex items-center justify-between p-4 bg-gradient-to-r from-muted/30 to-muted/50 rounded-lg hover:from-muted/50 hover:to-muted/70 transition-all duration-200 hover-scale border border-border/30"
+                      style={{ animationDelay: `${index * 0.1}s` }}
                     >
-                      <div className="flex-1">
-                        <div className="font-medium text-foreground">
-                          {meeting.my_name} → {meeting.other_name}
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className="flex-shrink-0">
+                          <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                            <User className="w-5 h-5 text-primary" />
+                          </div>
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          {meeting.location && `${meeting.location} • `}
-                          {new Date(meeting.created_at).toLocaleDateString('ja-JP')}
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-foreground flex items-center gap-2">
+                            <span className="truncate">{meeting.my_name}</span>
+                            <Heart className="w-3 h-3 text-primary/60" />
+                            <span className="truncate">{meeting.other_name}</span>
+                          </div>
+                          <div className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+                            {meeting.location && (
+                              <>
+                                <MapPin className="w-3 h-3" />
+                                <span>{meeting.location}</span>
+                                <span>•</span>
+                              </>
+                            )}
+                            <span>{new Date(meeting.created_at).toLocaleDateString('ja-JP')}</span>
+                          </div>
                         </div>
                       </div>
-                      <div className="text-sm font-medium text-foreground">
-                        {meeting.rating}★
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800">
+                          <Star className="w-3 h-3 mr-1 text-amber-600" />
+                          {meeting.rating}
+                        </Badge>
                       </div>
                     </div>
                   ))}
                   {meetings.length === 0 && (
-                    <div className="text-center text-muted-foreground py-8">
-                      まだ出会いの記録がありません
+                    <div className="text-center py-12 animate-fade-in">
+                      <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-foreground mb-2">
+                        まだ出会いの記録がありません
+                      </h3>
+                      <p className="text-muted-foreground mb-6">
+                        最初の出会いを記録して、あなたのネットワークを作り始めましょう
+                      </p>
+                      <Button 
+                        onClick={() => setShowForm(true)}
+                        className="bg-gradient-primary hover:opacity-90 transition-all duration-300 hover-scale"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        出会いを記録する
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -363,20 +468,23 @@ const Index = () => {
             </Card>
           </TabsContent>
         </Tabs>
+        </div>
         )}
       </main>
 
       {/* Meeting Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="relative">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+          <div className="relative animate-scale-in">
             <button
               onClick={() => setShowForm(false)}
-              className="absolute -top-2 -right-2 w-8 h-8 bg-card rounded-full shadow-lg flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors z-10"
+              className="absolute -top-2 -right-2 w-8 h-8 bg-card rounded-full shadow-lg flex items-center justify-center text-muted-foreground hover:text-foreground transition-all duration-200 z-10 hover-scale border border-border"
             >
               ×
             </button>
-            <MeetingForm onSubmit={handleMeetingSubmit} />
+            <div className="animate-fade-in">
+              <MeetingForm onSubmit={handleMeetingSubmit} />
+            </div>
           </div>
         </div>
       )}
