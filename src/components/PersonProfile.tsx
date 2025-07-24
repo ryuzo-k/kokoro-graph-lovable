@@ -117,13 +117,13 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
 
   // Prepare radar chart data
   const radarData = dimensionalScores ? [
-    { dimension: '信頼性', score: dimensionalScores.trustworthiness, fullMark: 5 },
-    { dimension: '専門性', score: dimensionalScores.expertise, fullMark: 5 },
-    { dimension: 'コミュニケーション', score: dimensionalScores.communication, fullMark: 5 },
-    { dimension: '協力性', score: dimensionalScores.collaboration, fullMark: 5 },
-    { dimension: 'リーダーシップ', score: dimensionalScores.leadership, fullMark: 5 },
-    { dimension: '革新性', score: dimensionalScores.innovation, fullMark: 5 },
-    { dimension: '誠実性', score: dimensionalScores.integrity, fullMark: 5 },
+    { dimension: t('profile.dimensions.trustworthiness'), score: dimensionalScores.trustworthiness, fullMark: 5 },
+    { dimension: t('profile.dimensions.expertise'), score: dimensionalScores.expertise, fullMark: 5 },
+    { dimension: t('profile.dimensions.communication'), score: dimensionalScores.communication, fullMark: 5 },
+    { dimension: t('profile.dimensions.collaboration'), score: dimensionalScores.collaboration, fullMark: 5 },
+    { dimension: t('profile.dimensions.leadership'), score: dimensionalScores.leadership, fullMark: 5 },
+    { dimension: t('profile.dimensions.innovation'), score: dimensionalScores.innovation, fullMark: 5 },
+    { dimension: t('profile.dimensions.integrity'), score: dimensionalScores.integrity, fullMark: 5 },
   ] : null;
 
   const trustColor = getTrustBadgeColor(person.averageRating);
@@ -133,7 +133,7 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
       <Card className="w-full max-w-md bg-card shadow-card max-h-[90vh] overflow-y-auto">
         <CardHeader>
           <div className="flex justify-between items-start mb-4">
-            <CardTitle className="text-lg font-semibold">プロフィール</CardTitle>
+            <CardTitle className="text-lg font-semibold">{t('profile.personTitle')}</CardTitle>
             <Button
               onClick={onClose}
               variant="ghost"
@@ -176,20 +176,20 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
               <div className="text-lg font-semibold text-foreground">
                 {person.averageRating.toFixed(1)}★
               </div>
-              <div className="text-xs text-muted-foreground">平均評価</div>
+              <div className="text-xs text-muted-foreground">{t('profile.averageRating')}</div>
             </div>
             <div className="text-center p-3 bg-muted/30 rounded-lg">
               <div className="text-lg font-semibold text-foreground">
                 {person.meetingCount}
               </div>
-              <div className="text-xs text-muted-foreground">出会い回数</div>
+              <div className="text-xs text-muted-foreground">{t('profile.meetingCount')}</div>
             </div>
           </div>
 
           {/* Bio */}
           {person.bio && (
             <div>
-              <h4 className="font-medium text-foreground mb-2">自己紹介</h4>
+              <h4 className="font-medium text-foreground mb-2">{t('profile.bio')}</h4>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {person.bio}
               </p>
@@ -199,7 +199,7 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
           {/* Skills */}
           {person.skills && person.skills.length > 0 && (
             <div>
-              <h4 className="font-medium text-foreground mb-2">スキル</h4>
+              <h4 className="font-medium text-foreground mb-2">{t('profile.skills')}</h4>
               <div className="flex flex-wrap gap-1">
                 {person.skills.map((skill, index) => (
                   <Badge key={index} variant="secondary" className="text-xs">
@@ -215,7 +215,7 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
             <div>
               <h4 className="font-medium text-foreground mb-3 flex items-center gap-1">
                 <TrendingUp className="w-4 h-4" />
-                多次元評価
+                {t('profile.multiDimensionalAssessment')}
               </h4>
               <div className="h-48 w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -251,7 +251,7 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
           <div>
             <h4 className="font-medium text-foreground mb-3 flex items-center gap-1">
               <Network className="w-4 h-4" />
-              コネクションネットワーク
+              {t('profile.connectionNetwork')}
             </h4>
             <PersonNetworkView
               centerPerson={person}
@@ -260,16 +260,16 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
             />
             <div className="mt-2 text-xs text-muted-foreground text-center">
               <span className="inline-block w-2 h-2 bg-primary rounded-full mr-1"></span>
-              中心人物
+              {t('profile.centralPerson')}
               <span className="inline-block w-2 h-2 bg-accent rounded-full ml-4 mr-1"></span>
-              共通コミュニティあり
+              {t('profile.sharedCommunity')}
             </div>
           </div>
 
           {/* SNS Analysis Results */}
           {(person.github_score || person.linkedin_score || person.portfolio_score) && (
             <div>
-              <h4 className="font-medium text-foreground mb-3">SNS分析スコア</h4>
+              <h4 className="font-medium text-foreground mb-3">{t('profile.snsAnalysisScore')}</h4>
               <div className="grid grid-cols-3 gap-2">
                 {person.github_score && (
                   <div className="text-center p-2 bg-muted/30 rounded-lg">
@@ -293,7 +293,7 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
               {person.fraud_risk_level && (
                 <div className="mt-2 flex items-center justify-center">
                   <Badge variant={person.fraud_risk_level === 'low' ? 'default' : 'destructive'} className="text-xs">
-                    信頼性: {person.fraud_risk_level === 'low' ? '高' : person.fraud_risk_level === 'medium' ? '中' : '低'}
+                    {t('profile.fraudRiskLevel')}: {t(`profile.fraudRiskLevel.${person.fraud_risk_level}`)}
                   </Badge>
                 </div>
               )}
@@ -332,7 +332,7 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
           <div>
             <h4 className="font-medium text-foreground mb-3 flex items-center gap-1">
               <Calendar className="w-4 h-4" />
-              最近の出会い
+              {t('profile.recentMeetings')}
             </h4>
             <div className="space-y-2">
               {person.meetings && person.meetings.length > 0 ? (
@@ -358,7 +358,7 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
                 ))
               ) : (
                 <div className="text-center text-muted-foreground text-sm py-4">
-                  まだ記録がありません
+                  {t('profile.noRecordsYet')}
                 </div>
               )}
             </div>

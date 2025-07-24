@@ -472,6 +472,32 @@ const translations = {
     'profile.tabs.linkedin2': 'LinkedIn', 
     'profile.tabs.portfolio2': 'Portfolio',
     
+    // Person Profile translations
+    'profile.personTitle': 'Profile',
+    'profile.averageRating': 'Average Rating',
+    'profile.meetingCount': 'Meeting Count',
+    'profile.bio': 'Bio',
+    'profile.skills': 'Skills',
+    'profile.multiDimensionalAssessment': 'Multi-dimensional Assessment',
+    'profile.connectionNetwork': 'Connection Network',
+    'profile.centralPerson': 'Central Person',
+    'profile.sharedCommunity': 'Shared Community',
+    'profile.snsAnalysisScore': 'SNS Analysis Score',
+    'profile.recentMeetings': 'Recent Meetings',
+    'profile.noRecordsYet': 'No records yet',
+    'profile.fraudRiskLevel.low': 'High',
+    'profile.fraudRiskLevel.medium': 'Medium',
+    'profile.fraudRiskLevel.high': 'Low',
+    
+    // Dimensions
+    'profile.dimensions.trustworthiness': 'Trustworthiness',
+    'profile.dimensions.expertise': 'Expertise',
+    'profile.dimensions.communication': 'Communication',
+    'profile.dimensions.collaboration': 'Collaboration',
+    'profile.dimensions.leadership': 'Leadership',
+    'profile.dimensions.innovation': 'Innovation',
+    'profile.dimensions.integrity': 'Integrity',
+    
     // Profile form labels
     'profile.email2': 'Email Address',
     'profile.displayName2': 'Display Name',
