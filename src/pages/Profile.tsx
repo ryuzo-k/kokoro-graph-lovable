@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,79 +11,45 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 
-interface ProfileData {
-  display_name: string;
-  avatar_url: string;
-}
-
 const Profile = () => {
   const { user } = useAuth();
+  const { profile, loading, updateProfile } = useProfile();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [profile, setProfile] = useState<ProfileData>({
+  const [formData, setFormData] = useState({
     display_name: '',
     avatar_url: ''
   });
 
-  // Fetch profile data
+  // Update form data when profile loads
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user) return;
-
-      setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('display_name, avatar_url')
-          .eq('user_id', user.id)
-          .single();
-
-        if (error && error.code !== 'PGRST116') {
-          throw error;
-        }
-
-        if (data) {
-          setProfile({
-            display_name: data.display_name || '',
-            avatar_url: data.avatar_url || ''
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-        toast({
-          title: "エラー",
-          description: "プロフィールの取得に失敗しました",
-          variant: "destructive"
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [user, toast]);
+    if (profile) {
+      setFormData({
+        display_name: profile.display_name || '',
+        avatar_url: profile.avatar_url || ''
+      });
+    }
+  }, [profile]);
 
   const handleSave = async () => {
     if (!user) return;
 
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .upsert({
-          user_id: user.id,
-          display_name: profile.display_name,
-          avatar_url: profile.avatar_url
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "保存完了",
-        description: "プロフィールが更新されました",
+      const result = await updateProfile({
+        display_name: formData.display_name,
+        avatar_url: formData.avatar_url
       });
+
+      if (result.success) {
+        toast({
+          title: "保存完了",
+          description: "プロフィールが更新されました",
+        });
+      } else {
+        throw new Error('Update failed');
+      }
     } catch (error) {
       console.error('Error saving profile:', error);
       toast({
@@ -116,7 +83,7 @@ const Profile = () => {
         .from('avatars')
         .getPublicUrl(fileName);
 
-      setProfile(prev => ({ ...prev, avatar_url: data.publicUrl }));
+      setFormData(prev => ({ ...prev, avatar_url: data.publicUrl }));
 
       toast({
         title: "アップロード完了",
@@ -175,9 +142,9 @@ const Profile = () => {
             <div className="flex flex-col items-center space-y-4">
               <div className="relative">
                 <Avatar className="w-24 h-24">
-                  <AvatarImage src={profile.avatar_url} />
+                  <AvatarImage src={formData.avatar_url} />
                   <AvatarFallback className="text-2xl">
-                    {profile.display_name?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase()}
+                    {formData.display_name?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <label className="absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-2 cursor-pointer hover:bg-primary/90 transition-colors shadow-lg">
@@ -214,8 +181,8 @@ const Profile = () => {
                 <Label htmlFor="display_name">表示名</Label>
                 <Input
                   id="display_name"
-                  value={profile.display_name}
-                  onChange={(e) => setProfile(prev => ({ ...prev, display_name: e.target.value }))}
+                  value={formData.display_name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, display_name: e.target.value }))}
                   placeholder="表示名を入力してください"
                   disabled={loading}
                 />

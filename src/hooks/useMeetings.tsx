@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
+import { useProfile } from './useProfile';
 import { useToast } from './use-toast';
 
 export interface Meeting {
@@ -24,6 +25,7 @@ export const useMeetings = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const { profile } = useProfile();
   const { toast } = useToast();
 
   // Fetch meetings
@@ -120,16 +122,33 @@ export const useMeetings = () => {
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'meetings',
-          filter: `other_name=eq.${user.email?.split('@')[0] || user.id}`
+          table: 'meetings'
         },
         (payload) => {
           const newMeeting = payload.new as Meeting;
-          // Notify when someone records a meeting with you
-          toast({
-            title: "あなたが記録されました！",
-            description: `${newMeeting.my_name}さんがあなたとの出会いを記録しました（評価: ${newMeeting.rating}★）`,
-          });
+          
+          // Check if this meeting involves the current user by display name
+          const userDisplayName = profile?.display_name;
+          const isInvolved = userDisplayName && (
+            newMeeting.other_name === userDisplayName || 
+            newMeeting.my_name === userDisplayName
+          );
+
+          if (isInvolved && newMeeting.user_id !== user.id) {
+            // Someone else recorded a meeting with you
+            toast({
+              title: "あなたが記録されました！",
+              description: `${newMeeting.my_name}さんがあなたとの出会いを記録しました（評価: ${newMeeting.rating}★）`,
+            });
+          }
+
+          // Add to meetings list if this user created it
+          if (newMeeting.user_id === user.id) {
+            setMeetings(prev => {
+              if (prev.some(m => m.id === newMeeting.id)) return prev;
+              return [newMeeting, ...prev];
+            });
+          }
         }
       )
       .subscribe();
@@ -137,7 +156,7 @@ export const useMeetings = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, toast]);
+  }, [user, profile?.display_name, toast]);
 
   return {
     meetings,
