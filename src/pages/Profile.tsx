@@ -375,7 +375,7 @@ const Profile = () => {
 
                   {profile?.linkedin_score && (
                     <Card className="p-4 bg-muted/50">
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         <div className="flex justify-between items-center">
                           <span className="font-medium">信頼度スコア</span>
                           <span className={`font-bold ${getScoreColor(profile.linkedin_score)}`}>
@@ -388,6 +388,45 @@ const Profile = () => {
                             {profile.fraud_risk_level}
                           </Badge>
                         </div>
+                        
+                        {/* Detailed analysis */}
+                        {profile.analysis_details?.linkedin_analysis && (
+                          <div className="mt-4 pt-3 border-t border-border">
+                            <h4 className="text-sm font-semibold mb-2">分析詳細</h4>
+                            <div className="space-y-2 text-xs">
+                              {profile.analysis_details.linkedin_analysis.red_flags?.length > 0 && (
+                                <div>
+                                  <span className="text-red-600 font-medium">懸念事項:</span>
+                                  <ul className="mt-1 ml-3 space-y-1">
+                                    {profile.analysis_details.linkedin_analysis.red_flags.map((flag: string, index: number) => (
+                                      <li key={index} className="text-red-600">• {flag}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              
+                              {profile.analysis_details.linkedin_analysis.positive_indicators?.length > 0 && (
+                                <div>
+                                  <span className="text-green-600 font-medium">良い点:</span>
+                                  <ul className="mt-1 ml-3 space-y-1">
+                                    {profile.analysis_details.linkedin_analysis.positive_indicators.map((indicator: string, index: number) => (
+                                      <li key={index} className="text-green-600">• {indicator}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              
+                              {profile.analysis_details.linkedin_analysis.overall_assessment && (
+                                <div>
+                                  <span className="font-medium">総合評価:</span>
+                                  <p className="mt-1 text-muted-foreground">
+                                    {profile.analysis_details.linkedin_analysis.overall_assessment}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </Card>
                   )}
@@ -440,7 +479,7 @@ const Profile = () => {
 
                   {profile?.portfolio_score && (
                     <Card className="p-4 bg-muted/50">
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         <div className="flex justify-between items-center">
                           <span className="font-medium">技術スコア</span>
                           <span className={`font-bold ${getScoreColor(profile.portfolio_score)}`}>
@@ -453,6 +492,58 @@ const Profile = () => {
                             {profile.fraud_risk_level}
                           </Badge>
                         </div>
+                        
+                        {/* Detailed analysis */}
+                        {profile.analysis_details?.portfolio_analysis && (
+                          <div className="mt-4 pt-3 border-t border-border">
+                            <h4 className="text-sm font-semibold mb-2">分析詳細</h4>
+                            <div className="space-y-2 text-xs">
+                              {profile.analysis_details.portfolio_analysis.skills_detected?.length > 0 && (
+                                <div>
+                                  <span className="text-blue-600 font-medium">検出スキル:</span>
+                                  <div className="mt-1 flex flex-wrap gap-1">
+                                    {profile.analysis_details.portfolio_analysis.skills_detected.map((skill: string, index: number) => (
+                                      <Badge key={index} variant="outline" className="text-xs px-2 py-0">
+                                        {skill}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {profile.analysis_details.portfolio_analysis.red_flags?.length > 0 && (
+                                <div>
+                                  <span className="text-red-600 font-medium">懸念事項:</span>
+                                  <ul className="mt-1 ml-3 space-y-1">
+                                    {profile.analysis_details.portfolio_analysis.red_flags.map((flag: string, index: number) => (
+                                      <li key={index} className="text-red-600">• {flag}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              
+                              {profile.analysis_details.portfolio_analysis.positive_indicators?.length > 0 && (
+                                <div>
+                                  <span className="text-green-600 font-medium">良い点:</span>
+                                  <ul className="mt-1 ml-3 space-y-1">
+                                    {profile.analysis_details.portfolio_analysis.positive_indicators.map((indicator: string, index: number) => (
+                                      <li key={index} className="text-green-600">• {indicator}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              
+                              {profile.analysis_details.portfolio_analysis.overall_assessment && (
+                                <div>
+                                  <span className="font-medium">総合評価:</span>
+                                  <p className="mt-1 text-muted-foreground">
+                                    {profile.analysis_details.portfolio_analysis.overall_assessment}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </Card>
                   )}
