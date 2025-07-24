@@ -125,32 +125,6 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
       } as Node;
     });
   }, [filteredPeople, connections]);
-    /* radial layout removed */
-      const angle = (index / filteredPeople.length) * 2 * Math.PI;
-      const radius = Math.max(200, filteredPeople.length * 30);
-      const x = Math.cos(angle) * radius;
-      const y = Math.sin(angle) * radius;
-
-      return {
-        id: person.id,
-        type: 'person',
-        position: { x, y },
-        data: {
-          name: person.name,
-          averageRating: person.averageRating,
-          meetingCount: person.meetingCount,
-          location: person.location,
-          avatar: person.avatar_url,
-          company: person.company,
-          position: person.position,
-          communities: (person as any).communities || [],
-          trustScore: (person as any).trustScore || person.averageRating,
-          connectionCount: (person as any).connectionCount || person.meetingCount,
-        },
-        draggable: true,
-      };
-    });
-  }, [filteredPeople, connections]);
 
   // Convert connections to edges
   const initialEdges: Edge[] = useMemo(() => {
