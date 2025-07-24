@@ -150,7 +150,7 @@ export const CommunityRecommendations = () => {
           {t('recommendations.title')}
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          {t('recommendations.noProfile')}
+          {t('recommendations.description')}
         </p>
       </CardHeader>
       <CardContent>

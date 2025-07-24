@@ -61,8 +61,8 @@ const Profile = () => {
 
       if (result.success) {
         toast({
-          title: "保存完了",
-          description: "プロフィールが更新されました",
+          title: t('profile.saveComplete'),
+          description: t('profile.profileUpdated'),
         });
       } else {
         throw new Error('Update failed');
@@ -70,8 +70,8 @@ const Profile = () => {
     } catch (error) {
       console.error('Error saving profile:', error);
       toast({
-        title: "エラー",
-        description: "プロフィールの保存に失敗しました",
+        title: t('profile.error'),
+        description: t('profile.saveError'),
         variant: "destructive"
       });
     } finally {
@@ -103,14 +103,14 @@ const Profile = () => {
       setFormData(prev => ({ ...prev, avatar_url: data.publicUrl }));
 
       toast({
-        title: "アップロード完了",
-        description: "プロフィール画像をアップロードしました",
+        title: t('profile.uploadComplete'),
+        description: t('profile.avatarUploaded'),
       });
     } catch (error) {
       console.error('Error uploading avatar:', error);
       toast({
-        title: "エラー",
-        description: "画像のアップロードに失敗しました",
+        title: t('profile.error'),
+        description: t('profile.uploadError'),
         variant: "destructive"
       });
     }
@@ -119,8 +119,8 @@ const Profile = () => {
   const handleAnalyzeGitHub = async () => {
     if (!formData.github_username.trim()) {
       toast({
-        title: "エラー",
-        description: "GitHubユーザー名を入力してください",
+        title: t('profile.error'),
+        description: t('profile.githubUsernameRequired'),
         variant: "destructive"
       });
       return;
@@ -134,8 +134,8 @@ const Profile = () => {
   const handleAnalyzeLinkedIn = async () => {
     if (!formData.linkedin_url.trim()) {
       toast({
-        title: "エラー",
-        description: "LinkedIn URLを入力してください",
+        title: t('profile.error'),
+        description: t('profile.linkedinUrlRequired'),
         variant: "destructive"
       });
       return;
@@ -149,8 +149,8 @@ const Profile = () => {
   const handleAnalyzePortfolio = async () => {
     if (!formData.portfolio_url.trim()) {
       toast({
-        title: "エラー",
-        description: "ポートフォリオURLを入力してください",
+        title: t('profile.error'),
+        description: t('profile.portfolioUrlRequired'),
         variant: "destructive"
       });
       return;
@@ -230,7 +230,7 @@ const Profile = () => {
         <div className="mb-3">
           <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 text-sm font-semibold">
             <Award className="w-4 h-4 mr-1" />
-            マスター
+                               {t('profile.title.master')}
           </Badge>
         </div>
       );
@@ -239,7 +239,7 @@ const Profile = () => {
         <div className="mb-3">
           <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 text-sm font-semibold">
             <Star className="w-4 h-4 mr-1" />
-            エキスパート
+                             {t('profile.title.expert')}
           </Badge>
         </div>
       );
@@ -399,49 +399,49 @@ const Profile = () => {
                         <div className="text-center p-6 bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-red-500/20 rounded-lg border-2 border-yellow-500/50 animate-fade-in">
                           <div className="flex items-center justify-center gap-2 mb-4">
                             <Crown className="w-8 h-8 text-yellow-500 animate-pulse" />
-                            <h3 className="text-2xl font-bold text-yellow-700 dark:text-yellow-300">
-                              🎉 殿堂入りユーザー 🎉
-                            </h3>
+                             <h3 className="text-2xl font-bold text-yellow-700 dark:text-yellow-300">
+                               🎉 {t('profile.hallOfFame')} 🎉
+                             </h3>
                             <Crown className="w-8 h-8 text-yellow-500 animate-pulse" />
                           </div>
                           
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                             <div className="text-center">
                               <Star className="w-6 h-6 mx-auto mb-1 text-yellow-500" />
-                              <div className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">信頼ランク</div>
-                              <div className="text-xs text-yellow-600 dark:text-yellow-400">
-                                {overallTrustScore >= 95 ? 'レジェンド' : 
-                                 overallTrustScore >= 90 ? 'マスター' : 
-                                 'エキスパート'}
-                              </div>
+                               <div className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">{t('profile.trustRank')}</div>
+                               <div className="text-xs text-yellow-600 dark:text-yellow-400">
+                                 {overallTrustScore >= 95 ? t('profile.title.legend') : 
+                                  overallTrustScore >= 90 ? t('profile.title.master') : 
+                                  t('profile.title.expert')}
+                               </div>
                             </div>
                             
                             <div className="text-center">
                               <Award className="w-6 h-6 mx-auto mb-1 text-yellow-500" />
-                              <div className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">称号</div>
-                              <div className="text-xs text-yellow-600 dark:text-yellow-400">
-                                {overallTrustScore >= 95 ? '伝説の信頼者' : 
-                                 overallTrustScore >= 90 ? '信頼の殿堂入り' : 
-                                 '高信頼度ユーザー'}
-                              </div>
+                               <div className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">{t('profile.title.text')}</div>
+                               <div className="text-xs text-yellow-600 dark:text-yellow-400">
+                                 {overallTrustScore >= 95 ? t('profile.title.legendaryTruster') : 
+                                  overallTrustScore >= 90 ? t('profile.title.hallOfFameTrust') : 
+                                  t('profile.title.highTrustUser')}
+                               </div>
                             </div>
                             
                             <div className="text-center">
                               <Users className="w-6 h-6 mx-auto mb-1 text-yellow-500" />
-                              <div className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">コミュニティ貢献</div>
-                              <div className="text-xs text-yellow-600 dark:text-yellow-400">
-                                {overallTrustScore >= 95 ? '模範的リーダー' : 
-                                 overallTrustScore >= 90 ? '信頼できる仲間' : 
-                                 '価値あるメンバー'}
-                              </div>
+                               <div className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">{t('profile.communityContribution')}</div>
+                               <div className="text-xs text-yellow-600 dark:text-yellow-400">
+                                 {overallTrustScore >= 95 ? t('profile.title.exemplaryLeader') : 
+                                  overallTrustScore >= 90 ? t('profile.title.trustedPartner') : 
+                                  t('profile.title.valuableMember')}
+                               </div>
                             </div>
                           </div>
                           
-                          <p className="text-sm text-yellow-600 dark:text-yellow-400 italic">
-                            {overallTrustScore >= 95 ? 'あなたは究極の信頼を築き上げました！コミュニティの永続的な柱です。' : 
-                             overallTrustScore >= 90 ? 'あなたはコミュニティの信頼できるリーダーです。多くの人があなたを頼りにしています。' : 
-                             'あなたは多くの人から信頼され、コミュニティの貴重なメンバーです。'}
-                          </p>
+                           <p className="text-sm text-yellow-600 dark:text-yellow-400 italic">
+                             {overallTrustScore >= 95 ? t('profile.title.ultimateTrust') : 
+                              overallTrustScore >= 90 ? t('profile.title.trustedLeader') : 
+                              t('profile.title.trustedMember')}
+                           </p>
                         </div>
                       </div>
                     )}
@@ -451,8 +451,8 @@ const Profile = () => {
                   <div className="mt-4 p-3 bg-muted/50 rounded-lg">
                     <h4 className="text-sm font-semibold mb-2">{t('profile.aboutScore')}</h4>
                     <p className="text-xs text-muted-foreground">
-                      {t('profile.scoreDescriptionJa')}
-                    </p>
+                       {t('profile.scoreDescription')}
+                     </p>
                   </div>
                 </CardContent>
               </Card>
@@ -460,10 +460,10 @@ const Profile = () => {
 
             <Tabs defaultValue="basic" className="w-full">
               <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="basic">{t('profile.tabs.basicInfo2')}</TabsTrigger>
-            <TabsTrigger value="github">{t('profile.tabs.github2')}</TabsTrigger>
-            <TabsTrigger value="linkedin">{t('profile.tabs.linkedin2')}</TabsTrigger>
-            <TabsTrigger value="portfolio">{t('profile.tabs.portfolio2')}</TabsTrigger>
+                 <TabsTrigger value="basic">{t('profile.tabs.basicInfo')}</TabsTrigger>
+            <TabsTrigger value="github">{t('profile.tabs.github')}</TabsTrigger>
+            <TabsTrigger value="linkedin">{t('profile.tabs.linkedin')}</TabsTrigger>
+            <TabsTrigger value="portfolio">{t('profile.tabs.portfolio')}</TabsTrigger>
               </TabsList>
 
               {/* Basic Info Tab */}
@@ -667,7 +667,7 @@ const Profile = () => {
               <TabsContent value="linkedin" className="space-y-6 mt-6">
                 <div className="flex items-center gap-2 mb-4">
                   <Linkedin className="w-5 h-5" />
-                  <h3 className="text-lg font-semibold">LinkedIn分析</h3>
+                  <h3 className="text-lg font-semibold">{t('profile.linkedin.analysis')}</h3>
                   {profile?.linkedin_score && (
                     <Badge variant="outline" className={getScoreColor(profile.linkedin_score)}>
                       <TrendingUp className="w-3 h-3 mr-1" />
@@ -677,7 +677,7 @@ const Profile = () => {
                   {profile?.fraud_risk_level && (
                     <Badge className={`${getFraudRiskColor(profile.fraud_risk_level)} text-white`}>
                       <Shield className="w-3 h-3 mr-1" />
-                      詐欺リスク: {profile.fraud_risk_level}
+                      {t('profile.fraudRisk')}: {profile.fraud_risk_level}
                     </Badge>
                   )}
                 </div>
@@ -699,25 +699,25 @@ const Profile = () => {
                         variant="outline"
                       >
                         <Search className="w-4 h-4 mr-2" />
-                        {analyzing.linkedin ? '分析中...' : '分析'}
+                        {analyzing.linkedin ? t('profile.analyzing') : t('profile.analyze')}
                       </Button>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      LinkedInプロフィールから経験レベルを算出し、詐欺師を検出します
-                    </p>
+                     <p className="text-xs text-muted-foreground">
+                       {t('profile.linkedin.description')}
+                     </p>
                   </div>
 
                   {profile?.linkedin_score && (
                     <Card className="p-4 bg-muted/50">
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
-                          <span className="font-medium">信頼度スコア</span>
+                          <span className="font-medium">{t('profile.trustScore')}</span>
                           <span className={`font-bold ${getScoreColor(profile.linkedin_score)}`}>
                             {profile.linkedin_score}/100
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="font-medium">詐欺リスク</span>
+                          <span className="font-medium">{t('profile.fraudRisk')}</span>
                           <Badge className={`${getFraudRiskColor(profile.fraud_risk_level)} text-white`}>
                             {profile.fraud_risk_level}
                           </Badge>
@@ -726,12 +726,12 @@ const Profile = () => {
                         {/* Detailed analysis */}
                         {profile.analysis_details?.linkedin_analysis && (
                           <div className="mt-4 pt-3 border-t border-border">
-                            <h4 className="text-sm font-semibold mb-2">分析詳細</h4>
+                            <h4 className="text-sm font-semibold mb-2">{t('profile.analysisDetails')}</h4>
                             <div className="space-y-3 text-xs">
                               {/* Professional Score */}
                               {profile.analysis_details.linkedin_analysis.professional_score && (
                                 <div>
-                                  <span className="text-blue-600 font-medium">専門性スコア:</span>
+                                  <span className="text-blue-600 font-medium">{t('profile.professionalScore')}:</span>
                                   <span className="ml-2">{profile.analysis_details.linkedin_analysis.professional_score}/100</span>
                                 </div>
                               )}
@@ -739,7 +739,7 @@ const Profile = () => {
                               {/* Red flags */}
                               {profile.analysis_details.linkedin_analysis.red_flags?.length > 0 && (
                                 <div>
-                                  <span className="text-red-600 font-medium">懸念事項:</span>
+                                   <span className="text-red-600 font-medium">{t('profile.concerns')}:</span>
                                   <ul className="mt-1 ml-3 space-y-1">
                                     {profile.analysis_details.linkedin_analysis.red_flags.map((flag: string, index: number) => (
                                       <li key={index} className="text-red-600">• {flag}</li>
@@ -751,7 +751,7 @@ const Profile = () => {
                               {/* Positive indicators */}
                               {profile.analysis_details.linkedin_analysis.positive_indicators?.length > 0 && (
                                 <div>
-                                  <span className="text-green-600 font-medium">良い点:</span>
+                                   <span className="text-green-600 font-medium">{t('profile.positives')}:</span>
                                   <ul className="mt-1 ml-3 space-y-1">
                                     {profile.analysis_details.linkedin_analysis.positive_indicators.map((indicator: string, index: number) => (
                                       <li key={index} className="text-green-600">• {indicator}</li>
@@ -763,11 +763,11 @@ const Profile = () => {
                               {/* Experience assessment */}
                               {profile.analysis_details.linkedin_analysis.experience_assessment && (
                                 <div className="pt-2 border-t">
-                                  <span className="text-purple-600 font-medium">経験評価:</span>
+                                  <span className="text-purple-600 font-medium">{t('profile.experienceAssessment')}:</span>
                                   <div className="mt-1 space-y-1">
-                                    <div>推定経験年数: {profile.analysis_details.linkedin_analysis.experience_assessment.estimated_years}年</div>
-                                    <div>キャリア進行: {profile.analysis_details.linkedin_analysis.experience_assessment.career_progression}</div>
-                                    <div>スキル一貫性: {profile.analysis_details.linkedin_analysis.experience_assessment.skill_consistency}</div>
+                                     <div>{t('profile.estimatedYears')}: {profile.analysis_details.linkedin_analysis.experience_assessment.estimated_years}{t('profile.years')}</div>
+                                     <div>{t('profile.careerProgression')}: {profile.analysis_details.linkedin_analysis.experience_assessment.career_progression}</div>
+                                     <div>{t('profile.skillConsistency')}: {profile.analysis_details.linkedin_analysis.experience_assessment.skill_consistency}</div>
                                   </div>
                                 </div>
                               )}
@@ -775,7 +775,7 @@ const Profile = () => {
                               {/* Overall assessment */}
                               {profile.analysis_details.linkedin_analysis.overall_assessment && (
                                 <div className="pt-2 border-t">
-                                  <span className="font-medium">総合評価:</span>
+                                   <span className="font-medium">{t('profile.overallAssessment')}:</span>
                                   <p className="mt-1 text-muted-foreground">
                                     {profile.analysis_details.linkedin_analysis.overall_assessment}
                                   </p>
@@ -794,7 +794,7 @@ const Profile = () => {
               <TabsContent value="portfolio" className="space-y-6 mt-6">
                 <div className="flex items-center gap-2 mb-4">
                   <Globe className="w-5 h-5" />
-                  <h3 className="text-lg font-semibold">ポートフォリオ分析</h3>
+                  <h3 className="text-lg font-semibold">{t('profile.portfolio.analysis')}</h3>
                   {profile?.portfolio_score && (
                     <Badge variant="outline" className={getScoreColor(profile.portfolio_score)}>
                       <TrendingUp className="w-3 h-3 mr-1" />
@@ -804,14 +804,14 @@ const Profile = () => {
                   {profile?.fraud_risk_level && (
                     <Badge className={`${getFraudRiskColor(profile.fraud_risk_level)} text-white`}>
                       <Shield className="w-3 h-3 mr-1" />
-                      詐欺リスク: {profile.fraud_risk_level}
+                      {t('profile.fraudRisk')}: {profile.fraud_risk_level}
                     </Badge>
                   )}
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="portfolio_url">ポートフォリオURL</Label>
+                    <Label htmlFor="portfolio_url">{t('profile.portfolio.url')}</Label>
                     <div className="flex gap-2">
                       <Input
                         id="portfolio_url"
@@ -826,25 +826,25 @@ const Profile = () => {
                         variant="outline"
                       >
                         <Search className="w-4 h-4 mr-2" />
-                        {analyzing.portfolio ? '分析中...' : '分析'}
+                        {analyzing.portfolio ? t('profile.analyzing') : t('profile.analyze')}
                       </Button>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      ポートフォリオサイトから技術レベルを評価し、詐欺的な表現を検出します
-                    </p>
+                     <p className="text-xs text-muted-foreground">
+                       {t('profile.portfolio.description')}
+                     </p>
                   </div>
 
                   {profile?.portfolio_score && (
                     <Card className="p-4 bg-muted/50">
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
-                          <span className="font-medium">技術スコア</span>
+                          <span className="font-medium">{t('profile.technicalScore')}</span>
                           <span className={`font-bold ${getScoreColor(profile.portfolio_score)}`}>
                             {profile.portfolio_score}/100
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="font-medium">詐欺リスク</span>
+                          <span className="font-medium">{t('profile.fraudRisk')}</span>
                           <Badge className={`${getFraudRiskColor(profile.fraud_risk_level)} text-white`}>
                             {profile.fraud_risk_level}
                           </Badge>
@@ -853,11 +853,11 @@ const Profile = () => {
                         {/* Detailed analysis */}
                         {profile.analysis_details?.portfolio_analysis && (
                           <div className="mt-4 pt-3 border-t border-border">
-                            <h4 className="text-sm font-semibold mb-2">分析詳細</h4>
+                            <h4 className="text-sm font-semibold mb-2">{t('profile.analysisDetails')}</h4>
                             <div className="space-y-2 text-xs">
                               {profile.analysis_details.portfolio_analysis.skills_detected?.length > 0 && (
                                 <div>
-                                  <span className="text-blue-600 font-medium">検出スキル:</span>
+                                  <span className="text-blue-600 font-medium">{t('profile.detectedSkills')}:</span>
                                   <div className="mt-1 flex flex-wrap gap-1">
                                     {profile.analysis_details.portfolio_analysis.skills_detected.map((skill: string, index: number) => (
                                       <Badge key={index} variant="outline" className="text-xs px-2 py-0">
@@ -870,7 +870,7 @@ const Profile = () => {
                               
                               {profile.analysis_details.portfolio_analysis.red_flags?.length > 0 && (
                                 <div>
-                                  <span className="text-red-600 font-medium">懸念事項:</span>
+                                  <span className="text-red-600 font-medium">{t('profile.concerns')}:</span>
                                   <ul className="mt-1 ml-3 space-y-1">
                                     {profile.analysis_details.portfolio_analysis.red_flags.map((flag: string, index: number) => (
                                       <li key={index} className="text-red-600">• {flag}</li>
@@ -881,7 +881,7 @@ const Profile = () => {
                               
                               {profile.analysis_details.portfolio_analysis.positive_indicators?.length > 0 && (
                                 <div>
-                                  <span className="text-green-600 font-medium">良い点:</span>
+                                  <span className="text-green-600 font-medium">{t('profile.positives')}:</span>
                                   <ul className="mt-1 ml-3 space-y-1">
                                     {profile.analysis_details.portfolio_analysis.positive_indicators.map((indicator: string, index: number) => (
                                       <li key={index} className="text-green-600">• {indicator}</li>
@@ -892,7 +892,7 @@ const Profile = () => {
                               
                               {profile.analysis_details.portfolio_analysis.overall_assessment && (
                                 <div>
-                                  <span className="font-medium">総合評価:</span>
+                                  <span className="font-medium">{t('profile.overallAssessment')}:</span>
                                   <p className="mt-1 text-muted-foreground">
                                     {profile.analysis_details.portfolio_analysis.overall_assessment}
                                   </p>

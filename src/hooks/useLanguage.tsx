@@ -271,14 +271,40 @@ const translations = {
     'stats.noMeetingsYet': 'まだ出会いの記録がありません',
     'stats.startNetworking': '最初の出会いを記録して、あなたのネットワークを作り始めましょう',
     
-    // Profile Tabs
-    'profile.tabs.basicInfo': '基本情報',
-    'profile.tabs.basicInfo2': '基本情報',
-    'profile.tabs.github2': 'GitHub',
-    'profile.tabs.linkedin2': 'LinkedIn', 
-    'profile.tabs.portfolio2': 'ポートフォリオ',
+    // Network stats
+    'network.stats.totalPeople': '総人数',
+    'network.stats.connections': 'つながり',
+    'network.stats.avgTrust': '平均信頼度',
+    'network.stats.totalMeetings': '総出会い数',
+    
     'profile.aboutScore': 'スコアについて',
-    'profile.scoreDescriptionJa': '総合信頼度は、GitHub開発レベル、LinkedIn信頼度、ポートフォリオ技術スコア、人からの信頼度の平均値です。各プラットフォームの分析結果と実際の人間関係での評価を組み合わせて、あなたの専門性と信頼性を評価します。',
+    
+    // Profile error messages
+    'profile.saveComplete': '保存完了',
+    'profile.profileUpdated': 'プロフィールが更新されました',
+    'profile.saveError': 'プロフィールの保存に失敗しました',
+    'profile.uploadComplete': 'アップロード完了',
+    'profile.avatarUploaded': 'プロフィール画像をアップロードしました',
+    'profile.uploadError': '画像のアップロードに失敗しました',
+    'profile.githubUsernameRequired': 'GitHubユーザー名を入力してください',
+    'profile.linkedinUrlRequired': 'LinkedIn URLを入力してください',
+    'profile.portfolioUrlRequired': 'ポートフォリオURLを入力してください',
+    'profile.error': 'エラー',
+    
+    // Profile trust levels
+    'profile.title.text': '称号',
+    'profile.title.legendaryTruster': '伝説の信頼者',
+    'profile.title.hallOfFameTrust': '信頼の殿堂入り',
+    'profile.title.highTrustUser': '高信頼度ユーザー',
+    'profile.title.exemplaryLeader': '模範的リーダー',
+    'profile.title.trustedPartner': '信頼できる仲間',
+    'profile.title.valuableMember': '価値あるメンバー',
+    'profile.title.ultimateTrust': 'あなたは究極の信頼を築き上げました！コミュニティの永続的な柱です。',
+    'profile.title.trustedLeader': 'あなたはコミュニティの信頼できるリーダーです。多くの人があなたを頼りにしています。',
+    'profile.title.trustedMember': 'あなたは多くの人から信頼され、コミュニティの貴重なメンバーです。',
+    
+    // Recommendations
+    'recommendations.description': 'AI人脈分析によって、あなたに最適なコミュニティを提案します。',
   },
   en: {
     // Header
@@ -478,13 +504,46 @@ const translations = {
     'stats.noMeetingsYet': 'No meetings recorded yet',
     'stats.startNetworking': 'Record your first meeting to start building your network',
     
+    // Network stats
+    'network.stats.totalPeople': 'Total People',
+    'network.stats.connections': 'Connections',
+    'network.stats.avgTrust': 'Average Trust',
+    'network.stats.totalMeetings': 'Total Meetings',
+    
     // Profile Tabs
-    'profile.tabs.basicInfo2': 'Basic Info',
-    'profile.tabs.github2': 'GitHub',
-    'profile.tabs.linkedin2': 'LinkedIn', 
-    'profile.tabs.portfolio2': 'Portfolio',
-    'profile.aboutScore': 'About Score',
-    'profile.scoreDescriptionEn': 'Overall trust score is the average of GitHub development level, LinkedIn trust, portfolio technical score, and trust from people. It combines analysis results from each platform with actual human relationship evaluations to assess your expertise and trustworthiness.',
+    'profile.tabs.basicInfo': 'Basic Info',
+    'profile.tabs.github': 'GitHub',
+    'profile.tabs.linkedin': 'LinkedIn',
+    'profile.tabs.portfolio': 'Portfolio',
+    
+    
+    
+    // Profile error messages
+    'profile.saveComplete': 'Save Complete',
+    'profile.profileUpdated': 'Profile has been updated',
+    'profile.saveError': 'Failed to save profile',
+    'profile.uploadComplete': 'Upload Complete',
+    'profile.avatarUploaded': 'Profile picture uploaded successfully',
+    'profile.uploadError': 'Failed to upload image',
+    'profile.githubUsernameRequired': 'Please enter GitHub username',
+    'profile.linkedinUrlRequired': 'Please enter LinkedIn URL',
+    'profile.portfolioUrlRequired': 'Please enter Portfolio URL',
+    'profile.error': 'Error',
+    
+    // Profile trust levels
+    'profile.title.text': 'Title',
+    'profile.title.legendaryTruster': 'Legendary Truster',
+    'profile.title.hallOfFameTrust': 'Hall of Fame Trust',
+    'profile.title.highTrustUser': 'High Trust User',
+    'profile.title.exemplaryLeader': 'Exemplary Leader',
+    'profile.title.trustedPartner': 'Trusted Partner',
+    'profile.title.valuableMember': 'Valuable Member',
+    'profile.title.ultimateTrust': 'You have built ultimate trust! You are a lasting pillar of the community.',
+    'profile.title.trustedLeader': 'You are a trusted leader in the community. Many people rely on you.',
+    'profile.title.trustedMember': 'You are trusted by many and are a valuable member of the community.',
+    
+    // Recommendations
+    'recommendations.description': 'AI network analysis suggests the best communities for you.',
     
     // Person Profile translations
     'profile.personTitle': 'Profile',
