@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Star, Users, Award, Building } from 'lucide-react';
+import { Star, Users, Award, Building, UserCheck, UserPlus, Heart } from 'lucide-react';
 
 interface PersonNodeData {
   name: string;
@@ -15,6 +15,8 @@ interface PersonNodeData {
   communities?: string[];
   trustScore?: number;
   connectionCount?: number;
+  isConnected?: boolean; // 現在のユーザーと接続があるか
+  connectionStrength?: number; // 接続の強さ（会った回数）
 }
 
 interface PersonNodeProps {
@@ -54,9 +56,14 @@ const PersonNode = memo(({ data, selected }: PersonNodeProps) => {
   return (
     <div
       className={`
-        relative flex flex-col bg-card border-2 rounded-lg p-3 shadow-lg
+        relative flex flex-col border-2 rounded-xl p-3 shadow-lg
         transition-all duration-300 ease-out min-w-[140px] max-w-[180px]
-        ${selected ? 'border-primary shadow-xl scale-105' : 'border-border hover:border-primary/50'}
+        ${data.isConnected 
+          ? 'bg-gradient-to-br from-primary/10 to-primary/5 border-primary shadow-primary/20' 
+          : 'bg-card/50 border-border/50 opacity-70 hover:opacity-90'
+        }
+        ${selected ? 'border-primary shadow-xl scale-105' : 'hover:border-primary/50'}
+        ${data.isConnected ? 'animate-pulse-glow' : ''}
       `}
       style={{
         width: nodeSize,
@@ -66,13 +73,31 @@ const PersonNode = memo(({ data, selected }: PersonNodeProps) => {
       <Handle
         type="target"
         position={Position.Top}
-        className="w-2 h-2 bg-primary"
+        className={`w-2 h-2 ${data.isConnected ? 'bg-primary' : 'bg-muted'}`}
       />
       <Handle
         type="source"
         position={Position.Bottom}
-        className="w-2 h-2 bg-primary"
+        className={`w-2 h-2 ${data.isConnected ? 'bg-primary' : 'bg-muted'}`}
       />
+
+      {/* Connection Status Badge */}
+      <div className={`absolute -top-2 -left-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-md ${
+        data.isConnected 
+          ? 'bg-primary text-primary-foreground animate-bounce' 
+          : 'bg-muted text-muted-foreground'
+      }`}>
+        {data.isConnected ? <UserCheck className="w-3 h-3" /> : <UserPlus className="w-3 h-3" />}
+      </div>
+
+      {/* Connection Strength Indicator */}
+      {data.isConnected && data.connectionStrength && data.connectionStrength > 1 && (
+        <div className="absolute -top-1 -right-1 flex items-center space-x-0.5">
+          {Array.from({ length: Math.min(data.connectionStrength, 5) }, (_, i) => (
+            <Heart key={i} className="w-2 h-2 text-red-500 fill-current animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />
+          ))}
+        </div>
+      )}
 
       {/* Header with Avatar and Trust Score */}
       <div className="relative mb-2">
@@ -85,7 +110,9 @@ const PersonNode = memo(({ data, selected }: PersonNodeProps) => {
           </Avatar>
           
           {/* Trust Score Badge */}
-          <div className={`absolute top-0 right-0 w-8 h-8 rounded-full ${trustColorClass} flex items-center justify-center text-xs font-bold text-white shadow-sm`}>
+          <div className={`absolute top-0 right-0 w-8 h-8 rounded-full ${trustColorClass} flex items-center justify-center text-xs font-bold text-white shadow-sm ${
+            data.isConnected ? 'animate-pulse-glow' : ''
+          }`}>
             {trustScore.toFixed(1)}
           </div>
         </div>
@@ -93,24 +120,33 @@ const PersonNode = memo(({ data, selected }: PersonNodeProps) => {
 
       {/* Name and Title */}
       <div className="flex-1 space-y-1 mb-2">
-        <h3 className="font-semibold text-sm text-foreground leading-tight">
+        <h3 className={`font-semibold text-sm leading-tight ${
+          data.isConnected ? 'text-foreground' : 'text-muted-foreground'
+        }`}>
           {data.name}
+          {data.isConnected && <span className="ml-1 text-primary">✓</span>}
         </h3>
         
         {data.company && (
-          <div className="flex items-center space-x-1 text-xs text-muted-foreground">
+          <div className={`flex items-center space-x-1 text-xs ${
+            data.isConnected ? 'text-muted-foreground' : 'text-muted-foreground/70'
+          }`}>
             <Building className="w-3 h-3 flex-shrink-0" />
             <span className="truncate">{data.company}</span>
           </div>
         )}
         
         {data.position && (
-          <p className="text-xs text-muted-foreground truncate">{data.position}</p>
+          <p className={`text-xs truncate ${
+            data.isConnected ? 'text-muted-foreground' : 'text-muted-foreground/70'
+          }`}>{data.position}</p>
         )}
       </div>
 
       {/* Stats Row */}
-      <div className="flex items-center justify-between text-xs mb-2">
+      <div className={`flex items-center justify-between text-xs mb-2 ${
+        data.isConnected ? '' : 'opacity-70'
+      }`}>
         <div className="flex items-center space-x-1">
           <Users className="w-3 h-3 text-blue-500" />
           <span className="text-muted-foreground">{data.connectionCount || data.meetingCount}</span>

@@ -117,6 +117,14 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
     // Map to React Flow nodes
     return d3Nodes.map(n => {
       const person = n.person;
+      
+      // Check if this person is connected to others
+      const personConnections = validConnections.filter(conn => 
+        conn.person1Id === person.id || conn.person2Id === person.id
+      );
+      const isConnected = personConnections.length > 0;
+      const connectionStrength = personConnections.reduce((sum, conn) => sum + conn.meetingCount, 0);
+      
       return {
         id: person.id,
         type: 'person',
@@ -132,6 +140,8 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
           communities: (person as any).communities || [],
           trustScore: (person as any).trustScore || person.averageRating,
           connectionCount: (person as any).connectionCount || person.meetingCount,
+          isConnected: isConnected,
+          connectionStrength: connectionStrength,
         },
         draggable: true,
       } as Node;
