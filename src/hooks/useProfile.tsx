@@ -55,19 +55,34 @@ export const useProfile = () => {
     if (!user) return { success: false, error: 'Not authenticated' };
 
     try {
-      const { data, error } = await supabase
+      // First try to update existing profile
+      const { data: updateData, error: updateError } = await supabase
         .from('profiles')
-        .upsert({
-          user_id: user.id,
-          ...updates
-        })
+        .update(updates)
+        .eq('user_id', user.id)
         .select()
         .single();
 
-      if (error) throw error;
+      if (updateError && updateError.code === 'PGRST116') {
+        // Profile doesn't exist, create it
+        const { data: insertData, error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            user_id: user.id,
+            ...updates
+          })
+          .select()
+          .single();
 
-      setProfile(data);
-      return { success: true, data };
+        if (insertError) throw insertError;
+        setProfile(insertData);
+        return { success: true, data: insertData };
+      } else if (updateError) {
+        throw updateError;
+      }
+
+      setProfile(updateData);
+      return { success: true, data: updateData };
     } catch (error) {
       console.error('Error updating profile:', error);
       return { success: false, error };
