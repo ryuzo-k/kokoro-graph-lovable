@@ -8,15 +8,7 @@ import { Heart, Network, Plus, BarChart3, LogIn, LogOut, User } from 'lucide-rea
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-
-interface Meeting {
-  id: string;
-  myName: string;
-  otherName: string;
-  location: string;
-  rating: number;
-  date: string;
-}
+import { useMeetings, type Meeting } from '@/hooks/useMeetings';
 
 interface Person {
   id: string;
@@ -37,11 +29,10 @@ interface Connection {
 }
 
 const Index = () => {
-  const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const { toast } = useToast();
   const { user, signOut, loading } = useAuth();
   const navigate = useNavigate();
+  const { meetings, addMeeting } = useMeetings();
 
   // Process meetings to create people and connections
   const { people, connections } = useMemo(() => {
@@ -50,7 +41,7 @@ const Index = () => {
 
     meetings.forEach(meeting => {
       // Add people
-      [meeting.myName, meeting.otherName].forEach(name => {
+      [meeting.my_name, meeting.other_name].forEach(name => {
         if (!peopleMap.has(name)) {
           peopleMap.set(name, {
             id: name,
@@ -62,9 +53,9 @@ const Index = () => {
         }
       });
 
-      // Update person data
-      const myPerson = peopleMap.get(meeting.myName)!;
-      const otherPerson = peopleMap.get(meeting.otherName)!;
+      // Update person data  
+      const myPerson = peopleMap.get(meeting.my_name)!;
+      const otherPerson = peopleMap.get(meeting.other_name)!;
 
       myPerson.meetings.push(meeting);
       otherPerson.meetings.push(meeting);
@@ -78,35 +69,35 @@ const Index = () => {
 
       // Calculate average ratings
       const myRatings = myPerson.meetings.map(m => 
-        m.myName === myPerson.name ? m.rating : 5 - m.rating + 1
+        m.my_name === myPerson.name ? m.rating : 5 - m.rating + 1
       );
       myPerson.averageRating = myRatings.reduce((a, b) => a + b, 0) / myRatings.length;
 
       const otherRatings = otherPerson.meetings.map(m => 
-        m.otherName === otherPerson.name ? m.rating : 5 - m.rating + 1
+        m.other_name === otherPerson.name ? m.rating : 5 - m.rating + 1
       );
       otherPerson.averageRating = otherRatings.reduce((a, b) => a + b, 0) / otherRatings.length;
 
       // Add connections
-      const connectionKey = [meeting.myName, meeting.otherName].sort().join('-');
+      const connectionKey = [meeting.my_name, meeting.other_name].sort().join('-');
       if (!connectionMap.has(connectionKey)) {
         connectionMap.set(connectionKey, {
-          person1Id: meeting.myName,
-          person2Id: meeting.otherName,
+          person1Id: meeting.my_name,
+          person2Id: meeting.other_name,
           meetingCount: 0,
           averageRating: 0,
-          lastMeeting: meeting.date,
+          lastMeeting: meeting.created_at,
         });
       }
 
       const connection = connectionMap.get(connectionKey)!;
       connection.meetingCount++;
-      connection.lastMeeting = meeting.date;
+      connection.lastMeeting = meeting.created_at;
       
       // Calculate connection average rating
       const connectionMeetings = meetings.filter(m => 
-        (m.myName === connection.person1Id && m.otherName === connection.person2Id) ||
-        (m.myName === connection.person2Id && m.otherName === connection.person1Id)
+        (m.my_name === connection.person1Id && m.other_name === connection.person2Id) ||
+        (m.my_name === connection.person2Id && m.other_name === connection.person1Id)
       );
       connection.averageRating = connectionMeetings.reduce((sum, m) => sum + m.rating, 0) / connectionMeetings.length;
     });
@@ -117,21 +108,12 @@ const Index = () => {
     };
   }, [meetings]);
 
-  const handleMeetingSubmit = useCallback((meetingData: any) => {
-    const newMeeting: Meeting = {
-      id: `meeting-${Date.now()}`,
-      ...meetingData,
-      date: new Date().toISOString(),
-    };
-
-    setMeetings(prev => [...prev, newMeeting]);
-    setShowForm(false);
-    
-    toast({
-      title: "出会いを記録しました！",
-      description: `${meetingData.otherName}さんとの出会いがネットワークに追加されました。`,
-    });
-  }, [toast]);
+  const handleMeetingSubmit = useCallback(async (meetingData: any) => {
+    const result = await addMeeting(meetingData);
+    if (result?.success) {
+      setShowForm(false);
+    }
+  }, [addMeeting]);
 
   const stats = useMemo(() => ({
     totalPeople: people.length,
@@ -159,6 +141,14 @@ const Index = () => {
                     <User className="w-4 h-4" />
                     {user.email}
                   </div>
+                  <Button 
+                    onClick={() => navigate('/profile')}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    プロフィール
+                  </Button>
                   <Button 
                     onClick={() => setShowForm(true)}
                     className="bg-gradient-primary hover:opacity-90 transition-opacity"
@@ -329,11 +319,11 @@ const Index = () => {
                     >
                       <div className="flex-1">
                         <div className="font-medium text-foreground">
-                          {meeting.myName} → {meeting.otherName}
+                          {meeting.my_name} → {meeting.other_name}
                         </div>
                         <div className="text-sm text-muted-foreground">
                           {meeting.location && `${meeting.location} • `}
-                          {new Date(meeting.date).toLocaleDateString('ja-JP')}
+                          {new Date(meeting.created_at).toLocaleDateString('ja-JP')}
                         </div>
                       </div>
                       <div className="text-sm font-medium text-foreground">
