@@ -23,6 +23,7 @@ export const useCommunities = () => {
 
   // Fetch all public communities
   const fetchCommunities = async () => {
+    console.log('Fetching communities...');
     try {
       const { data, error } = await supabase
         .from('communities' as any)
@@ -30,6 +31,7 @@ export const useCommunities = () => {
         .eq('is_public', true)
         .order('created_at', { ascending: false });
 
+      console.log('Communities fetch result:', { data, error });
       if (error) throw error;
       setCommunities((data as unknown as Community[]) || []);
     } catch (error) {
@@ -85,6 +87,7 @@ export const useCommunities = () => {
     description?: string;
     is_public: boolean;
   }) => {
+    console.log('Creating community:', communityData);
     if (!user) {
       toast({
         title: "エラー",
@@ -104,16 +107,20 @@ export const useCommunities = () => {
         .select()
         .single();
 
+      console.log('Community creation result:', { data, error });
       if (error) throw error;
 
       // Automatically join the creator to the community
-      await supabase
+      const { error: membershipError } = await supabase
         .from('community_memberships' as any)
         .insert([{
           community_id: (data as any).id,
           user_id: user.id,
           role: 'admin'
         }]);
+
+      console.log('Membership creation result:', { membershipError });
+      if (membershipError) throw membershipError;
 
       await Promise.all([fetchCommunities(), fetchUserCommunities()]);
       return { success: true, data };
