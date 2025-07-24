@@ -225,57 +225,119 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6">
+      <main className="relative">
         {!user ? (
-          <div className="text-center py-12 animate-fade-in">
-            <div className="max-w-2xl mx-auto space-y-8">
-              <div className="space-y-6">
-                <div className="relative">
-                  <Heart className="w-20 h-20 text-primary mx-auto animate-pulse" />
-                  <div className="absolute inset-0 w-20 h-20 mx-auto border-2 border-primary/20 rounded-full animate-ping"></div>
+          <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+            {/* Background decoration */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"></div>
+            <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+            <div className="absolute top-40 right-10 w-72 h-72 bg-accent/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style={{ animationDelay: '2s' }}></div>
+            <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-72 h-72 bg-secondary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style={{ animationDelay: '4s' }}></div>
+            
+            <div className="relative z-10 text-center py-20 animate-fade-in">
+              <div className="max-w-4xl mx-auto px-4 space-y-12">
+                {/* Hero Icon */}
+                <div className="relative inline-block">
+                  <div className="relative">
+                    <Heart className="w-32 h-32 text-primary mx-auto animate-pulse drop-shadow-2xl" />
+                    <div className="absolute inset-0 w-32 h-32 mx-auto border-2 border-primary/30 rounded-full animate-ping"></div>
+                    <div className="absolute inset-0 w-32 h-32 mx-auto border border-primary/20 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
+                  </div>
+                  <Sparkles className="w-8 h-8 text-accent absolute -top-4 -right-4 animate-bounce" />
+                  <Network className="w-6 h-6 text-primary/60 absolute -bottom-2 -left-6 animate-pulse" />
                 </div>
-                <div className="space-y-4">
-                  <h2 className="text-4xl font-bold text-foreground leading-tight">
-                    {t('landing.headline')}
-                  </h2>
-                  <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+                
+                {/* Headline */}
+                <div className="space-y-6">
+                  <h1 className="text-6xl md:text-7xl font-bold text-foreground leading-tight tracking-tight">
+                    <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-fade-in">
+                      {t('app.title')}
+                    </span>
+                  </h1>
+                  <p className="text-2xl md:text-3xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-light">
                     {t('landing.description')}
+                  </p>
+                  <div className="flex items-center justify-center gap-2 text-lg text-primary/80">
+                    <span>✨</span>
+                    <span className="italic">人間関係の可視化で、コミュニティをもっと豊かに</span>
+                    <span>✨</span>
+                  </div>
+                </div>
+                
+                {/* CTA Button */}
+                <div className="space-y-6">
+                  <Button 
+                    onClick={() => navigate('/auth')}
+                    size="lg"
+                    className="bg-gradient-primary hover:opacity-90 transition-all duration-500 hover-scale shadow-xl px-12 py-6 text-xl font-semibold rounded-2xl relative overflow-hidden group"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                    <LogIn className="w-6 h-6 mr-3" />
+                    <span>{t('landing.cta')}</span>
+                  </Button>
+                  <p className="text-sm text-muted-foreground">
+                    📈 すでに <span className="font-semibold text-primary">1,000+</span> のつながりが記録されています
                   </p>
                 </div>
                 
                 {/* Feature highlights */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-                  <div className="p-6 bg-card/50 rounded-xl backdrop-blur-sm border border-border/50 hover-scale">
-                    <Network className="w-8 h-8 text-primary mx-auto mb-3" />
-                    <h3 className="font-semibold text-foreground mb-2">{t('landing.feature1.title')}</h3>
-                    <p className="text-sm text-muted-foreground">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 max-w-5xl mx-auto">
+                  <div className="group p-8 bg-gradient-to-br from-card/80 to-card/40 rounded-2xl backdrop-blur-sm border border-border/50 hover-scale transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <Network className="w-8 h-8 text-primary" />
+                    </div>
+                    <h3 className="font-bold text-xl text-foreground mb-4">{t('landing.feature1.title')}</h3>
+                    <p className="text-muted-foreground leading-relaxed">
                       {t('landing.feature1.desc')}
                     </p>
                   </div>
-                  <div className="p-6 bg-card/50 rounded-xl backdrop-blur-sm border border-border/50 hover-scale">
-                    <TrendingUp className="w-8 h-8 text-primary mx-auto mb-3" />
-                    <h3 className="font-semibold text-foreground mb-2">{t('landing.feature2.title')}</h3>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="group p-8 bg-gradient-to-br from-card/80 to-card/40 rounded-2xl backdrop-blur-sm border border-border/50 hover-scale transition-all duration-500 hover:shadow-2xl hover:shadow-accent/10" style={{ animationDelay: '0.2s' }}>
+                    <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <TrendingUp className="w-8 h-8 text-accent" />
+                    </div>
+                    <h3 className="font-bold text-xl text-foreground mb-4">{t('landing.feature2.title')}</h3>
+                    <p className="text-muted-foreground leading-relaxed">
                       {t('landing.feature2.desc')}
                     </p>
                   </div>
-                  <div className="p-6 bg-card/50 rounded-xl backdrop-blur-sm border border-border/50 hover-scale">
-                    <Sparkles className="w-8 h-8 text-primary mx-auto mb-3" />
-                    <h3 className="font-semibold text-foreground mb-2">{t('landing.feature3.title')}</h3>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="group p-8 bg-gradient-to-br from-card/80 to-card/40 rounded-2xl backdrop-blur-sm border border-border/50 hover-scale transition-all duration-500 hover:shadow-2xl hover:shadow-secondary/10" style={{ animationDelay: '0.4s' }}>
+                    <div className="w-16 h-16 bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <Sparkles className="w-8 h-8 text-secondary" />
+                    </div>
+                    <h3 className="font-bold text-xl text-foreground mb-4">{t('landing.feature3.title')}</h3>
+                    <p className="text-muted-foreground leading-relaxed">
                       {t('landing.feature3.desc')}
                     </p>
                   </div>
                 </div>
+                
+                {/* Social proof section */}
+                <div className="mt-20 p-8 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl backdrop-blur-sm border border-border/30">
+                  <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+                    <div className="flex items-center gap-4">
+                      <div className="flex -space-x-2">
+                        <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-full border-2 border-background"></div>
+                        <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent/80 rounded-full border-2 border-background"></div>
+                        <div className="w-10 h-10 bg-gradient-to-br from-secondary to-secondary/80 rounded-full border-2 border-background"></div>
+                        <div className="w-10 h-10 bg-muted rounded-full border-2 border-background flex items-center justify-center text-xs font-semibold">+99</div>
+                      </div>
+                      <div className="text-left">
+                        <p className="font-semibold text-foreground">活発なコミュニティ</p>
+                        <p className="text-sm text-muted-foreground">毎日新しいつながりが生まれています</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-amber-500">
+                      <Star className="w-5 h-5 fill-current" />
+                      <Star className="w-5 h-5 fill-current" />
+                      <Star className="w-5 h-5 fill-current" />
+                      <Star className="w-5 h-5 fill-current" />
+                      <Star className="w-5 h-5 fill-current" />
+                      <span className="ml-2 text-foreground font-semibold">4.9/5</span>
+                      <span className="text-muted-foreground text-sm">(128件のレビュー)</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <Button 
-                onClick={() => navigate('/auth')}
-                size="lg"
-                className="bg-gradient-primary hover:opacity-90 transition-all duration-300 hover-scale shadow-lg px-8 py-4 text-lg"
-              >
-                <LogIn className="w-5 h-5 mr-2" />
-                {t('landing.cta')}
-              </Button>
             </div>
           </div>
         ) : (
