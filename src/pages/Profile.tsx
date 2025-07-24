@@ -374,19 +374,22 @@ const Profile = () => {
                       </div>
                     )}
 
-                    {/* People Trust Score - Now included in overview */}
-                    {peopleTrustScore !== null && (
-                      <div className="text-center p-4 bg-card/30 rounded-lg hover-scale">
-                        <Users className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                        <div className={`text-xl font-bold ${getScoreColor(peopleTrustScore)}`}>
-                          {peopleTrustScore}/100
-                        </div>
-                        <p className="text-sm text-muted-foreground">相手からの信頼度</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {meetingCount}件の評価
-                        </p>
+                    {/* People Trust Score - Always show if there are any evaluations */}
+                    <div className="text-center p-4 bg-card/30 rounded-lg hover-scale">
+                      <Users className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                      <div className={`text-xl font-bold ${getScoreColor(peopleTrustScore || 0)}`}>
+                        {peopleTrustScore || 0}/100
                       </div>
-                    )}
+                      <p className="text-sm text-muted-foreground">相手からの信頼度</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {meetingCount}件の評価
+                      </p>
+                      {peopleTrustScore === null && meetingCount === 0 && (
+                        <p className="text-xs text-muted-foreground mt-1 italic">
+                          評価データがありません
+                        </p>
+                      )}
+                    </div>
 
                     {/* Hall of Fame Section for High Trust Users */}
                     {overallTrustScore >= 80 && (
