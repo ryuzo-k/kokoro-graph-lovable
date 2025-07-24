@@ -66,7 +66,7 @@ const PersonNetworkView = ({ centerPerson, connectedPeople, userCommunities }: P
 
     const connectedNodes: Node[] = connectedPeople.map((person, index) => {
       const angle = (index / connectedPeople.length) * 2 * Math.PI;
-      const radius = 150;
+      const radius = 250;
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
 
@@ -144,7 +144,7 @@ const PersonNetworkView = ({ centerPerson, connectedPeople, userCommunities }: P
   }, [centerPerson, connectedPeople]);
 
   return (
-    <div className="w-full h-48 border border-border rounded-lg overflow-hidden">
+    <div className="w-full h-96 border border-border rounded-lg overflow-hidden">
       <ReactFlow
         nodes={nodes}
         edges={edges}
