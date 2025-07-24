@@ -38,6 +38,7 @@ import { Meeting, useMeetings } from '@/hooks/useMeetings';
 import { useToast } from '@/hooks/use-toast';
 import { useRelationships } from '@/hooks/useRelationships';
 import RelationshipDetailPanel from './RelationshipDetailPanel';
+import LinkedInConnector from './LinkedInConnector';
 
 interface PersonWithStats extends Person {
   averageRating: number;
@@ -70,6 +71,8 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
   const [showRelationshipDetail, setShowRelationshipDetail] = useState(false);
   const [isConnectMode, setIsConnectMode] = useState(false);
   const [layoutMode, setLayoutMode] = useState<'force' | 'circular' | 'hierarchical' | 'community'>('force');
+  const [focusedPerson, setFocusedPerson] = useState<string | null>(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
 
   // Filter people based on search and location
   const filteredPeople = useMemo(() => {
@@ -222,7 +225,37 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
 
   // Compute force-directed layout positions using d3-force
   const initialNodes: Node[] = useMemo(() => {
-    const layoutNodes = getStructuralLayout(filteredPeople, connections, layoutMode);
+    // フォーカスモードの時は対象の人とその関係者のみ表示
+    let displayPeople = filteredPeople;
+    
+    if (focusedPerson) {
+      const focusedPersonObj = filteredPeople.find(p => p.id === focusedPerson);
+      if (focusedPersonObj) {
+        // フォーカスした人の関係者を取得
+        const relatedPersonIds = new Set<string>();
+        relatedPersonIds.add(focusedPerson);
+        
+        connections.forEach(conn => {
+          if (conn.person1Id === focusedPerson) {
+            relatedPersonIds.add(conn.person2Id);
+          } else if (conn.person2Id === focusedPerson) {
+            relatedPersonIds.add(conn.person1Id);
+          }
+        });
+        
+        relationships.forEach(rel => {
+          if (rel.person1_id === focusedPerson) {
+            relatedPersonIds.add(rel.person2_id);
+          } else if (rel.person2_id === focusedPerson) {
+            relatedPersonIds.add(rel.person1_id);
+          }
+        });
+        
+        displayPeople = filteredPeople.filter(p => relatedPersonIds.has(p.id));
+      }
+    }
+    
+    const layoutNodes = getStructuralLayout(displayPeople, connections, layoutMode);
 
     // Map to React Flow nodes
     return layoutNodes.map(n => {
@@ -267,20 +300,54 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
           connectionCount: (person as any).connectionCount || person.meetingCount,
           isConnected: finalIsConnected,
           connectionStrength: finalConnectionStrength,
+          isFocused: focusedPerson === person.id,
+          isRelated: focusedPerson ? (focusedPerson === person.id || 
+            connections.some(conn => 
+              (conn.person1Id === focusedPerson && conn.person2Id === person.id) ||
+              (conn.person2Id === focusedPerson && conn.person1Id === person.id)
+            ) || 
+            relationships.some(rel => 
+              (rel.person1_id === focusedPerson && rel.person2_id === person.id) ||
+              (rel.person2_id === focusedPerson && rel.person1_id === person.id)
+            )) : true,
         },
-        draggable: true,
+        draggable: false, // ノードを動かせないようにする
       } as Node;
     });
-  }, [filteredPeople, connections, layoutMode]);
+  }, [filteredPeople, connections, layoutMode, focusedPerson, relationships]);
 
   // Convert connections to edges
   const initialEdges: Edge[] = useMemo(() => {
-    const filteredPersonIds = new Set(filteredPeople.map(p => p.id));
+    // フォーカスモードの時は表示する人のIDセットを計算
+    let displayPersonIds = new Set(filteredPeople.map(p => p.id));
+    
+    if (focusedPerson) {
+      const relatedPersonIds = new Set<string>();
+      relatedPersonIds.add(focusedPerson);
+      
+      connections.forEach(conn => {
+        if (conn.person1Id === focusedPerson) {
+          relatedPersonIds.add(conn.person2Id);
+        } else if (conn.person2Id === focusedPerson) {
+          relatedPersonIds.add(conn.person1Id);
+        }
+      });
+      
+      relationships.forEach(rel => {
+        if (rel.person1_id === focusedPerson) {
+          relatedPersonIds.add(rel.person2_id);
+        } else if (rel.person2_id === focusedPerson) {
+          relatedPersonIds.add(rel.person1_id);
+        }
+      });
+      
+      displayPersonIds = relatedPersonIds;
+    }
     
     return connections
       .filter(conn => 
-        filteredPersonIds.has(conn.person1Id) && 
-        filteredPersonIds.has(conn.person2Id)
+        displayPersonIds.has(conn.person1Id) && 
+        displayPersonIds.has(conn.person2Id)
       )
       .map(connection => ({
         id: `${connection.person1Id}-${connection.person2Id}`,
@@ -293,8 +360,8 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
           lastMeeting: connection.lastMeeting,
         },
         animated: connection.meetingCount > 3,
-      }));
-  }, [connections, filteredPeople]);
+        }));
+  }, [connections, filteredPeople, focusedPerson, relationships]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -372,11 +439,19 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
   const handleNodeClick = useCallback((event: any, node: Node) => {
     const person = people.find(p => p.id === node.id);
     if (person) {
+      // フォーカスモードの切り替え
+      if (focusedPerson === person.id) {
+        setFocusedPerson(null);
+        setZoomLevel(1);
+      } else {
+        setFocusedPerson(person.id);
+        setZoomLevel(2);
+      }
       setSelectedPerson(person);
       setShowRelationshipDetail(true);
       onNodeClick?.(person);
     }
-  }, [people, onNodeClick]);
+  }, [people, onNodeClick, focusedPerson]);
 
   return (
     <div className="w-full h-full relative">
@@ -403,6 +478,44 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
         />
         
         <Panel position="top-left" className="space-y-2 max-w-sm">
+          {/* Focus Mode Info */}
+          {focusedPerson && (
+            <div className="bg-primary/10 backdrop-blur-sm p-3 rounded-lg border border-primary/20">
+              <div className="text-sm font-semibold text-primary mb-1">
+                {language === 'ja' ? 'フォーカスモード' : 'Focus Mode'}
+              </div>
+              <div className="text-xs text-primary/80">
+                {language === 'ja' 
+                  ? `${selectedPerson?.name || 'Unknown'}の人間関係を表示中`
+                  : `Showing ${selectedPerson?.name || 'Unknown'}'s connections`
+                }
+              </div>
+              <Button 
+                onClick={() => {setFocusedPerson(null); setZoomLevel(1);}}
+                variant="outline"
+                size="sm"
+                className="mt-2 h-6 text-xs"
+              >
+                {language === 'ja' ? '全体表示に戻る' : 'Back to Full View'}
+              </Button>
+            </div>
+          )}
+          
+          {/* LinkedIn Connection Suggestion */}
+          {!focusedPerson && (
+            <div className="bg-gradient-to-r from-blue-500/10 to-blue-600/10 backdrop-blur-sm p-3 rounded-lg border border-blue-500/20">
+              <div className="text-sm font-semibold text-blue-600 mb-1">
+                {language === 'ja' ? 'ネットワークを拡張' : 'Expand Network'}
+              </div>
+              <div className="text-xs text-blue-600/80 mb-2">
+                {language === 'ja' 
+                  ? 'LinkedInと連携して人間関係を一気に可視化'
+                  : 'Connect LinkedIn to visualize your network instantly'
+                }
+              </div>
+              <LinkedInConnector />
+            </div>
+          )}
           {/* Layout Mode Controls */}
           <div className="bg-card/95 backdrop-blur-sm p-2 rounded-lg border border-border space-y-2">
             <div className="text-xs font-semibold text-foreground mb-2">

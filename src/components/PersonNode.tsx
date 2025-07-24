@@ -17,6 +17,8 @@ interface PersonNodeData {
   connectionCount?: number;
   isConnected?: boolean; // 現在のユーザーと接続があるか
   connectionStrength?: number; // 接続の強さ（会った回数）
+  isFocused?: boolean; // フォーカスされているか
+  isRelated?: boolean; // フォーカスした人の関係者か
 }
 
 interface PersonNodeProps {
@@ -53,21 +55,38 @@ const PersonNode = memo(({ data, selected }: PersonNodeProps) => {
   const nodeSize = getNodeSize(data.meetingCount);
   const trustColorClass = getTrustColor(trustScore);
 
+  // フォーカスモードでの表示設定
+  const getNodeStyle = () => {
+    if (data.isFocused) {
+      return 'bg-gradient-to-br from-primary/20 to-primary/10 border-primary border-4 shadow-2xl scale-110 ring-4 ring-primary/30';
+    }
+    
+    if (data.isRelated === false) {
+      return 'bg-card/30 border-border/30 opacity-30 blur-sm';
+    }
+    
+    if (data.isConnected) {
+      return 'bg-gradient-to-br from-primary/10 to-primary/5 border-primary shadow-primary/20';
+    }
+    
+    return 'bg-card/50 border-border/50 opacity-70 hover:opacity-90';
+  };
+
   return (
     <div
       className={`
         relative flex flex-col border-2 rounded-xl p-3 shadow-lg
-        transition-all duration-300 ease-out min-w-[140px] max-w-[180px]
-        ${data.isConnected 
-          ? 'bg-gradient-to-br from-primary/10 to-primary/5 border-primary shadow-primary/20' 
-          : 'bg-card/50 border-border/50 opacity-70 hover:opacity-90'
-        }
+        transition-all duration-500 ease-out min-w-[140px] max-w-[180px]
+        ${getNodeStyle()}
         ${selected ? 'border-primary shadow-xl scale-105' : 'hover:border-primary/50'}
-        ${data.isConnected ? 'animate-pulse-glow' : ''}
+        ${data.isFocused ? 'animate-pulse-glow z-50' : ''}
+        ${data.isConnected && !data.isFocused ? 'animate-pulse-glow' : ''}
       `}
       style={{
         width: nodeSize,
-        minHeight: '160px'
+        minHeight: '160px',
+        transform: data.isFocused ? 'scale(1.2)' : undefined,
+        zIndex: data.isFocused ? 50 : (data.isConnected ? 10 : 1),
       }}
     >
       <Handle
@@ -81,13 +100,21 @@ const PersonNode = memo(({ data, selected }: PersonNodeProps) => {
         className={`w-2 h-2 ${data.isConnected ? 'bg-primary' : 'bg-muted'}`}
       />
 
-      {/* Connection Status Badge */}
+      {/* Focus/Connection Status Badge */}
       <div className={`absolute -top-2 -left-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-md ${
-        data.isConnected 
-          ? 'bg-primary text-primary-foreground animate-bounce' 
-          : 'bg-muted text-muted-foreground'
+        data.isFocused 
+          ? 'bg-primary text-primary-foreground animate-bounce scale-125 ring-2 ring-primary/50' 
+          : data.isConnected 
+            ? 'bg-primary text-primary-foreground animate-bounce' 
+            : 'bg-muted text-muted-foreground'
       }`}>
-        {data.isConnected ? <UserCheck className="w-3 h-3" /> : <UserPlus className="w-3 h-3" />}
+        {data.isFocused ? (
+          <div className="text-lg">🎯</div>
+        ) : data.isConnected ? (
+          <UserCheck className="w-3 h-3" />
+        ) : (
+          <UserPlus className="w-3 h-3" />
+        )}
       </div>
 
       {/* Connection Strength Indicator */}
