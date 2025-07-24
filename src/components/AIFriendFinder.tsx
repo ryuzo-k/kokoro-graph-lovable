@@ -34,6 +34,7 @@ const AIFriendFinder: React.FC = () => {
   const [currentStatus, setCurrentStatus] = useState('');
   const [addedPeople, setAddedPeople] = useState<AddedPerson[]>([]);
   const [analysisComplete, setAnalysisComplete] = useState(false);
+  const [demoMode, setDemoMode] = useState(false);
 
   const getFraudRiskColor = (level: string) => {
     switch (level) {
@@ -89,7 +90,8 @@ const AIFriendFinder: React.FC = () => {
       const { data, error } = await supabase.functions.invoke('ai-friend-finder', {
         body: {
           linkedinUrl: linkedinUrl.trim(),
-          searchDepth: 1
+          searchDepth: 1,
+          demoMode: false
         }
       });
 
@@ -121,6 +123,53 @@ const AIFriendFinder: React.FC = () => {
     }
   };
 
+  const handleDemoAnalyze = async () => {
+    setIsAnalyzing(true);
+    setProgress(0);
+    setCurrentStatus('デモモードで分析を開始しています...');
+    setAddedPeople([]);
+    setAnalysisComplete(false);
+
+    // Start progress simulation
+    simulateProgress();
+
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-friend-finder', {
+        body: {
+          linkedinUrl: 'demo-mode',
+          searchDepth: 1,
+          demoMode: true
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.success) {
+        setAddedPeople(data.addedPeople || []);
+        setAnalysisComplete(true);
+        toast({
+          title: "デモ分析完了！",
+          description: data.message,
+          duration: 5000,
+        });
+      } else {
+        throw new Error(data.error || 'デモ分析に失敗しました');
+      }
+    } catch (error) {
+      console.error('AI Friend Finder demo error:', error);
+      toast({
+        title: "エラー",
+        description: error.message || 'デモ分析中にエラーが発生しました',
+        variant: "destructive",
+      });
+      setCurrentStatus('エラーが発生しました');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   const handleReset = () => {
     setLinkedinUrl('');
     setProgress(0);
@@ -142,30 +191,46 @@ const AIFriendFinder: React.FC = () => {
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-2">
-            <Input
-              placeholder="LinkedIn プロフィール URL を入力"
-              value={linkedinUrl}
-              onChange={(e) => setLinkedinUrl(e.target.value)}
-              disabled={isAnalyzing}
-              className="flex-1"
-            />
+          <div className="space-y-3">
+            <div className="flex gap-2">
+              <Input
+                placeholder="LinkedIn プロフィール URL を入力"
+                value={linkedinUrl}
+                onChange={(e) => setLinkedinUrl(e.target.value)}
+                disabled={isAnalyzing}
+                className="flex-1"
+              />
+              <Button 
+                onClick={handleAnalyze}
+                disabled={isAnalyzing || !linkedinUrl.trim()}
+                className="bg-primary hover:bg-primary/90"
+              >
+                {isAnalyzing ? (
+                  <>
+                    <Bot className="mr-2 h-4 w-4 animate-spin" />
+                    分析中...
+                  </>
+                ) : (
+                  <>
+                    <TrendingUp className="mr-2 h-4 w-4" />
+                    AI分析開始
+                  </>
+                )}
+              </Button>
+            </div>
+            
+            <div className="flex items-center justify-center">
+              <div className="text-sm text-muted-foreground">または</div>
+            </div>
+            
             <Button 
-              onClick={handleAnalyze}
-              disabled={isAnalyzing || !linkedinUrl.trim()}
-              className="bg-primary hover:bg-primary/90"
+              onClick={handleDemoAnalyze}
+              disabled={isAnalyzing}
+              variant="outline"
+              className="w-full border-dashed border-2 hover:bg-muted/50"
             >
-              {isAnalyzing ? (
-                <>
-                  <Bot className="mr-2 h-4 w-4 animate-spin" />
-                  分析中...
-                </>
-              ) : (
-                <>
-                  <TrendingUp className="mr-2 h-4 w-4" />
-                  AI分析開始
-                </>
-              )}
+              <Bot className="mr-2 h-4 w-4" />
+              デモモードで試す（サンプルデータ）
             </Button>
           </div>
 

@@ -2,6 +2,81 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 
+// Demo data generator
+const generateDemoConnections = async (): Promise<LinkedInProfile[]> => {
+  const demoProfiles = [
+    {
+      name: '山田太郎',
+      company: 'Google Japan',
+      position: 'Senior Software Engineer',
+      location: '東京',
+      bio: 'フルスタック開発者として10年の経験。ReactとNode.jsが専門。AIとブロックチェーンにも興味があります。',
+      skills: ['React', 'TypeScript', 'Node.js', 'Python', 'AWS']
+    },
+    {
+      name: '佐藤花子',
+      company: 'Microsoft',
+      position: 'Product Manager',
+      location: 'シアトル',
+      bio: 'テクノロジー企業でプロダクト戦略をリード。ユーザー体験とデータ分析が得意。',
+      skills: ['Product Management', 'Data Analysis', 'UX Design', 'Agile', 'SQL']
+    },
+    {
+      name: '田中一郎',
+      company: 'Meta',
+      position: 'AI Research Scientist',
+      location: 'メンロパーク',
+      bio: '機械学習とNLPの研究者。スタンフォード大学でPhD取得。論文多数発表。',
+      skills: ['Machine Learning', 'NLP', 'Python', 'TensorFlow', 'Research']
+    },
+    {
+      name: 'Emily Johnson',
+      company: 'Apple',
+      position: 'Design Lead',
+      location: 'クパチーノ',
+      bio: 'ユーザー中心設計の専門家。モバイルアプリとデスクトップソフトウェアのデザインを担当。',
+      skills: ['UI/UX Design', 'Figma', 'Prototyping', 'Design Systems', 'User Research']
+    },
+    {
+      name: '鈴木次郎',
+      company: 'Sony',
+      position: 'Engineering Manager',
+      location: '東京',
+      bio: 'エンジニアリングチームのマネージャー。ハードウェア設計から量産まで幅広く担当。',
+      skills: ['Engineering Management', 'Hardware Design', 'Team Leadership', 'Project Management']
+    },
+    {
+      name: 'Lisa Chen',
+      company: 'Tesla',
+      position: 'Autonomous Vehicle Engineer',
+      location: 'パロアルト',
+      bio: '自動運転技術の開発に従事。コンピュータビジョンと制御システムが専門。',
+      skills: ['Computer Vision', 'Autonomous Systems', 'C++', 'ROS', 'Deep Learning']
+    },
+    {
+      name: '渡辺美咲',
+      company: 'AWS',
+      position: 'Cloud Solutions Architect',
+      location: '東京',
+      bio: 'クラウドアーキテクチャの設計と実装。大規模システムの移行プロジェクトを多数リード。',
+      skills: ['AWS', 'Cloud Architecture', 'DevOps', 'Kubernetes', 'Terraform']
+    },
+    {
+      name: 'Robert Wilson',
+      company: 'Netflix',
+      position: 'Data Scientist',
+      location: 'ロサンゼルス',
+      bio: 'レコメンデーションシステムの開発。機械学習を活用した個人化技術の研究。',
+      skills: ['Data Science', 'Machine Learning', 'Python', 'Spark', 'Statistics']
+    }
+  ];
+
+  // ランダムに5-8人を選択
+  const selectedCount = Math.floor(Math.random() * 4) + 5; // 5-8人
+  const shuffled = demoProfiles.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, selectedCount);
+};
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -50,7 +125,7 @@ serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    const { linkedinUrl, searchDepth = 1 } = await req.json();
+    const { linkedinUrl, searchDepth = 1, demoMode = false } = await req.json();
 
     if (!linkedinUrl) {
       throw new Error('LinkedIn URL is required');
@@ -58,47 +133,88 @@ serve(async (req) => {
 
     console.log(`Starting AI friend finder for user ${user.id} with LinkedIn URL: ${linkedinUrl}`);
 
-    // Step 1: Scrape LinkedIn profile with Firecrawl
-    const firecrawlApiKey = Deno.env.get('FIRECRAWL_API_KEY');
-    if (!firecrawlApiKey) {
-      throw new Error('Firecrawl API key not configured');
+    let profileAnalysis: LinkedInProfile;
+    let connections: LinkedInProfile[];
+
+    if (demoMode) {
+      console.log('Running in demo mode - generating sample data...');
+      profileAnalysis = {
+        name: 'デモユーザー',
+        company: 'テック企業',
+        position: 'エンジニア',
+        location: '東京',
+        bio: 'デモモードで生成されたプロフィール'
+      };
+
+      connections = await generateDemoConnections();
+    } else {
+      // Step 1: Scrape LinkedIn profile with Firecrawl
+      const firecrawlApiKey = Deno.env.get('FIRECRAWL_API_KEY');
+      if (!firecrawlApiKey) {
+        console.log('No Firecrawl API key - falling back to demo mode');
+        profileAnalysis = {
+          name: 'デモユーザー',
+          company: 'テック企業',
+          position: 'エンジニア',
+          location: '東京',
+          bio: 'Firecrawl APIキーが設定されていないため、デモモードで実行中'
+        };
+        connections = await generateDemoConnections();
+      } else {
+        try {
+          console.log('Scraping LinkedIn profile...');
+          const scrapeResponse = await fetch('https://api.firecrawl.dev/v0/scrape', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${firecrawlApiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              url: linkedinUrl,
+              formats: ['markdown', 'html'],
+              includeTags: ['h1', 'h2', 'h3', 'p', 'span', 'div'],
+              excludeTags: ['script', 'style', 'nav', 'footer'],
+              waitFor: 2000
+            }),
+          });
+
+          if (!scrapeResponse.ok) {
+            throw new Error(`Firecrawl API error: ${scrapeResponse.status}`);
+          }
+
+          const scrapeData = await scrapeResponse.json();
+          console.log('LinkedIn profile scraped successfully');
+
+          // Step 2: Use OpenAI to analyze and extract structured data
+          const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+          if (!openaiApiKey) {
+            throw new Error('OpenAI API key not configured');
+          }
+
+          console.log('Analyzing profile data with AI...');
+          profileAnalysis = await analyzeLinkedInProfile(scrapeData.data.content, openaiApiKey);
+          
+          // Step 3: Find connections from the scraped content
+          console.log('Extracting connections...');
+          connections = await extractConnections(scrapeData.data.content, openaiApiKey);
+        } catch (error) {
+          console.log(`Scraping failed (${error.message}), falling back to demo mode`);
+          profileAnalysis = {
+            name: 'デモユーザー',
+            company: 'テック企業',
+            position: 'エンジニア',
+            location: '東京',
+            bio: `スクレイピングに失敗したため、デモモードで実行中 (${error.message})`
+          };
+          connections = await generateDemoConnections();
+        }
+      }
     }
 
-    console.log('Scraping LinkedIn profile...');
-    const scrapeResponse = await fetch('https://api.firecrawl.dev/v0/scrape', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${firecrawlApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        url: linkedinUrl,
-        formats: ['markdown', 'html'],
-        includeTags: ['h1', 'h2', 'h3', 'p', 'span', 'div'],
-        excludeTags: ['script', 'style', 'nav', 'footer'],
-        waitFor: 2000
-      }),
-    });
-
-    if (!scrapeResponse.ok) {
-      throw new Error(`Firecrawl API error: ${scrapeResponse.status}`);
-    }
-
-    const scrapeData = await scrapeResponse.json();
-    console.log('LinkedIn profile scraped successfully');
-
-    // Step 2: Use OpenAI to analyze and extract structured data
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openaiApiKey) {
       throw new Error('OpenAI API key not configured');
     }
-
-    console.log('Analyzing profile data with AI...');
-    const profileAnalysis = await analyzeLinkedInProfile(scrapeData.data.content, openaiApiKey);
-    
-    // Step 3: Find connections from the scraped content
-    console.log('Extracting connections...');
-    const connections = await extractConnections(scrapeData.data.content, openaiApiKey);
 
     // Step 4: Analyze each connection and auto-add to database
     const addedPeople = [];
