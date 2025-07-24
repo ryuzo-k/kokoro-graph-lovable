@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Camera, Save, ArrowLeft, Github, Linkedin, Globe, Search, Shield, TrendingUp, Users } from 'lucide-react';
+import { Camera, Save, ArrowLeft, Github, Linkedin, Globe, Search, Shield, TrendingUp, Users, Crown, Star, Award } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -196,6 +196,55 @@ const Profile = () => {
     meeting.other_name === profile?.display_name && meeting.user_id !== user?.id
   ).length;
 
+  // Calculate overall trust score
+  const calculateOverallTrustScore = () => {
+    const scores = [
+      profile?.github_score,
+      profile?.linkedin_score,
+      profile?.portfolio_score,
+      peopleTrustScore
+    ].filter(score => score !== null && score !== undefined);
+    
+    if (scores.length === 0) return 0;
+    
+    return Math.round(scores.reduce((sum, score) => sum + (score || 0), 0) / scores.length);
+  };
+
+  const overallTrustScore = calculateOverallTrustScore();
+
+  // Trust level badge function
+  const getTrustLevelBadge = (score: number) => {
+    if (score >= 95) {
+      return (
+        <div className="mb-3">
+          <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 py-1 text-sm font-semibold">
+            <Crown className="w-4 h-4 mr-1" />
+            レジェンド
+          </Badge>
+        </div>
+      );
+    } else if (score >= 90) {
+      return (
+        <div className="mb-3">
+          <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 text-sm font-semibold">
+            <Award className="w-4 h-4 mr-1" />
+            マスター
+          </Badge>
+        </div>
+      );
+    } else if (score >= 80) {
+      return (
+        <div className="mb-3">
+          <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 text-sm font-semibold">
+            <Star className="w-4 h-4 mr-1" />
+            エキスパート
+          </Badge>
+        </div>
+      );
+    }
+    return null;
+  };
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -248,27 +297,49 @@ const Profile = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Overall Trust Score */}
                     <div className="col-span-full">
-                      <div className="text-center p-6 bg-card/50 rounded-lg border border-border">
-                        <div className="text-3xl font-bold text-primary mb-2">
-                          {Math.round(
-                            ((profile?.github_score || 0) + 
-                             (profile?.linkedin_score || 0) + 
-                             (profile?.portfolio_score || 0) +
-                             (peopleTrustScore || 0)) / 
-                            (Number(!!profile?.github_score) + 
-                             Number(!!profile?.linkedin_score) + 
-                             Number(!!profile?.portfolio_score) +
-                             Number(!!peopleTrustScore) || 1)
-                          )}/100
-                        </div>
-                        <p className="text-muted-foreground">あなたの総合信頼度</p>
-                        {profile?.fraud_risk_level && (
-                          <Badge 
-                            className={`mt-3 ${getFraudRiskColor(profile.fraud_risk_level)} text-white`}
-                          >
-                            詐欺リスク: {profile.fraud_risk_level}
-                          </Badge>
+                      <div className="text-center p-6 bg-card/50 rounded-lg border border-border relative overflow-hidden">
+                        {/* Background glow effect for high trust users */}
+                        {overallTrustScore >= 80 && (
+                          <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 via-orange-500/10 to-red-500/10 animate-pulse" />
                         )}
+                        
+                        <div className="relative z-10">
+                          {/* Trust Level Badge */}
+                          {getTrustLevelBadge(overallTrustScore)}
+                          
+                          <div className={`text-3xl font-bold mb-2 ${overallTrustScore >= 90 ? 'text-yellow-500' : overallTrustScore >= 80 ? 'text-orange-500' : 'text-primary'}`}>
+                            {overallTrustScore}/100
+                          </div>
+                          <p className="text-muted-foreground">あなたの総合信頼度</p>
+                          
+                          {/* Trust Achievement */}
+                          {overallTrustScore >= 80 && (
+                            <div className="mt-4 p-3 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-lg border border-yellow-500/30">
+                              <div className="flex items-center justify-center gap-2 text-yellow-700 dark:text-yellow-300">
+                                <Crown className="w-5 h-5" />
+                                <span className="font-semibold">
+                                  {overallTrustScore >= 95 ? '伝説の信頼者' : 
+                                   overallTrustScore >= 90 ? '信頼の殿堂入り' : 
+                                   '高信頼度ユーザー'}
+                                </span>
+                                <Crown className="w-5 h-5" />
+                              </div>
+                              <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                                {overallTrustScore >= 95 ? 'あなたは究極の信頼を築き上げました！' : 
+                                 overallTrustScore >= 90 ? 'コミュニティの信頼できるリーダーです！' : 
+                                 '多くの人から信頼されています！'}
+                              </p>
+                            </div>
+                          )}
+                          
+                          {profile?.fraud_risk_level && (
+                            <Badge 
+                              className={`mt-3 ${getFraudRiskColor(profile.fraud_risk_level)} text-white`}
+                            >
+                              詐欺リスク: {profile.fraud_risk_level}
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -303,25 +374,19 @@ const Profile = () => {
                       </div>
                     )}
 
-                    {/* People Trust Score - Always show for debugging */}
-                    <div className="text-center p-4 bg-card/30 rounded-lg">
-                      <Users className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                      <div className={`text-xl font-bold ${getScoreColor(peopleTrustScore || 0)}`}>
-                        {peopleTrustScore || 0}/100
+                    {/* People Trust Score */}
+                    {peopleTrustScore !== null && (
+                      <div className="text-center p-4 bg-card/30 rounded-lg">
+                        <Users className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                        <div className={`text-xl font-bold ${getScoreColor(peopleTrustScore)}`}>
+                          {peopleTrustScore}/100
+                        </div>
+                        <p className="text-sm text-muted-foreground">人からの信頼度</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {meetingCount}件の評価
+                        </p>
                       </div>
-                      <p className="text-sm text-muted-foreground">人からの信頼度</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {meetingCount}件の評価
-                      </p>
-                      {/* Debug info */}
-                      <div className="text-xs text-muted-foreground mt-2 space-y-1">
-                        <div>表示名: {profile?.display_name || 'なし'}</div>
-                        <div>総ミーティング数: {meetings.length}</div>
-                        <div>他者からの評価: {meetings.filter(m => 
-                          m.other_name === profile?.display_name && m.user_id !== user?.id
-                        ).length}</div>
-                      </div>
-                    </div>
+                    )}
                   </div>
 
                   {/* Score Explanation */}
