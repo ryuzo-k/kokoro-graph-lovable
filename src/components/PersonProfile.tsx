@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { MapPin, Users, Star, Calendar, X, TrendingUp, Building, Briefcase, ExternalLink, Github, Linkedin, Network } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
-import { Person } from '@/hooks/usePeople';
+import { Person, usePeople } from '@/hooks/usePeople';
 import { useMeetings, Meeting } from '@/hooks/useMeetings';
 import { useCommunities } from '@/hooks/useCommunities';
 import { useMemo } from 'react';
@@ -23,12 +23,62 @@ interface PersonProfileProps {
 const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
   const { userCommunities } = useCommunities();
   
+  const { meetings } = useMeetings();
+  const { people } = usePeople();
+  
   // Get connected people from meetings
   const connectedPeople = useMemo(() => {
-    // For now, create mock connected people based on shared meetings/communities
-    // In a real implementation, this would come from your data
-    return [];
-  }, [person.meetings]);
+    if (!person.meetings || person.meetings.length === 0) return [];
+    
+    // Get all people who have meetings with this person
+    const connectedPersonNames = new Set<string>();
+    person.meetings.forEach(meeting => {
+      // Add the other person in each meeting
+      if (meeting.my_name === person.name) {
+        connectedPersonNames.add(meeting.other_name);
+      } else {
+        connectedPersonNames.add(meeting.my_name);
+      }
+    });
+    
+    // Convert names to person objects with stats
+    const connectedPeopleArray = Array.from(connectedPersonNames).map(name => {
+      // Find the detailed person info
+      const detailedPerson = people.find(p => p.name === name);
+      
+      // Get all meetings for this person
+      const personMeetings = meetings.filter(m => 
+        m.my_name === name || m.other_name === name
+      );
+      
+      // Calculate average rating
+      const ratings = personMeetings.map(m => m.rating);
+      const averageRating = ratings.length > 0 
+        ? ratings.reduce((a, b) => a + b, 0) / ratings.length 
+        : 0;
+      
+      return {
+        id: detailedPerson?.id || name,
+        name,
+        company: detailedPerson?.company,
+        position: detailedPerson?.position,
+        bio: detailedPerson?.bio,
+        skills: detailedPerson?.skills,
+        avatar_url: detailedPerson?.avatar_url,
+        linkedin_url: detailedPerson?.linkedin_url,
+        github_username: detailedPerson?.github_username,
+        location: detailedPerson?.location,
+        user_id: detailedPerson?.user_id || '',
+        created_at: detailedPerson?.created_at || '',
+        updated_at: detailedPerson?.updated_at || '',
+        averageRating,
+        meetingCount: personMeetings.length,
+        meetings: personMeetings,
+      };
+    });
+    
+    return connectedPeopleArray;
+  }, [person.meetings, meetings, people, person.name]);
   const getInitials = (name: string) => {
     return name
       .split(' ')

@@ -130,7 +130,7 @@ const PersonNode = memo(({ data, selected }: PersonNodeProps) => {
         <div className="flex flex-wrap gap-1 mb-2">
           {data.communities.slice(0, 2).map((community, index) => (
             <Badge
-              key={community}
+              key={`${data.name}-community-${index}-${community}`}
               variant="secondary"
               className={`text-xs px-1.5 py-0.5 ${getCommunityColors()[index]} border-0`}
             >
@@ -138,7 +138,7 @@ const PersonNode = memo(({ data, selected }: PersonNodeProps) => {
             </Badge>
           ))}
           {data.communities.length > 2 && (
-            <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+            <Badge key={`${data.name}-more-communities`} variant="outline" className="text-xs px-1.5 py-0.5">
               +{data.communities.length - 2}
             </Badge>
           )}
