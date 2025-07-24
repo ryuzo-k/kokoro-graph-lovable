@@ -303,19 +303,25 @@ const Profile = () => {
                       </div>
                     )}
 
-                    {/* People Trust Score */}
-                    {peopleTrustScore && (
-                      <div className="text-center p-4 bg-card/30 rounded-lg">
-                        <Users className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                        <div className={`text-xl font-bold ${getScoreColor(peopleTrustScore)}`}>
-                          {peopleTrustScore}/100
-                        </div>
-                        <p className="text-sm text-muted-foreground">人からの信頼度</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {meetingCount}件の評価
-                        </p>
+                    {/* People Trust Score - Always show for debugging */}
+                    <div className="text-center p-4 bg-card/30 rounded-lg">
+                      <Users className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                      <div className={`text-xl font-bold ${getScoreColor(peopleTrustScore || 0)}`}>
+                        {peopleTrustScore || 0}/100
                       </div>
-                    )}
+                      <p className="text-sm text-muted-foreground">人からの信頼度</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {meetingCount}件の評価
+                      </p>
+                      {/* Debug info */}
+                      <div className="text-xs text-muted-foreground mt-2 space-y-1">
+                        <div>表示名: {profile?.display_name || 'なし'}</div>
+                        <div>総ミーティング数: {meetings.length}</div>
+                        <div>他者からの評価: {meetings.filter(m => 
+                          m.other_name === profile?.display_name && m.user_id !== user?.id
+                        ).length}</div>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Score Explanation */}
