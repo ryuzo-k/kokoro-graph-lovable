@@ -320,49 +320,47 @@ const Profile = () => {
                         </div>
                         
                         {/* Detailed analysis */}
-                        {profile.analysis_details?.github_analysis && (
+                        {profile.analysis_details && Object.keys(profile.analysis_details).length > 0 && (
                           <div className="mt-4 pt-3 border-t border-border">
                             <h4 className="text-sm font-semibold mb-2">分析詳細</h4>
-                            <div className="space-y-2 text-xs">
-                              {profile.analysis_details.github_analysis.skills_detected?.length > 0 && (
-                                <div>
-                                  <span className="text-blue-600 font-medium">使用技術:</span>
-                                  <div className="mt-1 flex flex-wrap gap-1">
-                                    {profile.analysis_details.github_analysis.skills_detected.map((skill: string, index: number) => (
-                                      <Badge key={index} variant="outline" className="text-xs px-2 py-0">
-                                        {skill}
-                                      </Badge>
-                                    ))}
+                            <div className="space-y-3 text-xs">
+                              {/* GitHub analysis from details object */}
+                              {profile.analysis_details.details && (
+                                <div className="space-y-2">
+                                  <div>
+                                    <span className="text-blue-600 font-medium">アカウント年数:</span>
+                                    <span className="ml-2">{profile.analysis_details.details.accountAgeYears} 年</span>
+                                  </div>
+                                  <div>
+                                    <span className="text-green-600 font-medium">リポジトリ数:</span>
+                                    <span className="ml-2">{profile.analysis_details.details.repositoryCount}</span>
+                                  </div>
+                                  <div>
+                                    <span className="text-orange-600 font-medium">スター数:</span>
+                                    <span className="ml-2">{profile.analysis_details.details.totalStars}</span>
+                                  </div>
+                                  <div>
+                                    <span className="text-purple-600 font-medium">フォロワー数:</span>
+                                    <span className="ml-2">{profile.analysis_details.details.followers}</span>
+                                  </div>
+                                  <div>
+                                    <span className="text-indigo-600 font-medium">言語多様性:</span>
+                                    <span className="ml-2">{profile.analysis_details.details.languageDiversity}</span>
                                   </div>
                                 </div>
                               )}
                               
-                              {profile.analysis_details.github_analysis.activity_summary && (
-                                <div>
-                                  <span className="text-green-600 font-medium">活動状況:</span>
-                                  <p className="mt-1 text-muted-foreground">
-                                    {profile.analysis_details.github_analysis.activity_summary}
-                                  </p>
-                                </div>
-                              )}
-                              
-                              {profile.analysis_details.github_analysis.code_quality_indicators?.length > 0 && (
-                                <div>
-                                  <span className="text-purple-600 font-medium">コード品質:</span>
-                                  <ul className="mt-1 ml-3 space-y-1">
-                                    {profile.analysis_details.github_analysis.code_quality_indicators.map((indicator: string, index: number) => (
-                                      <li key={index} className="text-purple-600">• {indicator}</li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              )}
-                              
-                              {profile.analysis_details.github_analysis.overall_assessment && (
-                                <div>
-                                  <span className="font-medium">総合評価:</span>
-                                  <p className="mt-1 text-muted-foreground">
-                                    {profile.analysis_details.github_analysis.overall_assessment}
-                                  </p>
+                              {/* Analysis breakdown */}
+                              {profile.analysis_details.analysis && (
+                                <div className="pt-2 border-t">
+                                  <div className="grid grid-cols-2 gap-2 text-xs">
+                                    <div>アカウント年数: {profile.analysis_details.analysis.accountAge}/20</div>
+                                    <div>リポジトリ: {profile.analysis_details.analysis.repositories}/25</div>
+                                    <div>スター: {profile.analysis_details.analysis.stars}/20</div>
+                                    <div>言語多様性: {profile.analysis_details.analysis.languageDiversity}/15</div>
+                                    <div>フォロワー: {profile.analysis_details.analysis.followers}/10</div>
+                                    <div>活動状況: {profile.analysis_details.analysis.recentActivity}/10</div>
+                                  </div>
                                 </div>
                               )}
                             </div>
@@ -444,7 +442,16 @@ const Profile = () => {
                         {profile.analysis_details?.linkedin_analysis && (
                           <div className="mt-4 pt-3 border-t border-border">
                             <h4 className="text-sm font-semibold mb-2">分析詳細</h4>
-                            <div className="space-y-2 text-xs">
+                            <div className="space-y-3 text-xs">
+                              {/* Professional Score */}
+                              {profile.analysis_details.linkedin_analysis.professional_score && (
+                                <div>
+                                  <span className="text-blue-600 font-medium">専門性スコア:</span>
+                                  <span className="ml-2">{profile.analysis_details.linkedin_analysis.professional_score}/100</span>
+                                </div>
+                              )}
+                              
+                              {/* Red flags */}
                               {profile.analysis_details.linkedin_analysis.red_flags?.length > 0 && (
                                 <div>
                                   <span className="text-red-600 font-medium">懸念事項:</span>
@@ -456,6 +463,7 @@ const Profile = () => {
                                 </div>
                               )}
                               
+                              {/* Positive indicators */}
                               {profile.analysis_details.linkedin_analysis.positive_indicators?.length > 0 && (
                                 <div>
                                   <span className="text-green-600 font-medium">良い点:</span>
@@ -467,8 +475,21 @@ const Profile = () => {
                                 </div>
                               )}
                               
+                              {/* Experience assessment */}
+                              {profile.analysis_details.linkedin_analysis.experience_assessment && (
+                                <div className="pt-2 border-t">
+                                  <span className="text-purple-600 font-medium">経験評価:</span>
+                                  <div className="mt-1 space-y-1">
+                                    <div>推定経験年数: {profile.analysis_details.linkedin_analysis.experience_assessment.estimated_years}年</div>
+                                    <div>キャリア進行: {profile.analysis_details.linkedin_analysis.experience_assessment.career_progression}</div>
+                                    <div>スキル一貫性: {profile.analysis_details.linkedin_analysis.experience_assessment.skill_consistency}</div>
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {/* Overall assessment */}
                               {profile.analysis_details.linkedin_analysis.overall_assessment && (
-                                <div>
+                                <div className="pt-2 border-t">
                                   <span className="font-medium">総合評価:</span>
                                   <p className="mt-1 text-muted-foreground">
                                     {profile.analysis_details.linkedin_analysis.overall_assessment}
