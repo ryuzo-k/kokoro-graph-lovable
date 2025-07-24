@@ -5,9 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import MeetingForm from '@/components/MeetingForm';
 import NetworkGraph from '@/components/NetworkGraph';
-import { Heart, Network, Plus, BarChart3, LogIn, LogOut, User, Users, Sparkles, TrendingUp, MapPin, Calendar, Star } from 'lucide-react';
+import { Heart, Network, Plus, BarChart3, LogIn, LogOut, User, Users, Sparkles, TrendingUp, MapPin, Calendar, Star, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useNavigate } from 'react-router-dom';
 import { useMeetings, type Meeting } from '@/hooks/useMeetings';
 import { usePeople, Person } from '@/hooks/usePeople';
@@ -29,6 +30,7 @@ interface Connection {
 const Index = () => {
   const [showForm, setShowForm] = useState(false);
   const { user, signOut, loading } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { meetings, addMeeting } = useMeetings();
   const { people: allPeople } = usePeople();
@@ -150,10 +152,10 @@ const Index = () => {
                 <Heart className="w-8 h-8 text-primary animate-pulse" />
                 <Sparkles className="w-4 h-4 text-primary/60 absolute -top-1 -right-1" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">Kokoro Graph</h1>
-                <p className="text-xs text-muted-foreground">信頼関係の可視化プラットフォーム</p>
-              </div>
+               <div>
+                 <h1 className="text-2xl font-bold text-foreground">{t('app.title')}</h1>
+                 <p className="text-xs text-muted-foreground">{t('app.subtitle')}</p>
+               </div>
             </div>
             <div className="flex items-center gap-3">
               {user ? (
@@ -170,7 +172,7 @@ const Index = () => {
                     className="hover-scale"
                   >
                     <Users className="w-4 h-4 mr-2" />
-                    コミュニティ
+                    {t('nav.communities')}
                   </Button>
                   <Button 
                     onClick={() => navigate('/profile')}
@@ -179,14 +181,23 @@ const Index = () => {
                     className="hover-scale"
                   >
                     <User className="w-4 h-4 mr-2" />
-                    プロフィール
+                    {t('nav.profile')}
+                  </Button>
+                  <Button 
+                    onClick={() => navigate('/settings')}
+                    variant="ghost"
+                    size="sm"
+                    className="hover-scale"
+                  >
+                    <Settings className="w-4 h-4 mr-2" />
+                    {t('nav.settings')}
                   </Button>
                   <Button 
                     onClick={() => setShowForm(true)}
                     className="bg-gradient-primary hover:opacity-90 transition-all duration-300 hover-scale shadow-lg"
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    <span className="hidden sm:inline">出会いを記録</span>
+                    <span className="hidden sm:inline">{t('nav.record')}</span>
                     <span className="sm:hidden">記録</span>
                   </Button>
                   <Button 
@@ -196,7 +207,7 @@ const Index = () => {
                     className="hover-scale"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
-                    <span className="hidden sm:inline">ログアウト</span>
+                    <span className="hidden sm:inline">{t('nav.logout')}</span>
                   </Button>
                 </>
               ) : (
@@ -205,7 +216,7 @@ const Index = () => {
                   className="bg-gradient-primary hover:opacity-90 transition-all duration-300 hover-scale shadow-lg"
                 >
                   <LogIn className="w-4 h-4 mr-2" />
-                  ログイン
+                  {t('nav.login')}
                 </Button>
               )}
             </div>
@@ -224,15 +235,10 @@ const Index = () => {
                 </div>
                 <div className="space-y-4">
                   <h2 className="text-4xl font-bold text-foreground leading-tight">
-                    あなたの人間関係を
-                    <br />
-                    <span className="bg-gradient-primary bg-clip-text text-transparent">
-                      可視化しませんか？
-                    </span>
+                    {t('landing.headline')}
                   </h2>
                   <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-                    Kokoro Graphで出会いを記録し、信頼関係のネットワークを築いていきましょう。
-                    あなたの人脈を美しく可視化し、新たな発見を。
+                    {t('landing.description')}
                   </p>
                 </div>
                 
@@ -240,23 +246,23 @@ const Index = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
                   <div className="p-6 bg-card/50 rounded-xl backdrop-blur-sm border border-border/50 hover-scale">
                     <Network className="w-8 h-8 text-primary mx-auto mb-3" />
-                    <h3 className="font-semibold text-foreground mb-2">ネットワーク可視化</h3>
+                    <h3 className="font-semibold text-foreground mb-2">{t('landing.feature1.title')}</h3>
                     <p className="text-sm text-muted-foreground">
-                      人間関係を美しいグラフで表示
+                      {t('landing.feature1.desc')}
                     </p>
                   </div>
                   <div className="p-6 bg-card/50 rounded-xl backdrop-blur-sm border border-border/50 hover-scale">
                     <TrendingUp className="w-8 h-8 text-primary mx-auto mb-3" />
-                    <h3 className="font-semibold text-foreground mb-2">信頼度分析</h3>
+                    <h3 className="font-semibold text-foreground mb-2">{t('landing.feature2.title')}</h3>
                     <p className="text-sm text-muted-foreground">
-                      AI による詳細な信頼度評価
+                      {t('landing.feature2.desc')}
                     </p>
                   </div>
                   <div className="p-6 bg-card/50 rounded-xl backdrop-blur-sm border border-border/50 hover-scale">
                     <Sparkles className="w-8 h-8 text-primary mx-auto mb-3" />
-                    <h3 className="font-semibold text-foreground mb-2">インサイト発見</h3>
+                    <h3 className="font-semibold text-foreground mb-2">{t('landing.feature3.title')}</h3>
                     <p className="text-sm text-muted-foreground">
-                      人脈から新たな気づきを発見
+                      {t('landing.feature3.desc')}
                     </p>
                   </div>
                 </div>
@@ -267,7 +273,7 @@ const Index = () => {
                 className="bg-gradient-primary hover:opacity-90 transition-all duration-300 hover-scale shadow-lg px-8 py-4 text-lg"
               >
                 <LogIn className="w-5 h-5 mr-2" />
-                今すぐ始める
+                {t('landing.cta')}
               </Button>
             </div>
           </div>
@@ -277,11 +283,11 @@ const Index = () => {
           <TabsList className="grid w-full grid-cols-2 lg:w-400 bg-card/50 backdrop-blur-sm">
             <TabsTrigger value="network" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Network className="w-4 h-4" />
-              ネットワーク
+              {t('tab.network')}
             </TabsTrigger>
             <TabsTrigger value="stats" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <BarChart3 className="w-4 h-4" />
-              統計・分析
+              {t('tab.stats')}
             </TabsTrigger>
           </TabsList>
 
