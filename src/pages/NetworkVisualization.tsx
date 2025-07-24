@@ -9,6 +9,7 @@ import NetworkGraph from '@/components/NetworkGraph';
 import NetworkInsights from '@/components/NetworkInsights';
 import { ArrowLeft, Plus, Network, BarChart3, Users, Brain } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useMeetings, type Meeting } from '@/hooks/useMeetings';
 import { useCommunities } from '@/hooks/useCommunities';
 import { usePeople, Person } from '@/hooks/usePeople';
@@ -29,6 +30,7 @@ interface Connection {
 
 const NetworkVisualization = () => {
   const { communityId } = useParams<{ communityId: string }>();
+  const { t } = useLanguage();
   const [showForm, setShowForm] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -229,11 +231,11 @@ const NetworkVisualization = () => {
       <div className="min-h-screen bg-gradient-bg flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-foreground mb-4">
-            コミュニティが見つかりません
+            {t('network.communityNotFound')}
           </h2>
           <Button onClick={() => navigate('/communities')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            コミュニティ一覧に戻る
+            {t('network.backToCommunities')}
           </Button>
         </div>
       </div>
@@ -253,7 +255,7 @@ const NetworkVisualization = () => {
                 size="sm"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                戻る
+                {t('network.backToCommunities')}
               </Button>
               <div className="flex items-center gap-3">
                 <Network className="w-8 h-8 text-primary" />
@@ -272,7 +274,7 @@ const NetworkVisualization = () => {
               className="bg-gradient-primary hover:opacity-90 transition-opacity"
             >
               <Plus className="w-4 h-4 mr-2" />
-              出会いを記録
+              {t('network.recordMeeting')}
             </Button>
           </div>
         </div>
@@ -283,15 +285,15 @@ const NetworkVisualization = () => {
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="network" className="flex items-center gap-2">
               <Network className="w-4 h-4" />
-              ネットワーク
+              {t('network.tabs.network')}
             </TabsTrigger>
             <TabsTrigger value="insights" className="flex items-center gap-2">
               <Brain className="w-4 h-4" />
-              AI分析
+              {t('network.tabs.insights')}
             </TabsTrigger>
             <TabsTrigger value="stats" className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
-              統計
+              {t('network.tabs.stats')}
             </TabsTrigger>
           </TabsList>
 
@@ -309,10 +311,10 @@ const NetworkVisualization = () => {
                       <Network className="w-16 h-16 text-muted-foreground mx-auto" />
                       <div>
                         <h3 className="text-lg font-semibold text-foreground">
-                          このコミュニティにはまだネットワークがありません
+                          {t('network.noNetwork')}
                         </h3>
                         <p className="text-muted-foreground">
-                          最初の出会いを記録してネットワークグラフを作成してください
+                          {t('network.createFirst')}
                         </p>
                       </div>
                       <Button 
@@ -320,7 +322,7 @@ const NetworkVisualization = () => {
                         className="bg-gradient-primary hover:opacity-90 transition-opacity"
                       >
                         <Plus className="w-4 h-4 mr-2" />
-                        出会いを記録
+                        {t('network.recordMeeting')}
                       </Button>
                     </div>
                   </div>
