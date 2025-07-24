@@ -319,6 +319,21 @@ const Profile = () => {
                           </span>
                         </div>
                         
+                        {/* Score explanation */}
+                        <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
+                          <h4 className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">
+                            スコア算出方法
+                          </h4>
+                          <div className="grid grid-cols-2 gap-2 text-xs text-blue-700 dark:text-blue-300">
+                            <div>• アカウント年数: 20点</div>
+                            <div>• リポジトリ数: 25点</div>
+                            <div>• 獲得スター数: 20点</div>
+                            <div>• 言語多様性: 15点</div>
+                            <div>• フォロワー数: 10点</div>
+                            <div>• 最近の活動: 10点</div>
+                          </div>
+                        </div>
+                        
                         {/* Detailed analysis */}
                         {profile.analysis_details && Object.keys(profile.analysis_details).length > 0 && (
                           <div className="mt-4 pt-3 border-t border-border">
