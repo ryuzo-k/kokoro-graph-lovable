@@ -94,11 +94,18 @@ export const useProfile = () => {
     if (!user) return { success: false, error: 'Not authenticated' };
 
     try {
+      console.log('Starting LinkedIn analysis for:', linkedinUrl);
+      
       const { data, error } = await supabase.functions.invoke('analyze-linkedin-profile', {
         body: { linkedinUrl, userId: user.id }
       });
 
-      if (error) throw error;
+      console.log('LinkedIn analysis response:', { data, error });
+
+      if (error) {
+        console.error('LinkedIn function error:', error);
+        throw error;
+      }
       
       toast({
         title: "LinkedIn分析完了",
@@ -110,9 +117,12 @@ export const useProfile = () => {
       return { success: true, data };
     } catch (error) {
       console.error('Error analyzing LinkedIn:', error);
+      
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      
       toast({
         title: "エラー", 
-        description: "LinkedIn分析に失敗しました",
+        description: `LinkedIn分析に失敗しました: ${errorMessage}`,
         variant: "destructive"
       });
       return { success: false, error };
