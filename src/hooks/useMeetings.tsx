@@ -41,15 +41,12 @@ export const useMeetings = () => {
   const { profile } = useProfile();
   const { toast } = useToast();
 
-  // Fetch meetings
+  // Fetch all meetings (public data now)
   const fetchMeetings = async () => {
-    if (!user) return;
-
     try {
       const { data, error } = await supabase
         .from('meetings')
         .select('*')
-        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -115,61 +112,45 @@ export const useMeetings = () => {
 
   // Set up realtime subscription
   useEffect(() => {
-    if (!user) return;
-
     fetchMeetings();
 
-    // Subscribe to realtime changes
+    // Subscribe to realtime changes for all meetings
     const channel = supabase
       .channel('meetings_changes')
       .on(
         'postgres_changes',
         {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'meetings',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          const newMeeting = payload.new as Meeting;
-          setMeetings(prev => {
-            // Check if meeting already exists to avoid duplicates
-            if (prev.some(m => m.id === newMeeting.id)) return prev;
-            return [newMeeting, ...prev];
-          });
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
+          event: '*',
           schema: 'public',
           table: 'meetings'
         },
         (payload) => {
           const newMeeting = payload.new as Meeting;
           
-          // Check if this meeting involves the current user by display name
-          const userDisplayName = profile?.display_name;
-          const isInvolved = userDisplayName && (
-            newMeeting.other_name === userDisplayName || 
-            newMeeting.my_name === userDisplayName
-          );
+          if (payload.eventType === 'INSERT') {
+            // Check if this meeting involves the current user by display name
+            const userDisplayName = profile?.display_name;
+            const isInvolved = userDisplayName && (
+              newMeeting.other_name === userDisplayName || 
+              newMeeting.my_name === userDisplayName
+            );
 
-          if (isInvolved && newMeeting.user_id !== user.id) {
-            // Someone else recorded a meeting with you
-            toast({
-              title: "あなたが記録されました！",
-              description: `${newMeeting.my_name}さんがあなたとの出会いを記録しました（評価: ${newMeeting.rating}★）`,
-            });
-          }
+            if (isInvolved && newMeeting.user_id !== user?.id) {
+              // Someone else recorded a meeting with you
+              toast({
+                title: "あなたが記録されました！",
+                description: `${newMeeting.my_name}さんがあなたとの出会いを記録しました（評価: ${newMeeting.rating}★）`,
+              });
+            }
 
-          // Add to meetings list if this user created it
-          if (newMeeting.user_id === user.id) {
+            // Add new meeting to the list
             setMeetings(prev => {
               if (prev.some(m => m.id === newMeeting.id)) return prev;
               return [newMeeting, ...prev];
             });
+          } else {
+            // For updates/deletes, refetch all data
+            fetchMeetings();
           }
         }
       )
@@ -178,7 +159,7 @@ export const useMeetings = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, profile?.display_name, toast]);
+  }, [profile?.display_name, toast]);
 
   return {
     meetings,

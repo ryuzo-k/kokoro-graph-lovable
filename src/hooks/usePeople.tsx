@@ -135,6 +135,27 @@ export const usePeople = () => {
 
   useEffect(() => {
     fetchPeople();
+
+    // Set up realtime subscription for people
+    const channel = supabase
+      .channel('people-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'people'
+        },
+        () => {
+          // Refetch data when any change occurs
+          fetchPeople();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return {

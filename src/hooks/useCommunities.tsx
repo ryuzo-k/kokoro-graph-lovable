@@ -215,6 +215,30 @@ export const useCommunities = () => {
     } else {
       fetchCommunities().then(() => setLoading(false));
     }
+
+    // Set up realtime subscription for communities
+    const channel = supabase
+      .channel('communities-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'communities'
+        },
+        () => {
+          // Refetch data when any change occurs
+          fetchCommunities();
+          if (user) {
+            fetchUserCommunities();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user]);
 
   return {
