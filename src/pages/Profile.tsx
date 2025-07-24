@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { useMeetings } from '@/hooks/useMeetings';
+import { useLanguage } from '@/hooks/useLanguage';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const { profile, loading, updateProfile, analyzeGitHub, analyzeLinkedIn, analyzePortfolio } = useProfile();
   const { meetings } = useMeetings();
   const { toast } = useToast();
@@ -219,7 +221,7 @@ const Profile = () => {
         <div className="mb-3">
           <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 py-1 text-sm font-semibold">
             <Crown className="w-4 h-4 mr-1" />
-            レジェンド
+            {t('profile.title.legend')}
           </Badge>
         </div>
       );
@@ -250,9 +252,9 @@ const Profile = () => {
       <div className="min-h-screen flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="text-center py-8">
-            <p>ログインが必要です</p>
+            <p>{t('profile.loginRequired')}</p>
             <Button onClick={() => navigate('/auth')} className="mt-4">
-              ログインする
+              {t('profile.loginButton')}
             </Button>
           </CardContent>
         </Card>
@@ -271,9 +273,9 @@ const Profile = () => {
               onClick={() => navigate('/')}
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              戻る
+              {t('profile.back')}
             </Button>
-            <h1 className="text-xl font-bold">プロフィール</h1>
+            <h1 className="text-xl font-bold">{t('profile.title')}</h1>
           </div>
         </div>
       </header>
@@ -281,7 +283,7 @@ const Profile = () => {
       <main className="container mx-auto px-4 py-6 max-w-4xl">
         <Card className="bg-card/80 backdrop-blur-sm shadow-card">
           <CardHeader>
-            <CardTitle>プロフィール設定</CardTitle>
+            <CardTitle>{t('profile.settings')}</CardTitle>
           </CardHeader>
           <CardContent>
             {/* Trust Score Overview */}
@@ -290,7 +292,7 @@ const Profile = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Shield className="w-5 h-5 text-primary" />
-                    総合信頼度スコア
+                    {t('profile.overallTrust')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -310,7 +312,7 @@ const Profile = () => {
                           <div className={`text-3xl font-bold mb-2 ${overallTrustScore >= 90 ? 'text-yellow-500' : overallTrustScore >= 80 ? 'text-orange-500' : 'text-primary'}`}>
                             {overallTrustScore}/100
                           </div>
-                          <p className="text-muted-foreground">あなたの総合信頼度</p>
+                          <p className="text-muted-foreground">{t('profile.yourOverallTrust')}</p>
                           
                           {/* Trust Achievement */}
                           {overallTrustScore >= 80 && (
