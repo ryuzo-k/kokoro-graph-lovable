@@ -20,6 +20,7 @@ import {
   Controls,
   MiniMap,
   Panel,
+  ConnectionLineType,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -31,7 +32,9 @@ import { Badge } from '@/components/ui/badge';
 import { Search, Filter } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Person } from '@/hooks/usePeople';
-import { Meeting } from '@/hooks/useMeetings';
+import { Meeting, useMeetings } from '@/hooks/useMeetings';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 interface PersonWithStats extends Person {
   averageRating: number;
@@ -54,10 +57,13 @@ const edgeTypes = {
 };
 
 const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const { addMeeting } = useMeetings();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
   const [selectedPerson, setSelectedPerson] = useState<PersonWithStats | null>(null);
+  const [isConnectMode, setIsConnectMode] = useState(false);
 
   // Filter people based on search and location
   const filteredPeople = useMemo(() => {
@@ -159,8 +165,64 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(
-    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
+    async (params: Connection) => {
+      if (!params.source || !params.target) return;
+      
+      // Find the connected people
+      const sourcePerson = people.find(p => p.id === params.source);
+      const targetPerson = people.find(p => p.id === params.target);
+      
+      if (!sourcePerson || !targetPerson) {
+        toast({
+          title: language === 'ja' ? "エラー" : "Error",
+          description: language === 'ja' ? "接続に失敗しました" : "Failed to connect",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      try {
+        // Create a new meeting record for this connection
+        const newMeeting = {
+          myName: sourcePerson.name,
+          otherName: targetPerson.name,
+          location: sourcePerson.location || targetPerson.location || 'Network Connection',
+          rating: 5, // Default rating for manual connections
+          trustworthiness: 4,
+          expertise: 4,
+          communication: 4,
+          collaboration: 4,
+          leadership: 3,
+          innovation: 3,
+          integrity: 4,
+          detailedFeedback: language === 'ja' 
+            ? `${sourcePerson.name}と${targetPerson.name}がネットワーク上で接続されました。`
+            : `${sourcePerson.name} and ${targetPerson.name} connected through the network.`
+        };
+
+        await addMeeting(newMeeting);
+        
+        // Add the edge to the graph
+        setEdges((eds) => addEdge(params, eds));
+        
+        toast({
+          title: language === 'ja' ? "接続完了" : "Connection Created",
+          description: language === 'ja' 
+            ? `${sourcePerson.name}と${targetPerson.name}が接続されました！` 
+            : `${sourcePerson.name} and ${targetPerson.name} are now connected!`,
+        });
+        
+        setIsConnectMode(false);
+      } catch (error) {
+        console.error('Failed to create connection:', error);
+        toast({
+          title: language === 'ja' ? "エラー" : "Error",
+          description: language === 'ja' ? "接続の保存に失敗しました" : "Failed to save connection",
+          variant: "destructive",
+        });
+      }
+    },
+    [setEdges, people, addMeeting, toast, language]
   );
 
   const handleNodeClick = useCallback((event: any, node: Node) => {
@@ -193,7 +255,8 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
         edgeTypes={edgeTypes}
         fitView
         attributionPosition="bottom-left"
-        className="bg-network-bg"
+        className={`bg-network-bg ${isConnectMode ? 'cursor-crosshair' : ''}`}
+        connectionLineType={ConnectionLineType.Straight}
       >
         <Background color="hsl(var(--network-edge))" gap={20} />
         <Controls className="bg-card border border-border" />
@@ -213,6 +276,28 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
               className="pl-10 bg-card/95 backdrop-blur-sm"
             />
           </div>
+          
+          {/* Connection Mode Toggle */}
+          <Button
+            onClick={() => setIsConnectMode(!isConnectMode)}
+            variant={isConnectMode ? "default" : "outline"}
+            size="sm"
+            className="w-full"
+          >
+            {isConnectMode 
+              ? (language === 'ja' ? '接続モード終了' : 'Exit Connect Mode')
+              : (language === 'ja' ? '手動接続モード' : 'Manual Connect Mode')
+            }
+          </Button>
+          
+          {isConnectMode && (
+            <div className="bg-primary/10 p-2 rounded text-xs text-primary">
+              {language === 'ja' 
+                ? 'ノードをドラッグして新しい接続を作成' 
+                : 'Drag from one node to another to create a connection'
+              }
+            </div>
+          )}
           
           {locations.length > 0 && (
             <div className="flex flex-wrap gap-1">
