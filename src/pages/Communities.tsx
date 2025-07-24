@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useCommunities } from '@/hooks/useCommunities';
 import { useToast } from '@/hooks/use-toast';
+import { CommunityRecommendations } from '@/components/CommunityRecommendations';
 
 const Communities = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -108,6 +109,11 @@ const Communities = () => {
       </header>
 
       <main className="container mx-auto px-4 py-6">
+        {/* Community Recommendations */}
+        <div className="mb-8">
+          <CommunityRecommendations />
+        </div>
+
         {/* My Communities */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold text-foreground mb-4">参加中のコミュニティ</h2>

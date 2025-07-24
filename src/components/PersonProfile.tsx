@@ -3,11 +3,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { MapPin, Users, Star, Calendar, X, TrendingUp, Building, Briefcase, ExternalLink, Github, Linkedin } from 'lucide-react';
+import { MapPin, Users, Star, Calendar, X, TrendingUp, Building, Briefcase, ExternalLink, Github, Linkedin, Network } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { Person } from '@/hooks/usePeople';
 import { useMeetings, Meeting } from '@/hooks/useMeetings';
+import { useCommunities } from '@/hooks/useCommunities';
 import { useMemo } from 'react';
+import PersonNetworkView from './PersonNetworkView';
 
 interface PersonProfileProps {
   person: Person & {
@@ -19,6 +21,14 @@ interface PersonProfileProps {
 }
 
 const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
+  const { userCommunities } = useCommunities();
+  
+  // Get connected people from meetings
+  const connectedPeople = useMemo(() => {
+    // For now, create mock connected people based on shared meetings/communities
+    // In a real implementation, this would come from your data
+    return [];
+  }, [person.meetings]);
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -184,6 +194,25 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
               </div>
             </div>
           )}
+
+          {/* Connection Network */}
+          <div>
+            <h4 className="font-medium text-foreground mb-3 flex items-center gap-1">
+              <Network className="w-4 h-4" />
+              コネクションネットワーク
+            </h4>
+            <PersonNetworkView
+              centerPerson={person}
+              connectedPeople={connectedPeople}
+              userCommunities={userCommunities}
+            />
+            <div className="mt-2 text-xs text-muted-foreground text-center">
+              <span className="inline-block w-2 h-2 bg-primary rounded-full mr-1"></span>
+              中心人物
+              <span className="inline-block w-2 h-2 bg-accent rounded-full ml-4 mr-1"></span>
+              共通コミュニティあり
+            </div>
+          </div>
 
           {/* SNS Analysis Results */}
           {(person.github_score || person.linkedin_score || person.portfolio_score) && (
