@@ -233,7 +233,7 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
                       tickCount={6}
                     />
                     <Radar
-                      name="評価"
+                      name={t('profile.evaluation')}
                       dataKey="score"
                       stroke="hsl(var(--primary))"
                       fill="hsl(var(--primary))"
@@ -293,7 +293,7 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
               {person.fraud_risk_level && (
                 <div className="mt-2 flex items-center justify-center">
                   <Badge variant={person.fraud_risk_level === 'low' ? 'default' : 'destructive'} className="text-xs">
-                    {t('profile.fraudRiskLevel')}: {t(`profile.fraudRiskLevel.${person.fraud_risk_level}`)}
+                    {t('profile.fraudRisk')}: {t(`profile.fraudRiskLevel.${person.fraud_risk_level}`)}
                   </Badge>
                 </div>
               )}

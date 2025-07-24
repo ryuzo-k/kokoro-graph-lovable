@@ -92,11 +92,10 @@ const translations = {
     'profile.careerProgression': 'キャリア進行',
     'profile.skillConsistency': 'スキル一貫性',
     'profile.overallAssessment': '総合評価',
-    'profile.professionalScore': '専門性スコア',
-    'profile.hallOfFame': '殿堂入りユーザー',
-    'profile.trustRank': '信頼ランク',
-    'profile.title.legend': 'レジェンド',
-    'profile.title.master': 'マスター',
+    'profile.fraudRiskLevel.low': '低リスク',
+    'profile.fraudRiskLevel.medium': '中リスク',
+    'profile.fraudRiskLevel.high': '高リスク',
+    'profile.evaluation': '評価',
     'profile.title.expert': 'エキスパート',
     'profile.communityContribution': 'コミュニティ貢献',
     'profile.scoreExplanation': 'スコアについて',
@@ -722,6 +721,7 @@ const translations = {
     'profile.analyzing2': 'Analyzing...',
     'profile.analyze2': 'Analyze',
     'profile.aboutScore': 'About Score',
+    'profile.evaluation': 'Evaluation',
   },
 };
 
