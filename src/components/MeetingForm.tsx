@@ -74,6 +74,15 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
       return;
     }
 
+    if (!formData.detailed_feedback?.trim()) {
+      toast({
+        title: "フィードバックが必要です",
+        description: "相手についての詳細なフィードバックを記入してください",
+        variant: "destructive"
+      });
+      return;
+    }
+
     onSubmit(formData);
     
     // Reset form
@@ -245,7 +254,14 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
 
             <TabsContent value="feedback" className="space-y-4 mt-6">
               <div className="space-y-2">
-                <Label htmlFor="detailed_feedback">この人についての詳細なフィードバック</Label>
+                <Label htmlFor="detailed_feedback" className="text-lg font-semibold flex items-center gap-2">
+                  <Brain className="w-5 h-5 text-primary" />
+                  この人についての詳細なフィードバック
+                  <span className="text-destructive">*</span>
+                </Label>
+                <p className="text-sm text-muted-foreground mb-3">
+                  出会った相手について自由に記述してください。この内容からAIが多次元評価を自動生成します。
+                </p>
                 <Textarea
                   id="detailed_feedback"
                   value={formData.detailed_feedback}
@@ -255,10 +271,15 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
 例: 
 - 技術的な知識が豊富で、複雑な問題も分かりやすく説明してくれた
 - チームワークを大切にし、他のメンバーの意見もよく聞いていた
-- 新しいアイデアを積極的に提案し、実装にも熱心だった"
-                  rows={8}
-                  className="resize-none bg-background/50"
+- 新しいアイデアを積極的に提案し、実装にも熱心だった
+- 時間を守り、約束したことは必ず実行する信頼できる人だった"
+                  rows={10}
+                  className="resize-none bg-background/50 border-primary/30 focus:border-primary"
+                  required
                 />
+                <p className="text-xs text-muted-foreground">
+                  ※ フィードバックの記入は必須です。詳しく書くほど正確な分析結果が得られます。
+                </p>
               </div>
               
               <Button 
@@ -317,7 +338,7 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
           <Button 
             type="submit" 
             className="w-full mt-6 bg-gradient-primary hover:opacity-90 transition-opacity"
-            disabled={!formData.myName.trim() || !formData.otherName.trim()}
+            disabled={!formData.myName.trim() || !formData.otherName.trim() || !formData.detailed_feedback?.trim()}
           >
             出会いを記録
           </Button>
