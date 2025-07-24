@@ -461,10 +461,10 @@ const Profile = () => {
 
             <Tabs defaultValue="basic" className="w-full">
               <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="basic">基本情報</TabsTrigger>
-                <TabsTrigger value="github">GitHub</TabsTrigger>
-                <TabsTrigger value="linkedin">LinkedIn</TabsTrigger>
-                <TabsTrigger value="portfolio">ポートフォリオ</TabsTrigger>
+                <TabsTrigger value="basic">{t('profile.tabs.basicInfo')}</TabsTrigger>
+            <TabsTrigger value="github">{t('profile.tabs.github')}</TabsTrigger>
+            <TabsTrigger value="linkedin">{t('profile.tabs.linkedin')}</TabsTrigger>
+            <TabsTrigger value="portfolio">{t('profile.tabs.portfolio')}</TabsTrigger>
               </TabsList>
 
               {/* Basic Info Tab */}
@@ -489,14 +489,14 @@ const Profile = () => {
                     </label>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    画像をクリックしてプロフィール写真を変更
+                    {t('profile.avatarChange')}
                   </p>
                 </div>
 
                 {/* Form Fields */}
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">メールアドレス</Label>
+                    <Label htmlFor="email">{t('profile.email')}</Label>
                     <Input
                       id="email"
                       value={user.email || ''}
@@ -506,12 +506,12 @@ const Profile = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="display_name">表示名</Label>
+                    <Label htmlFor="display_name">{t('profile.displayName')}</Label>
                     <Input
                       id="display_name"
                       value={formData.display_name}
                       onChange={(e) => setFormData(prev => ({ ...prev, display_name: e.target.value }))}
-                      placeholder="表示名を入力してください"
+                      placeholder={t('profile.displayNamePlaceholder')}
                       disabled={loading}
                     />
                   </div>
@@ -522,7 +522,7 @@ const Profile = () => {
               <TabsContent value="github" className="space-y-6 mt-6">
                 <div className="flex items-center gap-2 mb-4">
                   <Github className="w-5 h-5" />
-                  <h3 className="text-lg font-semibold">GitHub分析</h3>
+                  <h3 className="text-lg font-semibold">{t('profile.github.analysis')}</h3>
                   {profile?.github_score && (
                     <Badge variant="outline" className={getScoreColor(profile.github_score)}>
                       <TrendingUp className="w-3 h-3 mr-1" />
@@ -533,7 +533,7 @@ const Profile = () => {
 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="github_username">GitHubユーザー名</Label>
+                    <Label htmlFor="github_username">{t('profile.github.username')}</Label>
                     <div className="flex gap-2">
                       <Input
                         id="github_username"
@@ -548,11 +548,11 @@ const Profile = () => {
                         variant="outline"
                       >
                         <Search className="w-4 h-4 mr-2" />
-                        {analyzing.github ? '分析中...' : '分析'}
+                        {analyzing.github ? t('profile.analyzing') : t('profile.analyze')}
                       </Button>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      GitHubアカウントから開発レベルを自動算出します
+                      {t('profile.github.description')}
                     </p>
                   </div>
 
@@ -560,7 +560,7 @@ const Profile = () => {
                     <Card className="p-4 bg-muted/50">
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
-                          <span className="font-medium">開発レベル</span>
+                          <span className="font-medium">{t('profile.developmentLevel2')}</span>
                           <span className={`font-bold ${getScoreColor(profile.github_score)}`}>
                             {profile.github_score}/100
                           </span>
@@ -569,44 +569,44 @@ const Profile = () => {
                         {/* Score explanation */}
                         <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
                           <h4 className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">
-                            スコア算出方法
+                            {t('profile.scoreMethod')}
                           </h4>
                           <div className="grid grid-cols-2 gap-2 text-xs text-blue-700 dark:text-blue-300">
-                            <div>• アカウント年数: 20点</div>
-                            <div>• リポジトリ数: 25点</div>
-                            <div>• 獲得スター数: 20点</div>
-                            <div>• 言語多様性: 15点</div>
-                            <div>• フォロワー数: 10点</div>
-                            <div>• 最近の活動: 10点</div>
+                            <div>• {t('profile.accountAge')}: 20{t('profile.points')}</div>
+                            <div>• {t('profile.repositories')}: 25{t('profile.points')}</div>
+                            <div>• {t('profile.stars')}: 20{t('profile.points')}</div>
+                            <div>• {t('profile.languages')}: 15{t('profile.points')}</div>
+                            <div>• {t('profile.followers')}: 10{t('profile.points')}</div>
+                            <div>• {t('profile.recentActivity')}: 10{t('profile.points')}</div>
                           </div>
                         </div>
                         
                         {/* Detailed analysis */}
                         {profile.analysis_details && Object.keys(profile.analysis_details).length > 0 && (
                           <div className="mt-4 pt-3 border-t border-border">
-                            <h4 className="text-sm font-semibold mb-2">分析詳細</h4>
+                            <h4 className="text-sm font-semibold mb-2">{t('profile.analysisDetails')}</h4>
                             <div className="space-y-3 text-xs">
                               {/* GitHub analysis from details object */}
                               {profile.analysis_details.details && (
                                 <div className="space-y-2">
                                   <div>
-                                    <span className="text-blue-600 font-medium">アカウント年数:</span>
-                                    <span className="ml-2">{profile.analysis_details.details.accountAgeYears} 年</span>
+                                    <span className="text-blue-600 font-medium">{t('profile.accountAge')}:</span>
+                                    <span className="ml-2">{profile.analysis_details.details.accountAgeYears} {t('profile.years')}</span>
                                   </div>
                                   <div>
-                                    <span className="text-green-600 font-medium">リポジトリ数:</span>
+                                    <span className="text-green-600 font-medium">{t('profile.repositories')}:</span>
                                     <span className="ml-2">{profile.analysis_details.details.repositoryCount}</span>
                                   </div>
                                   <div>
-                                    <span className="text-orange-600 font-medium">スター数:</span>
+                                    <span className="text-orange-600 font-medium">{t('profile.stars')}:</span>
                                     <span className="ml-2">{profile.analysis_details.details.totalStars}</span>
                                   </div>
                                   <div>
-                                    <span className="text-purple-600 font-medium">フォロワー数:</span>
+                                    <span className="text-purple-600 font-medium">{t('profile.followers')}:</span>
                                     <span className="ml-2">{profile.analysis_details.details.followers}</span>
                                   </div>
                                   <div>
-                                    <span className="text-indigo-600 font-medium">言語多様性:</span>
+                                    <span className="text-indigo-600 font-medium">{t('profile.languages')}:</span>
                                     <span className="ml-2">{profile.analysis_details.details.languageDiversity}</span>
                                   </div>
                                 </div>
@@ -615,36 +615,36 @@ const Profile = () => {
                               {/* Analysis breakdown */}
                               {profile.analysis_details.breakdown && (
                                 <div className="pt-2 border-t">
-                                  <h5 className="text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">あなたの獲得点数</h5>
+                                  <h5 className="text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">{t('profile.yourScore')}</h5>
                                   <div className="grid grid-cols-2 gap-3 text-xs">
                                     <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
-                                      <span>アカウント年数:</span>
+                                      <span>{t('profile.accountAge')}:</span>
                                       <span className="font-medium text-blue-600">{Math.round(profile.analysis_details.breakdown.account_age * 100) / 100}/20</span>
                                     </div>
                                     <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
-                                      <span>リポジトリ:</span>
+                                      <span>{t('profile.repositories')}:</span>
                                       <span className="font-medium text-green-600">{Math.round(profile.analysis_details.breakdown.repository_count * 100) / 100}/25</span>
                                     </div>
                                     <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
-                                      <span>スター:</span>
+                                      <span>{t('profile.stars')}:</span>
                                       <span className="font-medium text-orange-600">{Math.round(profile.analysis_details.breakdown.stars_received * 100) / 100}/20</span>
                                     </div>
                                     <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
-                                      <span>言語多様性:</span>
+                                      <span>{t('profile.languages')}:</span>
                                       <span className="font-medium text-purple-600">{Math.round(profile.analysis_details.breakdown.language_diversity * 100) / 100}/15</span>
                                     </div>
                                     <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
-                                      <span>フォロワー:</span>
+                                      <span>{t('profile.followers')}:</span>
                                       <span className="font-medium text-indigo-600">{Math.round(profile.analysis_details.breakdown.followers * 100) / 100}/10</span>
                                     </div>
                                     <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
-                                      <span>活動状況:</span>
+                                      <span>{t('profile.recentActivity')}:</span>
                                       <span className="font-medium text-teal-600">{Math.round(profile.analysis_details.breakdown.recent_activity * 100) / 100}/10</span>
                                     </div>
                                   </div>
                                   <div className="mt-3 pt-2 border-t text-center">
                                     <span className="text-sm font-semibold">
-                                      合計: <span className={`text-lg ${getScoreColor(profile.github_score)}`}>{profile.github_score}/100</span>
+                                      {t('profile.total')}: <span className={`text-lg ${getScoreColor(profile.github_score)}`}>{profile.github_score}/100</span>
                                     </span>
                                   </div>
                                 </div>
@@ -655,7 +655,7 @@ const Profile = () => {
                         
                         {profile.last_analyzed_at && (
                           <p className="text-xs text-muted-foreground mt-2">
-                            最終分析: {new Date(profile.last_analyzed_at).toLocaleDateString('ja-JP')}
+                            {t('profile.lastAnalyzed')}: {new Date(profile.last_analyzed_at).toLocaleDateString('ja-JP')}
                           </p>
                         )}
                       </div>
@@ -919,7 +919,7 @@ const Profile = () => {
                 className="w-full bg-gradient-primary hover:opacity-90 transition-opacity"
               >
                 <Save className="w-4 h-4 mr-2" />
-                {saving ? '保存中...' : '保存'}
+                {saving ? t('profile.saving') : t('profile.save')}
               </Button>
             </div>
           </CardContent>
