@@ -26,7 +26,8 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					glow: 'hsl(var(--primary-glow))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -52,6 +53,18 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				trust: {
+					high: 'hsl(var(--trust-high))',
+					medium: 'hsl(var(--trust-medium))',
+					low: 'hsl(var(--trust-low))',
+					neutral: 'hsl(var(--trust-neutral))'
+				},
+				network: {
+					bg: 'hsl(var(--network-bg))',
+					node: 'hsl(var(--network-node))',
+					edge: 'hsl(var(--network-edge))',
+					highlight: 'hsl(var(--network-highlight))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -67,6 +80,16 @@ export default {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			backgroundImage: {
+				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-trust': 'var(--gradient-trust)',
+				'gradient-bg': 'var(--gradient-bg)'
+			},
+			boxShadow: {
+				'soft': 'var(--shadow-soft)',
+				'card': 'var(--shadow-card)',
+				'node': 'var(--shadow-node)'
 			},
 			keyframes: {
 				'accordion-down': {
