@@ -5,7 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import MeetingForm from '@/components/MeetingForm';
 import NetworkGraph from '@/components/NetworkGraph';
-import { Heart, Network, Plus, BarChart3, LogIn, LogOut, User, Users, Sparkles, TrendingUp, MapPin, Calendar, Star, Settings } from 'lucide-react';
+import { Heart, Network, Plus, BarChart3, LogIn, LogOut, User, Users, Sparkles, TrendingUp, MapPin, Calendar, Star, Settings, Bot } from 'lucide-react';
+import AIFriendFinder from '@/components/AIFriendFinder';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -280,10 +281,14 @@ const Index = () => {
         ) : (
         <div className="animate-fade-in">
         <Tabs defaultValue="network" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:w-400 bg-card/50 backdrop-blur-sm">
+          <TabsList className="grid w-full grid-cols-3 lg:w-600 bg-card/50 backdrop-blur-sm">
             <TabsTrigger value="network" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Network className="w-4 h-4" />
               {t('tab.network')}
+            </TabsTrigger>
+            <TabsTrigger value="ai-finder" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Bot className="w-4 h-4" />
+              AI友達発見
             </TabsTrigger>
             <TabsTrigger value="stats" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <BarChart3 className="w-4 h-4" />
@@ -327,6 +332,10 @@ const Index = () => {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="ai-finder" className="animate-fade-in">
+            <AIFriendFinder />
           </TabsContent>
 
           <TabsContent value="stats" className="animate-fade-in">
