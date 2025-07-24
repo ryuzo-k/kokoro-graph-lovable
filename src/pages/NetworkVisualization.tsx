@@ -395,7 +395,7 @@ const NetworkVisualization = () => {
 
             <Card className="bg-card/80 backdrop-blur-sm shadow-card">
               <CardHeader>
-                <CardTitle>最近の出会い</CardTitle>
+                <CardTitle>{t('network.stats.recentMeetings')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">

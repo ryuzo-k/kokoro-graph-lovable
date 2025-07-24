@@ -272,6 +272,8 @@ const translations = {
     'profile.tabs.github2': 'GitHub',
     'profile.tabs.linkedin2': 'LinkedIn', 
     'profile.tabs.portfolio2': 'ポートフォリオ',
+    'profile.aboutScore': 'スコアについて',
+    'profile.scoreDescriptionJa': '総合信頼度は、GitHub開発レベル、LinkedIn信頼度、ポートフォリオ技術スコア、人からの信頼度の平均値です。各プラットフォームの分析結果と実際の人間関係での評価を組み合わせて、あなたの専門性と信頼性を評価します。',
   },
   en: {
     // Header
@@ -471,6 +473,8 @@ const translations = {
     'profile.tabs.github2': 'GitHub',
     'profile.tabs.linkedin2': 'LinkedIn', 
     'profile.tabs.portfolio2': 'Portfolio',
+    'profile.aboutScore': 'About Score',
+    'profile.scoreDescriptionEn': 'Overall trust score is the average of GitHub development level, LinkedIn trust, portfolio technical score, and trust from people. It combines analysis results from each platform with actual human relationship evaluations to assess your expertise and trustworthiness.',
     
     // Person Profile translations
     'profile.personTitle': 'Profile',

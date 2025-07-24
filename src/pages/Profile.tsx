@@ -449,10 +449,9 @@ const Profile = () => {
 
                   {/* Score Explanation */}
                   <div className="mt-4 p-3 bg-muted/50 rounded-lg">
-                    <h4 className="text-sm font-semibold mb-2">スコアについて</h4>
+                    <h4 className="text-sm font-semibold mb-2">{t('profile.aboutScore')}</h4>
                     <p className="text-xs text-muted-foreground">
-                      総合信頼度は、GitHub開発レベル、LinkedIn信頼度、ポートフォリオ技術スコア、人からの信頼度の平均値です。
-                      各プラットフォームの分析結果と実際の人間関係での評価を組み合わせて、あなたの専門性と信頼性を評価します。
+                      {t('profile.scoreDescriptionJa')}
                     </p>
                   </div>
                 </CardContent>
@@ -461,10 +460,10 @@ const Profile = () => {
 
             <Tabs defaultValue="basic" className="w-full">
               <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="basic">{t('profile.tabs.basicInfo')}</TabsTrigger>
-            <TabsTrigger value="github">{t('profile.tabs.github')}</TabsTrigger>
-            <TabsTrigger value="linkedin">{t('profile.tabs.linkedin')}</TabsTrigger>
-            <TabsTrigger value="portfolio">{t('profile.tabs.portfolio')}</TabsTrigger>
+                <TabsTrigger value="basic">{t('profile.tabs.basicInfo2')}</TabsTrigger>
+            <TabsTrigger value="github">{t('profile.tabs.github2')}</TabsTrigger>
+            <TabsTrigger value="linkedin">{t('profile.tabs.linkedin2')}</TabsTrigger>
+            <TabsTrigger value="portfolio">{t('profile.tabs.portfolio2')}</TabsTrigger>
               </TabsList>
 
               {/* Basic Info Tab */}
