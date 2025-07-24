@@ -1,5 +1,14 @@
 import { useCallback, useMemo, useState } from 'react';
 import {
+  forceSimulation,
+  forceManyBody,
+  forceCenter,
+  forceLink,
+  forceCollide,
+  SimulationNodeDatum,
+  SimulationLinkDatum,
+} from 'd3-force';
+import {
   ReactFlow,
   Node,
   Edge,
@@ -70,9 +79,53 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
     return Array.from(locationSet);
   }, [people]);
 
-  // Convert people to nodes
+  // Compute force-directed layout positions using d3-force
   const initialNodes: Node[] = useMemo(() => {
-    return filteredPeople.map((person, index) => {
+    // Prepare d3 simulation nodes & links
+    const d3Nodes: (SimulationNodeDatum & { id: string; person: PersonWithStats })[] =
+      filteredPeople.map(p => ({ id: p.id, person: p }));
+
+    const d3Links: SimulationLinkDatum<(typeof d3Nodes)[number]>[] = connections.map(conn => ({
+      source: conn.person1Id,
+      target: conn.person2Id,
+      strength: conn.meetingCount,
+    }));
+
+    // Create simulation
+    const sim = forceSimulation(d3Nodes)
+      .force('link', forceLink(d3Links).id(d => (d as any).id).distance(120))
+      .force('charge', forceManyBody().strength(-250))
+      .force('center', forceCenter(0, 0))
+      .force('collide', forceCollide().radius(90))
+      .stop();
+
+    // Run a fixed number of iterations synchronously
+    for (let i = 0; i < 200; i++) sim.tick();
+
+    // Map to React Flow nodes
+    return d3Nodes.map(n => {
+      const person = n.person;
+      return {
+        id: person.id,
+        type: 'person',
+        position: { x: (n.x ?? 0), y: (n.y ?? 0) },
+        data: {
+          name: person.name,
+          averageRating: person.averageRating,
+          meetingCount: person.meetingCount,
+          location: person.location,
+          avatar: person.avatar_url,
+          company: person.company,
+          position: person.position,
+          communities: (person as any).communities || [],
+          trustScore: (person as any).trustScore || person.averageRating,
+          connectionCount: (person as any).connectionCount || person.meetingCount,
+        },
+        draggable: true,
+      } as Node;
+    });
+  }, [filteredPeople, connections]);
+    /* radial layout removed */
       const angle = (index / filteredPeople.length) * 2 * Math.PI;
       const radius = Math.max(200, filteredPeople.length * 30);
       const x = Math.cos(angle) * radius;
@@ -97,7 +150,7 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
         draggable: true,
       };
     });
-  }, [filteredPeople]);
+  }, [filteredPeople, connections]);
 
   // Convert connections to edges
   const initialEdges: Edge[] = useMemo(() => {
@@ -204,15 +257,26 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
           )}
         </Panel>
 
+        {/* Stats & legend */}
         <Panel position="top-right">
-          <div className="bg-card/95 backdrop-blur-sm p-3 rounded-lg border border-border shadow-soft">
-            <div className="text-sm space-y-1">
+          <div className="bg-card/95 backdrop-blur-sm p-3 rounded-lg border border-border shadow-soft space-y-2 text-sm">
+            <div className="space-y-1">
               <div className="font-semibold text-foreground">
                 {filteredPeople.length} {t('stats.totalPeople')}
               </div>
               <div className="text-muted-foreground">
                 {connections.length} {t('search.connections')}
               </div>
+            </div>
+            <div className="h-px w-full bg-border" />
+            <div className="space-y-1">
+              <div className="font-semibold">Legend</div>
+              <ul className="list-disc list-inside text-muted-foreground space-y-0.5 text-xs">
+                <li>Node size = connection count</li>
+                <li>Node color = trust score</li>
+                <li>Edge width = meeting count</li>
+                <li>Edge color = average rating</li>
+              </ul>
             </div>
           </div>
         </Panel>
