@@ -85,7 +85,13 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
     const d3Nodes: (SimulationNodeDatum & { id: string; person: PersonWithStats })[] =
       filteredPeople.map(p => ({ id: p.id, person: p }));
 
-    const d3Links: SimulationLinkDatum<(typeof d3Nodes)[number]>[] = connections.map(conn => ({
+    // Filter connections to only include people that exist in filteredPeople
+    const filteredPersonIds = new Set(filteredPeople.map(p => p.id));
+    const validConnections = connections.filter(conn => 
+      filteredPersonIds.has(conn.person1Id) && filteredPersonIds.has(conn.person2Id)
+    );
+
+    const d3Links: SimulationLinkDatum<(typeof d3Nodes)[number]>[] = validConnections.map(conn => ({
       source: conn.person1Id,
       target: conn.person2Id,
       strength: conn.meetingCount,
