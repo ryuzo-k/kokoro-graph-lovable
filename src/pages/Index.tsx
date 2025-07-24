@@ -406,9 +406,9 @@ const Index = () => {
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-primary" />
-                  <CardTitle className="text-lg">最近の出会い</CardTitle>
+                  <CardTitle className="text-lg">{t('network.stats.recentMeetings')}</CardTitle>
                 </div>
-                <p className="text-sm text-muted-foreground">あなたの最新のネットワーク活動</p>
+                <p className="text-sm text-muted-foreground">{t('stats.latestActivity')}</p>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -454,17 +454,17 @@ const Index = () => {
                     <div className="text-center py-12 animate-fade-in">
                       <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                       <h3 className="text-lg font-semibold text-foreground mb-2">
-                        まだ出会いの記録がありません
+                        {t('stats.noMeetingsYet')}
                       </h3>
                       <p className="text-muted-foreground mb-6">
-                        最初の出会いを記録して、あなたのネットワークを作り始めましょう
+                        {t('stats.startNetworking')}
                       </p>
                       <Button 
                         onClick={() => setShowForm(true)}
                         className="bg-gradient-primary hover:opacity-90 transition-all duration-300 hover-scale"
                       >
                         <Plus className="w-4 h-4 mr-2" />
-                        出会いを記録する
+                        {t('nav.record')}
                       </Button>
                     </div>
                   )}

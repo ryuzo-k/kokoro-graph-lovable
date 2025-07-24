@@ -266,6 +266,11 @@ const translations = {
     'network.stats.ago': '前',
     'network.stats.withRating': '評価',
     
+    // Stats page
+    'stats.latestActivity': 'あなたの最新のネットワーク活動',
+    'stats.noMeetingsYet': 'まだ出会いの記録がありません',
+    'stats.startNetworking': '最初の出会いを記録して、あなたのネットワークを作り始めましょう',
+    
     // Profile Tabs
     'profile.tabs.basicInfo': '基本情報',
     'profile.tabs.basicInfo2': '基本情報',
@@ -467,6 +472,11 @@ const translations = {
     'network.stats.noMeetings': 'No meetings recorded yet',
     'network.stats.ago': 'ago',
     'network.stats.withRating': 'rating',
+    
+    // Stats page  
+    'stats.latestActivity': 'Your latest network activity',
+    'stats.noMeetingsYet': 'No meetings recorded yet',
+    'stats.startNetworking': 'Record your first meeting to start building your network',
     
     // Profile Tabs
     'profile.tabs.basicInfo2': 'Basic Info',
