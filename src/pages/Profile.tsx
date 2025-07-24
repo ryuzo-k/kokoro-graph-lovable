@@ -338,7 +338,7 @@ const Profile = () => {
                             <Badge 
                               className={`mt-3 ${getFraudRiskColor(profile.fraud_risk_level)} text-white`}
                             >
-                               {t('profile.fraudRiskLevel')}: {profile.fraud_risk_level}
+                               {t('profile.fraudRisk')}: {profile.fraud_risk_level}
                             </Badge>
                           )}
                         </div>
@@ -571,12 +571,12 @@ const Profile = () => {
                             {t('profile.scoreMethod')}
                           </h4>
                           <div className="grid grid-cols-2 gap-2 text-xs text-blue-700 dark:text-blue-300">
-                            <div>• {t('profile.accountAge')}: 20{t('profile.points')}</div>
-                            <div>• {t('profile.repositories')}: 25{t('profile.points')}</div>
-                            <div>• {t('profile.stars')}: 20{t('profile.points')}</div>
-                            <div>• {t('profile.languages')}: 15{t('profile.points')}</div>
-                            <div>• {t('profile.followers')}: 10{t('profile.points')}</div>
-                            <div>• {t('profile.recentActivity')}: 10{t('profile.points')}</div>
+                            <div>• {t('profile.accountAge')}: 20 {t('profile.points')}</div>
+                            <div>• {t('profile.repositories')}: 25 {t('profile.points')}</div>
+                            <div>• {t('profile.stars')}: 20 {t('profile.points')}</div>
+                            <div>• {t('profile.languages')}: 15 {t('profile.points')}</div>
+                            <div>• {t('profile.followers')}: 10 {t('profile.points')}</div>
+                            <div>• {t('profile.recentActivity')}: 10 {t('profile.points')}</div>
                           </div>
                         </div>
                         
@@ -717,7 +717,7 @@ const Profile = () => {
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="font-medium">{t('profile.fraudRisk')}</span>
+                           <span className="font-medium">{t('profile.fraudRisk')}</span>
                           <Badge className={`${getFraudRiskColor(profile.fraud_risk_level)} text-white`}>
                             {profile.fraud_risk_level}
                           </Badge>
@@ -844,7 +844,7 @@ const Profile = () => {
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="font-medium">{t('profile.fraudRisk')}</span>
+                           <span className="font-medium">{t('profile.fraudRisk')}</span>
                           <Badge className={`${getFraudRiskColor(profile.fraud_risk_level)} text-white`}>
                             {profile.fraud_risk_level}
                           </Badge>
