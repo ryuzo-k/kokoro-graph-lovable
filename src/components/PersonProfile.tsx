@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { MapPin, Users, Star, Calendar, X, TrendingUp, Building, Briefcase, ExternalLink, Github, Linkedin, Network } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
+import { useLanguage } from '@/hooks/useLanguage';
 import { Person, usePeople } from '@/hooks/usePeople';
 import { useMeetings, Meeting } from '@/hooks/useMeetings';
 import { useCommunities } from '@/hooks/useCommunities';
@@ -21,6 +22,7 @@ interface PersonProfileProps {
 }
 
 const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
+  const { t } = useLanguage();
   const { userCommunities } = useCommunities();
   
   const { meetings } = useMeetings();

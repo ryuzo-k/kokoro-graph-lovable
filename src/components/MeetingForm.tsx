@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Slider } from '@/components/ui/slider';
 import { Sparkles, Brain, Users, MapPin, Star } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -33,6 +34,7 @@ interface MeetingFormProps {
 }
 
 const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState<MeetingData>({
     myName: '',
     otherName: '',
@@ -53,13 +55,13 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
   const { toast } = useToast();
 
   const dimensionLabels = {
-    trustworthiness: '信頼性',
-    expertise: '専門性', 
-    communication: 'コミュニケーション',
-    collaboration: '協力性',
-    leadership: 'リーダーシップ',
-    innovation: '革新性',
-    integrity: '誠実性'
+    trustworthiness: t('meeting.trustworthiness'),
+    expertise: t('meeting.expertise'), 
+    communication: t('meeting.communication'),
+    collaboration: t('meeting.collaboration'),
+    leadership: t('meeting.leadership'),
+    innovation: t('meeting.innovation'),
+    integrity: t('meeting.integrity')
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -67,8 +69,8 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
     
     if (!formData.myName.trim() || !formData.otherName.trim()) {
       toast({
-        title: "入力エラー",
-        description: "名前は必須項目です",
+        title: "Input Error",
+        description: "Names are required",
         variant: "destructive"
       });
       return;
@@ -76,8 +78,8 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
 
     if (!formData.detailed_feedback?.trim()) {
       toast({
-        title: "フィードバックが必要です",
-        description: "相手についての詳細なフィードバックを記入してください",
+        title: "Feedback Required",
+        description: "Please provide detailed feedback about the person",
         variant: "destructive"
       });
       return;
@@ -106,8 +108,8 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
   const handleAIAnalysis = async () => {
     if (!formData.detailed_feedback?.trim()) {
       toast({
-        title: "フィードバックが必要です",
-        description: "AI分析のためにフィードバックを入力してください",
+        title: "Feedback Required",
+        description: "Please provide feedback for AI analysis",
         variant: "destructive"
       });
       return;
@@ -118,7 +120,7 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
       const { data, error } = await supabase.functions.invoke('analyze-feedback', {
         body: {
           text: formData.detailed_feedback,
-          personName: formData.otherName || '相手'
+          personName: formData.otherName || 'Person'
         }
       });
 
@@ -138,19 +140,19 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
         }));
 
         toast({
-          title: "AI分析完了！",
-          description: "フィードバックから多次元スコアを生成しました",
+          title: "AI Analysis Complete!",
+          description: "Multi-dimensional scores generated from feedback",
         });
         
         setActiveTab('advanced');
       } else {
-        throw new Error(data.error || 'AI分析に失敗しました');
+        throw new Error(data.error || 'AI analysis failed');
       }
     } catch (error) {
       console.error('AI analysis error:', error);
       toast({
-        title: "AI分析エラー",
-        description: "分析に失敗しました。手動で評価を入力してください。",
+        title: "AI Analysis Error",
+        description: "Analysis failed. Please enter scores manually.",
         variant: "destructive"
       });
     } finally {
@@ -163,11 +165,11 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
   };
 
   const ratings = [
-    { value: 5, label: '5★ 素晴らしい', color: 'trust-high' },
-    { value: 4, label: '4★ 良い', color: 'trust-high' },
-    { value: 3, label: '3★ 普通', color: 'trust-medium' },
-    { value: 2, label: '2★ あまり', color: 'trust-low' },
-    { value: 1, label: '1★ 悪い', color: 'trust-low' }
+    { value: 5, label: '5★ Excellent', color: 'trust-high' },
+    { value: 4, label: '4★ Good', color: 'trust-high' },
+    { value: 3, label: '3★ Average', color: 'trust-medium' },
+    { value: 2, label: '2★ Poor', color: 'trust-low' },
+    { value: 1, label: '1★ Bad', color: 'trust-low' }
   ];
 
   return (
@@ -175,38 +177,38 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-center text-foreground">
           <Users className="w-5 h-5 text-primary" />
-          新しい出会いを記録
+          {t('meeting.title')}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="basic">基本情報</TabsTrigger>
-              <TabsTrigger value="feedback">AI分析</TabsTrigger>
-              <TabsTrigger value="advanced">詳細評価</TabsTrigger>
+              <TabsTrigger value="basic">{t('meeting.basicInfo')}</TabsTrigger>
+              <TabsTrigger value="feedback">AI {t('meeting.evaluation')}</TabsTrigger>
+              <TabsTrigger value="advanced">{t('meeting.detailedEvaluation')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="basic" className="space-y-4 mt-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="myName">あなたの名前</Label>
+                  <Label htmlFor="myName">{t('meeting.yourName')}</Label>
                   <Input
                     id="myName"
                     value={formData.myName}
                     onChange={(e) => setFormData(prev => ({ ...prev, myName: e.target.value }))}
-                    placeholder="田中太郎"
+                    placeholder="John Doe"
                     className="bg-background/50"
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="otherName">出会った相手</Label>
+                  <Label htmlFor="otherName">{t('meeting.otherName')}</Label>
                   <Input
                     id="otherName"
                     value={formData.otherName}
                     onChange={(e) => setFormData(prev => ({ ...prev, otherName: e.target.value }))}
-                    placeholder="佐藤花子"
+                    placeholder="Jane Smith"
                     className="bg-background/50"
                     required
                   />
@@ -216,7 +218,7 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
               <div className="space-y-2">
                 <Label htmlFor="location" className="flex items-center gap-1">
                   <MapPin className="w-4 h-4" />
-                  場所・地域
+                  {t('meeting.location')}
                 </Label>
                 <Input
                   id="location"
@@ -230,7 +232,7 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
               <div className="space-y-2">
                 <Label className="flex items-center gap-1">
                   <Star className="w-4 h-4" />
-                  総合評価
+                  {t('meeting.overallRating')}
                 </Label>
                 <Select
                   value={formData.rating.toString()}
@@ -256,29 +258,23 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
               <div className="space-y-2">
                 <Label htmlFor="detailed_feedback" className="text-lg font-semibold flex items-center gap-2">
                   <Brain className="w-5 h-5 text-primary" />
-                  この人についての詳細なフィードバック
+                  {t('meeting.feedback')}
                   <span className="text-destructive">*</span>
                 </Label>
                 <p className="text-sm text-muted-foreground mb-3">
-                  出会った相手について自由に記述してください。この内容からAIが多次元評価を自動生成します。
+                  Please describe your encounter with this person. AI will generate multi-dimensional evaluation from this content.
                 </p>
                 <Textarea
                   id="detailed_feedback"
                   value={formData.detailed_feedback}
                   onChange={(e) => setFormData(prev => ({ ...prev, detailed_feedback: e.target.value }))}
-                  placeholder="この人の印象、スキル、性格、協力性などについて正直に記述してください。AIが自動で多次元評価を行います。
-
-例: 
-- 技術的な知識が豊富で、複雑な問題も分かりやすく説明してくれた
-- チームワークを大切にし、他のメンバーの意見もよく聞いていた
-- 新しいアイデアを積極的に提案し、実装にも熱心だった
-- 時間を守り、約束したことは必ず実行する信頼できる人だった"
+                  placeholder={t('meeting.feedbackPlaceholder')}
                   rows={10}
                   className="resize-none bg-background/50 border-primary/30 focus:border-primary"
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  ※ フィードバックの記入は必須です。詳しく書くほど正確な分析結果が得られます。
+                  ※ Detailed feedback is required. The more details you provide, the more accurate the analysis.
                 </p>
               </div>
               
@@ -291,12 +287,12 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
                 {isAnalyzing ? (
                   <>
                     <Brain className="w-4 h-4 mr-2 animate-spin" />
-                    AI分析中...
+                    {t('meeting.analyzing')}
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4 mr-2" />
-                    AIで多次元分析
+                    AI Multi-dimensional Analysis
                   </>
                 )}
               </Button>
@@ -304,7 +300,7 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
 
             <TabsContent value="advanced" className="space-y-6 mt-6">
               <div className="text-sm text-muted-foreground mb-4">
-                各項目を1-5で評価してください（3が標準）
+                Rate each item from 1-5 (3 is standard)
               </div>
               
               {Object.entries(dimensionLabels).map(([key, label]) => (
@@ -340,7 +336,7 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
             className="w-full mt-6 bg-gradient-primary hover:opacity-90 transition-opacity"
             disabled={!formData.myName.trim() || !formData.otherName.trim() || !formData.detailed_feedback?.trim()}
           >
-            出会いを記録
+            {t('meeting.save')}
           </Button>
         </form>
       </CardContent>

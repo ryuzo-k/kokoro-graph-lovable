@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Users, Sparkles, AlertCircle } from 'lucide-react';
 import { useProfile } from '@/hooks/useProfile';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useCommunities, Community } from '@/hooks/useCommunities';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -16,6 +17,7 @@ interface CommunityRecommendation {
 
 export const CommunityRecommendations = () => {
   const { profile } = useProfile();
+  const { t } = useLanguage();
   const { communities, userCommunities, joinCommunity } = useCommunities();
   const { toast } = useToast();
   const [recommendations, setRecommendations] = useState<CommunityRecommendation[]>([]);
@@ -41,7 +43,7 @@ export const CommunityRecommendations = () => {
           if (community.name.includes('技術') || community.name.includes('開発') || 
               community.name.includes('AI') || community.name.includes('ML')) {
             score += 30;
-            reasons.push('高いGitHubスコアから技術コミュニティがおすすめ');
+            reasons.push(t('recommendations.highGithub'));
           }
         }
 
@@ -50,7 +52,7 @@ export const CommunityRecommendations = () => {
           if (community.name.includes('ビジネス') || community.name.includes('起業') ||
               community.name.includes('Founders')) {
             score += 25;
-            reasons.push('LinkedInプロフィールからビジネス系コミュニティがマッチ');
+            reasons.push(t('recommendations.highLinkedin'));
           }
         }
 
@@ -58,7 +60,7 @@ export const CommunityRecommendations = () => {
         if (profile.portfolio_score && profile.portfolio_score > 60) {
           if (community.name.includes('プロダクト') || community.name.includes('デザイン')) {
             score += 20;
-            reasons.push('ポートフォリオスコアからプロダクト系がおすすめ');
+            reasons.push(t('recommendations.portfolioMatch'));
           }
         }
 
@@ -66,14 +68,14 @@ export const CommunityRecommendations = () => {
         if (community.name.includes('フィンテック') || community.name.includes('クリプト')) {
           if (profile.github_score && profile.github_score > 50) {
             score += 15;
-            reasons.push('技術力がフィンテック領域に活かせそう');
+            reasons.push(t('recommendations.portfolioMatch'));
           }
         }
 
         // General activity bonus
         if (profile.github_score || profile.linkedin_score || profile.portfolio_score) {
           score += 10;
-          reasons.push('アクティブなプロフィールを持っている');
+          reasons.push(t('recommendations.locationMatch'));
         }
 
         if (score > 20) {
@@ -88,8 +90,8 @@ export const CommunityRecommendations = () => {
     } catch (error) {
       console.error('Error generating recommendations:', error);
       toast({
-        title: "エラー",
-        description: "コミュニティ推薦の生成に失敗しました",
+        title: t('recommendations.error'),
+        description: t('recommendations.error'),
         variant: "destructive"
       });
     } finally {
@@ -101,8 +103,8 @@ export const CommunityRecommendations = () => {
     const result = await joinCommunity(communityId);
     if (result.success) {
       toast({
-        title: "成功",
-        description: "コミュニティに参加しました！",
+        title: t('communities.joined2'),
+        description: t('communities.joinedSuccess'),
       });
       // Remove from recommendations
       setRecommendations(prev => prev.filter(r => r.community.id !== communityId));
@@ -119,8 +121,8 @@ export const CommunityRecommendations = () => {
       if (topRec.matchScore > 50) {
         await handleJoinCommunity(topRec.community.id);
         toast({
-          title: "自動参加",
-          description: `${topRec.community.name}に自動で参加しました！`,
+          title: t('communities.joined2'),
+          description: `${topRec.community.name}${t('communities.joinedSuccess')}`,
         });
       }
     } catch (error) {
@@ -145,10 +147,10 @@ export const CommunityRecommendations = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-primary" />
-          おすすめコミュニティ
+          {t('recommendations.title')}
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          あなたのSNS分析結果に基づいて推薦しています
+          {t('recommendations.noProfile')}
         </p>
       </CardHeader>
       <CardContent>
@@ -163,17 +165,17 @@ export const CommunityRecommendations = () => {
                   </p>
                 </div>
                 <Badge variant="secondary" className="ml-2">
-                  マッチ度 {rec.matchScore}%
+                  {t('recommendations.matchScore')} {rec.matchScore}%
                 </Badge>
               </div>
               
               <div className="flex items-center text-sm text-muted-foreground mb-3">
                 <Users className="w-4 h-4 mr-1" />
-                {rec.community.member_count} メンバー
+                {rec.community.member_count} {t('stats.yourNetwork')}
               </div>
 
               <div className="mb-3">
-                <p className="text-sm font-medium text-foreground mb-1">推薦理由:</p>
+                <p className="text-sm font-medium text-foreground mb-1">{t('recommendations.reasons')}:</p>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   {rec.reasons.map((reason, index) => (
                     <li key={index} className="flex items-start">
@@ -189,7 +191,7 @@ export const CommunityRecommendations = () => {
                 disabled={loading}
                 className="w-full"
               >
-                参加する
+                {t('recommendations.join')}
               </Button>
             </div>
           ))}
@@ -202,7 +204,7 @@ export const CommunityRecommendations = () => {
               className="w-full mt-4"
             >
               <Sparkles className="w-4 h-4 mr-2" />
-              トップ推薦コミュニティに自動参加
+              {t('recommendations.generate')}
             </Button>
           )}
         </div>
