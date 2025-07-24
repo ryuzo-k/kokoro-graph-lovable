@@ -366,33 +366,33 @@ const Profile = () => {
                               )}
                               
                               {/* Analysis breakdown */}
-                              {profile.analysis_details.analysis && (
+                              {profile.analysis_details.breakdown && (
                                 <div className="pt-2 border-t">
                                   <h5 className="text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">あなたの獲得点数</h5>
                                   <div className="grid grid-cols-2 gap-3 text-xs">
                                     <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
                                       <span>アカウント年数:</span>
-                                      <span className="font-medium text-blue-600">{profile.analysis_details.analysis.accountAge}/20</span>
+                                      <span className="font-medium text-blue-600">{Math.round(profile.analysis_details.breakdown.account_age * 100) / 100}/20</span>
                                     </div>
                                     <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
                                       <span>リポジトリ:</span>
-                                      <span className="font-medium text-green-600">{profile.analysis_details.analysis.repositories}/25</span>
+                                      <span className="font-medium text-green-600">{Math.round(profile.analysis_details.breakdown.repository_count * 100) / 100}/25</span>
                                     </div>
                                     <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
                                       <span>スター:</span>
-                                      <span className="font-medium text-orange-600">{profile.analysis_details.analysis.stars}/20</span>
+                                      <span className="font-medium text-orange-600">{Math.round(profile.analysis_details.breakdown.stars_received * 100) / 100}/20</span>
                                     </div>
                                     <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
                                       <span>言語多様性:</span>
-                                      <span className="font-medium text-purple-600">{profile.analysis_details.analysis.languageDiversity}/15</span>
+                                      <span className="font-medium text-purple-600">{Math.round(profile.analysis_details.breakdown.language_diversity * 100) / 100}/15</span>
                                     </div>
                                     <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
                                       <span>フォロワー:</span>
-                                      <span className="font-medium text-indigo-600">{profile.analysis_details.analysis.followers}/10</span>
+                                      <span className="font-medium text-indigo-600">{Math.round(profile.analysis_details.breakdown.followers * 100) / 100}/10</span>
                                     </div>
                                     <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
                                       <span>活動状況:</span>
-                                      <span className="font-medium text-teal-600">{profile.analysis_details.analysis.recentActivity}/10</span>
+                                      <span className="font-medium text-teal-600">{Math.round(profile.analysis_details.breakdown.recent_activity * 100) / 100}/10</span>
                                     </div>
                                   </div>
                                   <div className="mt-3 pt-2 border-t text-center">
