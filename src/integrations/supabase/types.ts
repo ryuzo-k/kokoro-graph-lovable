@@ -98,6 +98,7 @@ export type Database = {
           rating: number
           trustworthiness: number | null
           user_id: string
+          visibility_level: string | null
         }
         Insert: {
           ai_analysis_scores?: Json | null
@@ -117,6 +118,7 @@ export type Database = {
           rating: number
           trustworthiness?: number | null
           user_id: string
+          visibility_level?: string | null
         }
         Update: {
           ai_analysis_scores?: Json | null
@@ -136,6 +138,7 @@ export type Database = {
           rating?: number
           trustworthiness?: number | null
           user_id?: string
+          visibility_level?: string | null
         }
         Relationships: [
           {
@@ -146,6 +149,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      network_analysis: {
+        Row: {
+          analyzed_at: string
+          bridge_score: number | null
+          centrality_score: number | null
+          community_cluster: string | null
+          id: string
+          influence_score: number | null
+          network_reach: number | null
+          person_id: string
+        }
+        Insert: {
+          analyzed_at?: string
+          bridge_score?: number | null
+          centrality_score?: number | null
+          community_cluster?: string | null
+          id?: string
+          influence_score?: number | null
+          network_reach?: number | null
+          person_id: string
+        }
+        Update: {
+          analyzed_at?: string
+          bridge_score?: number | null
+          centrality_score?: number | null
+          community_cluster?: string | null
+          id?: string
+          influence_score?: number | null
+          network_reach?: number | null
+          person_id?: string
+        }
+        Relationships: []
       }
       people: {
         Row: {
@@ -192,6 +228,42 @@ export type Database = {
           skills?: string[] | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      privacy_settings: {
+        Row: {
+          allow_friend_recommendations: boolean | null
+          created_at: string
+          id: string
+          show_connections_to_others: boolean | null
+          show_meeting_history: boolean | null
+          show_trust_scores: boolean | null
+          updated_at: string
+          user_id: string
+          visibility_level: string | null
+        }
+        Insert: {
+          allow_friend_recommendations?: boolean | null
+          created_at?: string
+          id?: string
+          show_connections_to_others?: boolean | null
+          show_meeting_history?: boolean | null
+          show_trust_scores?: boolean | null
+          updated_at?: string
+          user_id: string
+          visibility_level?: string | null
+        }
+        Update: {
+          allow_friend_recommendations?: boolean | null
+          created_at?: string
+          id?: string
+          show_connections_to_others?: boolean | null
+          show_meeting_history?: boolean | null
+          show_trust_scores?: boolean | null
+          updated_at?: string
+          user_id?: string
+          visibility_level?: string | null
         }
         Relationships: []
       }
@@ -246,6 +318,92 @@ export type Database = {
           portfolio_url?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      relationship_timeline: {
+        Row: {
+          created_at: string
+          description: string | null
+          event_date: string
+          id: string
+          meeting_id: string | null
+          person1_id: string
+          person2_id: string
+          relationship_type: string
+          trust_change: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          id?: string
+          meeting_id?: string | null
+          person1_id: string
+          person2_id: string
+          relationship_type: string
+          trust_change?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          id?: string
+          meeting_id?: string | null
+          person1_id?: string
+          person2_id?: string
+          relationship_type?: string
+          trust_change?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relationship_timeline_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "meetings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      relationships: {
+        Row: {
+          created_at: string
+          id: string
+          is_mutual: boolean | null
+          last_interaction: string | null
+          person1_id: string
+          person2_id: string
+          relationship_status: string | null
+          relationship_strength: number | null
+          total_meetings: number | null
+          trust_score: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_mutual?: boolean | null
+          last_interaction?: string | null
+          person1_id: string
+          person2_id: string
+          relationship_status?: string | null
+          relationship_strength?: number | null
+          total_meetings?: number | null
+          trust_score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_mutual?: boolean | null
+          last_interaction?: string | null
+          person1_id?: string
+          person2_id?: string
+          relationship_status?: string | null
+          relationship_strength?: number | null
+          total_meetings?: number | null
+          trust_score?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
