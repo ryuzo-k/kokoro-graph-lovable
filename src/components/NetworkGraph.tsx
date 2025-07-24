@@ -29,11 +29,11 @@ import ConnectionEdge from './ConnectionEdge';
 import PersonProfile from './PersonProfile';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, Filter } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Search, Filter, Zap, Globe, Users2, Building2 } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Person } from '@/hooks/usePeople';
 import { Meeting, useMeetings } from '@/hooks/useMeetings';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
 interface PersonWithStats extends Person {
@@ -64,6 +64,7 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
   const [locationFilter, setLocationFilter] = useState('');
   const [selectedPerson, setSelectedPerson] = useState<PersonWithStats | null>(null);
   const [isConnectMode, setIsConnectMode] = useState(false);
+  const [layoutMode, setLayoutMode] = useState<'force' | 'circular' | 'hierarchical' | 'community'>('force');
 
   // Filter people based on search and location
   const filteredPeople = useMemo(() => {
@@ -85,25 +86,36 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
     return Array.from(locationSet);
   }, [people]);
 
-  // Compute force-directed layout positions using d3-force
-  const initialNodes: Node[] = useMemo(() => {
-    // Prepare d3 simulation nodes & links
-    const d3Nodes: (SimulationNodeDatum & { id: string; person: PersonWithStats })[] =
-      filteredPeople.map(p => ({ id: p.id, person: p }));
-
+  // 構造的レイアウト計算
+  const getStructuralLayout = (nodes: any[], connections: any[], mode: string) => {
+    const d3Nodes = nodes.map(p => ({ id: p.id, person: p }));
+    
     // Filter connections to only include people that exist in filteredPeople
-    const filteredPersonIds = new Set(filteredPeople.map(p => p.id));
+    const filteredPersonIds = new Set(nodes.map(p => p.id));
     const validConnections = connections.filter(conn => 
       filteredPersonIds.has(conn.person1Id) && filteredPersonIds.has(conn.person2Id)
     );
 
-    const d3Links: SimulationLinkDatum<(typeof d3Nodes)[number]>[] = validConnections.map(conn => ({
+    const d3Links = validConnections.map(conn => ({
       source: conn.person1Id,
       target: conn.person2Id,
       strength: conn.meetingCount,
     }));
 
-    // Create simulation
+    switch (mode) {
+      case 'hierarchical':
+        return getHierarchicalLayout(d3Nodes, d3Links);
+      case 'circular':
+        return getCircularLayout(d3Nodes, d3Links);
+      case 'community':
+        return getCommunityLayout(d3Nodes, d3Links);
+      default:
+        return getForceLayout(d3Nodes, d3Links);
+    }
+  };
+
+  // Force-directed layout (既存)
+  const getForceLayout = (d3Nodes: any[], d3Links: any[]) => {
     const sim = forceSimulation(d3Nodes)
       .force('link', forceLink(d3Links).id(d => (d as any).id).distance(120))
       .force('charge', forceManyBody().strength(-250))
@@ -111,14 +123,111 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
       .force('collide', forceCollide().radius(90))
       .stop();
 
-    // Run a fixed number of iterations synchronously
     for (let i = 0; i < 200; i++) sim.tick();
+    return d3Nodes;
+  };
+
+  // 階層レイアウト (中心性に基づく)
+  const getHierarchicalLayout = (d3Nodes: any[], d3Links: any[]) => {
+    // 各ノードの中心性を計算
+    const centrality = new Map<string, number>();
+    d3Nodes.forEach(node => centrality.set(node.id, 0));
+    
+    d3Links.forEach(link => {
+      const sourceId = typeof link.source === 'string' ? link.source : link.source.id;
+      const targetId = typeof link.target === 'string' ? link.target : link.target.id;
+      centrality.set(sourceId, (centrality.get(sourceId) || 0) + link.strength);
+      centrality.set(targetId, (centrality.get(targetId) || 0) + link.strength);
+    });
+
+    // 中心性でソート
+    const sortedNodes = [...d3Nodes].sort((a, b) => 
+      (centrality.get(b.id) || 0) - (centrality.get(a.id) || 0)
+    );
+
+    // 同心円状に配置
+    sortedNodes.forEach((node, index) => {
+      const level = Math.floor(index / 6); // 6人ずつの層
+      const angleStep = (Math.PI * 2) / Math.min(6, sortedNodes.length - level * 6);
+      const radius = level * 150 + (level === 0 ? 0 : 80);
+      const angle = (index % 6) * angleStep;
+      
+      node.x = Math.cos(angle) * radius;
+      node.y = Math.sin(angle) * radius;
+    });
+
+    return d3Nodes;
+  };
+
+  // 円形レイアウト (信頼度でソート)
+  const getCircularLayout = (d3Nodes: any[], d3Links: any[]) => {
+    const sortedNodes = [...d3Nodes].sort((a, b) => 
+      (b.person.averageRating || 0) - (a.person.averageRating || 0)
+    );
+
+    const radius = Math.max(200, sortedNodes.length * 15);
+    const angleStep = (Math.PI * 2) / sortedNodes.length;
+
+    sortedNodes.forEach((node, index) => {
+      const angle = index * angleStep;
+      node.x = Math.cos(angle) * radius;
+      node.y = Math.sin(angle) * radius;
+    });
+
+    return d3Nodes;
+  };
+
+  // コミュニティレイアウト (場所・会社でグループ化)
+  const getCommunityLayout = (d3Nodes: any[], d3Links: any[]) => {
+    // コミュニティを検出 (場所ベース)
+    const communities = new Map<string, any[]>();
+    
+    d3Nodes.forEach(node => {
+      const community = node.person.location || node.person.company || 'その他';
+      if (!communities.has(community)) {
+        communities.set(community, []);
+      }
+      communities.get(community)!.push(node);
+    });
+
+    // 各コミュニティを配置
+    const communityKeys = Array.from(communities.keys());
+    const communityRadius = 300;
+    const communityAngleStep = (Math.PI * 2) / communityKeys.length;
+
+    communityKeys.forEach((communityKey, communityIndex) => {
+      const communityNodes = communities.get(communityKey)!;
+      const communityAngle = communityIndex * communityAngleStep;
+      const communityX = Math.cos(communityAngle) * communityRadius;
+      const communityY = Math.sin(communityAngle) * communityRadius;
+
+      // コミュニティ内でノードを円形配置
+      const innerRadius = Math.max(60, communityNodes.length * 8);
+      const innerAngleStep = (Math.PI * 2) / communityNodes.length;
+
+      communityNodes.forEach((node, nodeIndex) => {
+        const nodeAngle = nodeIndex * innerAngleStep;
+        node.x = communityX + Math.cos(nodeAngle) * innerRadius;
+        node.y = communityY + Math.sin(nodeAngle) * innerRadius;
+      });
+    });
+
+    return d3Nodes;
+  };
+
+  // Compute force-directed layout positions using d3-force
+  const initialNodes: Node[] = useMemo(() => {
+    const layoutNodes = getStructuralLayout(filteredPeople, connections, layoutMode);
 
     // Map to React Flow nodes
-    return d3Nodes.map(n => {
+    return layoutNodes.map(n => {
       const person = n.person;
       
       // Check if this person is connected to others
+      const filteredPersonIds = new Set(filteredPeople.map(p => p.id));
+      const validConnections = connections.filter(conn => 
+        filteredPersonIds.has(conn.person1Id) && filteredPersonIds.has(conn.person2Id)
+      );
       const personConnections = validConnections.filter(conn => 
         conn.person1Id === person.id || conn.person2Id === person.id
       );
@@ -146,7 +255,7 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
         draggable: true,
       } as Node;
     });
-  }, [filteredPeople, connections]);
+  }, [filteredPeople, connections, layoutMode]);
 
   // Convert connections to edges
   const initialEdges: Edge[] = useMemo(() => {
@@ -277,6 +386,51 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
         />
         
         <Panel position="top-left" className="space-y-2 max-w-sm">
+          {/* Layout Mode Controls */}
+          <div className="bg-card/95 backdrop-blur-sm p-2 rounded-lg border border-border space-y-2">
+            <div className="text-xs font-semibold text-foreground mb-2">
+              {language === 'ja' ? 'レイアウト' : 'Layout'}
+            </div>
+            <div className="grid grid-cols-2 gap-1">
+              <Button
+                onClick={() => setLayoutMode('force')}
+                variant={layoutMode === 'force' ? "default" : "outline"}
+                size="sm"
+                className="text-xs h-7"
+              >
+                <Zap className="w-3 h-3 mr-1" />
+                {language === 'ja' ? 'フォース' : 'Force'}
+              </Button>
+              <Button
+                onClick={() => setLayoutMode('hierarchical')}
+                variant={layoutMode === 'hierarchical' ? "default" : "outline"}
+                size="sm"
+                className="text-xs h-7"
+              >
+                <Users2 className="w-3 h-3 mr-1" />
+                {language === 'ja' ? '階層' : 'Hierarchy'}
+              </Button>
+              <Button
+                onClick={() => setLayoutMode('circular')}
+                variant={layoutMode === 'circular' ? "default" : "outline"}
+                size="sm"
+                className="text-xs h-7"
+              >
+                <Globe className="w-3 h-3 mr-1" />
+                {language === 'ja' ? '円形' : 'Circular'}
+              </Button>
+              <Button
+                onClick={() => setLayoutMode('community')}
+                variant={layoutMode === 'community' ? "default" : "outline"}
+                size="sm"
+                className="text-xs h-7"
+              >
+                <Building2 className="w-3 h-3 mr-1" />
+                {language === 'ja' ? 'グループ' : 'Groups'}
+              </Button>
+            </div>
+          </div>
+
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
