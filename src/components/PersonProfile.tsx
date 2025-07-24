@@ -185,6 +185,40 @@ const PersonProfile = ({ person, onClose }: PersonProfileProps) => {
             </div>
           )}
 
+          {/* SNS Analysis Results */}
+          {(person.github_score || person.linkedin_score || person.portfolio_score) && (
+            <div>
+              <h4 className="font-medium text-foreground mb-3">SNS分析スコア</h4>
+              <div className="grid grid-cols-3 gap-2">
+                {person.github_score && (
+                  <div className="text-center p-2 bg-muted/30 rounded-lg">
+                    <div className="text-sm font-semibold text-foreground">{person.github_score}</div>
+                    <div className="text-xs text-muted-foreground">GitHub</div>
+                  </div>
+                )}
+                {person.linkedin_score && (
+                  <div className="text-center p-2 bg-muted/30 rounded-lg">
+                    <div className="text-sm font-semibold text-foreground">{person.linkedin_score}</div>
+                    <div className="text-xs text-muted-foreground">LinkedIn</div>
+                  </div>
+                )}
+                {person.portfolio_score && (
+                  <div className="text-center p-2 bg-muted/30 rounded-lg">
+                    <div className="text-sm font-semibold text-foreground">{person.portfolio_score}</div>
+                    <div className="text-xs text-muted-foreground">Portfolio</div>
+                  </div>
+                )}
+              </div>
+              {person.fraud_risk_level && (
+                <div className="mt-2 flex items-center justify-center">
+                  <Badge variant={person.fraud_risk_level === 'low' ? 'default' : 'destructive'} className="text-xs">
+                    信頼性: {person.fraud_risk_level === 'low' ? '高' : person.fraud_risk_level === 'medium' ? '中' : '低'}
+                  </Badge>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Links */}
           <div className="flex gap-2">
             {person.linkedin_url && (

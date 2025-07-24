@@ -16,6 +16,13 @@ export interface Person {
   user_id: string;
   created_at: string;
   updated_at: string;
+  // SNS Analysis fields
+  github_score?: number;
+  linkedin_score?: number;
+  portfolio_score?: number;
+  fraud_risk_level?: string;
+  last_analyzed_at?: string;
+  analysis_details?: any;
 }
 
 export const usePeople = () => {
