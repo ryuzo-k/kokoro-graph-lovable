@@ -73,26 +73,53 @@ export type Database = {
       }
       profiles: {
         Row: {
+          analysis_details: Json | null
           avatar_url: string | null
           created_at: string
           display_name: string | null
+          fraud_risk_level: string | null
+          github_score: number | null
+          github_username: string | null
           id: string
+          last_analyzed_at: string | null
+          linkedin_score: number | null
+          linkedin_url: string | null
+          portfolio_score: number | null
+          portfolio_url: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          analysis_details?: Json | null
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
+          fraud_risk_level?: string | null
+          github_score?: number | null
+          github_username?: string | null
           id?: string
+          last_analyzed_at?: string | null
+          linkedin_score?: number | null
+          linkedin_url?: string | null
+          portfolio_score?: number | null
+          portfolio_url?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          analysis_details?: Json | null
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
+          fraud_risk_level?: string | null
+          github_score?: number | null
+          github_username?: string | null
           id?: string
+          last_analyzed_at?: string | null
+          linkedin_score?: number | null
+          linkedin_url?: string | null
+          portfolio_score?: number | null
+          portfolio_url?: string | null
           updated_at?: string
           user_id?: string
         }

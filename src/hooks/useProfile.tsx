@@ -10,6 +10,15 @@ export interface Profile {
   avatar_url: string | null;
   created_at: string;
   updated_at: string;
+  github_username: string | null;
+  linkedin_url: string | null;
+  portfolio_url: string | null;
+  github_score: number | null;
+  linkedin_score: number | null;
+  portfolio_score: number | null;
+  fraud_risk_level: string | null;
+  last_analyzed_at: string | null;
+  analysis_details: any;
 }
 
 export const useProfile = () => {
@@ -50,8 +59,98 @@ export const useProfile = () => {
     }
   };
 
+  // Analyze GitHub profile
+  const analyzeGitHub = async (username: string) => {
+    if (!user) return { success: false, error: 'Not authenticated' };
+
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-github-profile', {
+        body: { username, userId: user.id }
+      });
+
+      if (error) throw error;
+      
+      toast({
+        title: "GitHub分析完了",
+        description: `開発スコア: ${data.score}/100`,
+      });
+
+      // Refresh profile data
+      await fetchProfile();
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error analyzing GitHub:', error);
+      toast({
+        title: "エラー", 
+        description: "GitHub分析に失敗しました",
+        variant: "destructive"
+      });
+      return { success: false, error };
+    }
+  };
+
+  // Analyze LinkedIn profile
+  const analyzeLinkedIn = async (linkedinUrl: string) => {
+    if (!user) return { success: false, error: 'Not authenticated' };
+
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-linkedin-profile', {
+        body: { linkedinUrl, userId: user.id }
+      });
+
+      if (error) throw error;
+      
+      toast({
+        title: "LinkedIn分析完了",
+        description: `信頼度スコア: ${data.score}/100 (詐欺リスク: ${data.fraud_risk_level})`,
+      });
+
+      // Refresh profile data
+      await fetchProfile();
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error analyzing LinkedIn:', error);
+      toast({
+        title: "エラー", 
+        description: "LinkedIn分析に失敗しました",
+        variant: "destructive"
+      });
+      return { success: false, error };
+    }
+  };
+
+  // Analyze portfolio
+  const analyzePortfolio = async (portfolioUrl: string) => {
+    if (!user) return { success: false, error: 'Not authenticated' };
+
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-portfolio', {
+        body: { portfolioUrl, userId: user.id }
+      });
+
+      if (error) throw error;
+      
+      toast({
+        title: "ポートフォリオ分析完了",
+        description: `技術スコア: ${data.score}/100 (詐欺リスク: ${data.fraud_risk_level})`,
+      });
+
+      // Refresh profile data
+      await fetchProfile();
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error analyzing portfolio:', error);
+      toast({
+        title: "エラー", 
+        description: "ポートフォリオ分析に失敗しました",
+        variant: "destructive"
+      });
+      return { success: false, error };
+    }
+  };
+
   // Update profile
-  const updateProfile = async (updates: Partial<Pick<Profile, 'display_name' | 'avatar_url'>>) => {
+  const updateProfile = async (updates: Partial<Pick<Profile, 'display_name' | 'avatar_url' | 'github_username' | 'linkedin_url' | 'portfolio_url'>>) => {
     if (!user) return { success: false, error: 'Not authenticated' };
 
     try {
@@ -120,6 +219,9 @@ export const useProfile = () => {
     profile,
     loading,
     updateProfile,
+    analyzeGitHub,
+    analyzeLinkedIn,
+    analyzePortfolio,
     refetch: fetchProfile
   };
 };
