@@ -9,14 +9,11 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useMeetings, type Meeting } from '@/hooks/useMeetings';
+import { usePeople, Person } from '@/hooks/usePeople';
 
-interface Person {
-  id: string;
-  name: string;
+interface PersonWithStats extends Person {
   averageRating: number;
   meetingCount: number;
-  location?: string;
-  avatar?: string;
   meetings: Meeting[];
 }
 
@@ -33,19 +30,34 @@ const Index = () => {
   const { user, signOut, loading } = useAuth();
   const navigate = useNavigate();
   const { meetings, addMeeting } = useMeetings();
+  const { people: allPeople } = usePeople();
 
   // Process meetings to create people and connections
   const { people, connections } = useMemo(() => {
-    const peopleMap = new Map<string, Person>();
+    const peopleMap = new Map<string, PersonWithStats>();
     const connectionMap = new Map<string, Connection>();
 
     meetings.forEach(meeting => {
       // Add people
       [meeting.my_name, meeting.other_name].forEach(name => {
         if (!peopleMap.has(name)) {
+          // Try to find detailed info from allPeople
+          const detailedPerson = allPeople.find(p => p.name === name);
+          
           peopleMap.set(name, {
-            id: name,
+            id: detailedPerson?.id || name,
             name,
+            company: detailedPerson?.company,
+            position: detailedPerson?.position,
+            bio: detailedPerson?.bio,
+            skills: detailedPerson?.skills,
+            avatar_url: detailedPerson?.avatar_url,
+            linkedin_url: detailedPerson?.linkedin_url,
+            github_username: detailedPerson?.github_username,
+            location: detailedPerson?.location,
+            user_id: detailedPerson?.user_id || '',
+            created_at: detailedPerson?.created_at || '',
+            updated_at: detailedPerson?.updated_at || '',
             averageRating: 0,
             meetingCount: 0,
             meetings: [],
@@ -62,8 +74,10 @@ const Index = () => {
       myPerson.meetingCount++;
       otherPerson.meetingCount++;
 
-      if (meeting.location) {
+      if (meeting.location && !myPerson.location) {
         myPerson.location = meeting.location;
+      }
+      if (meeting.location && !otherPerson.location) {
         otherPerson.location = meeting.location;
       }
 
@@ -106,7 +120,7 @@ const Index = () => {
       people: Array.from(peopleMap.values()),
       connections: Array.from(connectionMap.values()),
     };
-  }, [meetings]);
+  }, [meetings, allPeople]);
 
   const handleMeetingSubmit = useCallback(async (meetingData: any) => {
     const result = await addMeeting(meetingData);

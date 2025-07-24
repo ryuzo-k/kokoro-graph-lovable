@@ -20,21 +20,19 @@ import PersonProfile from './PersonProfile';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, Filter } from 'lucide-react';
+import { Person } from '@/hooks/usePeople';
+import { Meeting } from '@/hooks/useMeetings';
 
-interface Person {
-  id: string;
-  name: string;
+interface PersonWithStats extends Person {
   averageRating: number;
   meetingCount: number;
-  location?: string;
-  avatar?: string;
-  meetings: any[];
+  meetings: Meeting[];
 }
 
 interface NetworkGraphProps {
-  people: Person[];
+  people: PersonWithStats[];
   connections: any[];
-  onNodeClick?: (person: Person) => void;
+  onNodeClick?: (person: PersonWithStats) => void;
 }
 
 const nodeTypes = {
@@ -48,7 +46,7 @@ const edgeTypes = {
 const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
-  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+  const [selectedPerson, setSelectedPerson] = useState<PersonWithStats | null>(null);
 
   // Filter people based on search and location
   const filteredPeople = useMemo(() => {
@@ -87,7 +85,7 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
           averageRating: person.averageRating,
           meetingCount: person.meetingCount,
           location: person.location,
-          avatar: person.avatar,
+          avatar: person.avatar_url,
         },
         draggable: true,
       };
@@ -215,14 +213,7 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
 
       {selectedPerson && (
         <PersonProfile
-          person={{
-            name: selectedPerson.name,
-            avatar: selectedPerson.avatar,
-            averageRating: selectedPerson.averageRating,
-            totalMeetings: selectedPerson.meetingCount,
-            locations: selectedPerson.location ? [selectedPerson.location] : [],
-            recentMeetings: selectedPerson.meetings || [],
-          }}
+          person={selectedPerson}
           onClose={() => setSelectedPerson(null)}
         />
       )}

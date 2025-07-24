@@ -11,14 +11,11 @@ import { ArrowLeft, Plus, Network, BarChart3, Users, Brain } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth';
 import { useMeetings, type Meeting } from '@/hooks/useMeetings';
 import { useCommunities } from '@/hooks/useCommunities';
+import { usePeople, Person } from '@/hooks/usePeople';
 
-interface Person {
-  id: string;
-  name: string;
+interface PersonWithStats extends Person {
   averageRating: number;
   meetingCount: number;
-  location?: string;
-  avatar?: string;
   meetings: Meeting[];
 }
 
@@ -37,6 +34,7 @@ const NetworkVisualization = () => {
   const navigate = useNavigate();
   const { meetings, addMeeting } = useMeetings();
   const { communities } = useCommunities();
+  const { people: allPeople } = usePeople();
 
   // Find the current community
   const currentCommunity = communities.find(c => c.id === communityId);
@@ -48,16 +46,30 @@ const NetworkVisualization = () => {
 
   // Process meetings to create people and connections
   const { people, connections } = useMemo(() => {
-    const peopleMap = new Map<string, Person>();
+    const peopleMap = new Map<string, PersonWithStats>();
     const connectionMap = new Map<string, Connection>();
 
     communityMeetings.forEach(meeting => {
       // Add people
       [meeting.my_name, meeting.other_name].forEach(name => {
         if (!peopleMap.has(name)) {
+          // Try to find detailed info from allPeople
+          const detailedPerson = allPeople.find(p => p.name === name);
+          
           peopleMap.set(name, {
-            id: name,
+            id: detailedPerson?.id || name,
             name,
+            company: detailedPerson?.company,
+            position: detailedPerson?.position,
+            bio: detailedPerson?.bio,
+            skills: detailedPerson?.skills,
+            avatar_url: detailedPerson?.avatar_url,
+            linkedin_url: detailedPerson?.linkedin_url,
+            github_username: detailedPerson?.github_username,
+            location: detailedPerson?.location,
+            user_id: detailedPerson?.user_id || '',
+            created_at: detailedPerson?.created_at || '',
+            updated_at: detailedPerson?.updated_at || '',
             averageRating: 0,
             meetingCount: 0,
             meetings: [],
@@ -74,8 +86,10 @@ const NetworkVisualization = () => {
       myPerson.meetingCount++;
       otherPerson.meetingCount++;
 
-      if (meeting.location) {
+      if (meeting.location && !myPerson.location) {
         myPerson.location = meeting.location;
+      }
+      if (meeting.location && !otherPerson.location) {
         otherPerson.location = meeting.location;
       }
 
@@ -118,7 +132,7 @@ const NetworkVisualization = () => {
       people: Array.from(peopleMap.values()),
       connections: Array.from(connectionMap.values()),
     };
-  }, [communityMeetings]);
+  }, [communityMeetings, allPeople]);
 
   const handleMeetingSubmit = useCallback(async (meetingData: any) => {
     const result = await addMeeting({
