@@ -285,7 +285,7 @@ const Profile = () => {
           </CardHeader>
           <CardContent>
             {/* Trust Score Overview */}
-            {(profile?.github_score || profile?.linkedin_score || profile?.portfolio_score) && (
+            {(profile?.github_score || profile?.linkedin_score || profile?.portfolio_score || peopleTrustScore) && (
               <Card className="mb-6 bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
