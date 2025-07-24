@@ -345,7 +345,7 @@ const Profile = () => {
 
                     {/* Individual Scores */}
                     {profile?.github_score && (
-                      <div className="text-center p-4 bg-card/30 rounded-lg">
+                      <div className="text-center p-4 bg-card/30 rounded-lg hover-scale">
                         <Github className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
                         <div className={`text-xl font-bold ${getScoreColor(profile.github_score)}`}>
                           {profile.github_score}/100
@@ -355,7 +355,7 @@ const Profile = () => {
                     )}
 
                     {profile?.linkedin_score && (
-                      <div className="text-center p-4 bg-card/30 rounded-lg">
+                      <div className="text-center p-4 bg-card/30 rounded-lg hover-scale">
                         <Linkedin className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
                         <div className={`text-xl font-bold ${getScoreColor(profile.linkedin_score)}`}>
                           {profile.linkedin_score}/100
@@ -365,7 +365,7 @@ const Profile = () => {
                     )}
 
                     {profile?.portfolio_score && (
-                      <div className="text-center p-4 bg-card/30 rounded-lg">
+                      <div className="text-center p-4 bg-card/30 rounded-lg hover-scale">
                         <Globe className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
                         <div className={`text-xl font-bold ${getScoreColor(profile.portfolio_score)}`}>
                           {profile.portfolio_score}/100
@@ -374,17 +374,70 @@ const Profile = () => {
                       </div>
                     )}
 
-                    {/* People Trust Score */}
+                    {/* People Trust Score - Now included in overview */}
                     {peopleTrustScore !== null && (
-                      <div className="text-center p-4 bg-card/30 rounded-lg">
+                      <div className="text-center p-4 bg-card/30 rounded-lg hover-scale">
                         <Users className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
                         <div className={`text-xl font-bold ${getScoreColor(peopleTrustScore)}`}>
                           {peopleTrustScore}/100
                         </div>
-                        <p className="text-sm text-muted-foreground">人からの信頼度</p>
+                        <p className="text-sm text-muted-foreground">相手からの信頼度</p>
                         <p className="text-xs text-muted-foreground mt-1">
                           {meetingCount}件の評価
                         </p>
+                      </div>
+                    )}
+
+                    {/* Hall of Fame Section for High Trust Users */}
+                    {overallTrustScore >= 80 && (
+                      <div className="col-span-full mt-6">
+                        <div className="text-center p-6 bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-red-500/20 rounded-lg border-2 border-yellow-500/50 animate-fade-in">
+                          <div className="flex items-center justify-center gap-2 mb-4">
+                            <Crown className="w-8 h-8 text-yellow-500 animate-pulse" />
+                            <h3 className="text-2xl font-bold text-yellow-700 dark:text-yellow-300">
+                              🎉 殿堂入りユーザー 🎉
+                            </h3>
+                            <Crown className="w-8 h-8 text-yellow-500 animate-pulse" />
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div className="text-center">
+                              <Star className="w-6 h-6 mx-auto mb-1 text-yellow-500" />
+                              <div className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">信頼ランク</div>
+                              <div className="text-xs text-yellow-600 dark:text-yellow-400">
+                                {overallTrustScore >= 95 ? 'レジェンド' : 
+                                 overallTrustScore >= 90 ? 'マスター' : 
+                                 'エキスパート'}
+                              </div>
+                            </div>
+                            
+                            <div className="text-center">
+                              <Award className="w-6 h-6 mx-auto mb-1 text-yellow-500" />
+                              <div className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">称号</div>
+                              <div className="text-xs text-yellow-600 dark:text-yellow-400">
+                                {overallTrustScore >= 95 ? '伝説の信頼者' : 
+                                 overallTrustScore >= 90 ? '信頼の殿堂入り' : 
+                                 '高信頼度ユーザー'}
+                              </div>
+                            </div>
+                            
+                            <div className="text-center">
+                              <Users className="w-6 h-6 mx-auto mb-1 text-yellow-500" />
+                              <div className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">コミュニティ貢献</div>
+                              <div className="text-xs text-yellow-600 dark:text-yellow-400">
+                                {overallTrustScore >= 95 ? '模範的リーダー' : 
+                                 overallTrustScore >= 90 ? '信頼できる仲間' : 
+                                 '価値あるメンバー'}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <p className="text-sm text-yellow-600 dark:text-yellow-400 italic">
+                            {overallTrustScore >= 95 ? 'あなたは究極の信頼を築き上げました！コミュニティの永続的な柱です。' : 
+                             overallTrustScore >= 90 ? 'あなたはコミュニティの信頼できるリーダーです。多くの人があなたを頼りにしています。' : 
+                             'あなたは多くの人から信頼され、コミュニティの貴重なメンバーです。'}
+                          </p>
+                        </div>
                       </div>
                     )}
                   </div>
