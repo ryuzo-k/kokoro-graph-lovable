@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Heart, Users, Plus, ArrowLeft, Network, UserPlus, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useNavigate } from 'react-router-dom';
 import { useCommunities } from '@/hooks/useCommunities';
 import { useToast } from '@/hooks/use-toast';
@@ -15,6 +16,7 @@ const Communities = () => {
   const [newCommunityName, setNewCommunityName] = useState('');
   const [newCommunityDescription, setNewCommunityDescription] = useState('');
   const { user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -42,8 +44,8 @@ const Communities = () => {
       setNewCommunityDescription('');
       setShowCreateForm(false);
       toast({
-        title: "コミュニティを作成しました",
-        description: `${newCommunityName}が正常に作成されました。`
+        title: t('communities.created'),
+        description: `${newCommunityName}${t('communities.createdSuccess')}`
       });
     }
   };
@@ -52,8 +54,8 @@ const Communities = () => {
     const result = await joinCommunity(communityId);
     if (result?.success) {
       toast({
-        title: "コミュニティに参加しました",
-        description: `${communityName}に参加しました。`
+        title: t('communities.joined2'),
+        description: `${t('communities.joinedSuccess')}${communityName}`
       });
     }
   };
@@ -62,8 +64,8 @@ const Communities = () => {
     const result = await leaveCommunity(communityId);
     if (result?.success) {
       toast({
-        title: "コミュニティから退出しました",
-        description: `${communityName}から退出しました。`
+        title: t('communities.left'),
+        description: `${t('communities.leftSuccess')}${communityName}`
       });
     }
   };
@@ -90,11 +92,11 @@ const Communities = () => {
                 size="sm"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                戻る
+                {t('communities.back')}
               </Button>
               <div className="flex items-center gap-2">
                 <Users className="w-8 h-8 text-primary" />
-                <h1 className="text-2xl font-bold text-foreground">コミュニティ</h1>
+                <h1 className="text-2xl font-bold text-foreground">{t('communities.title')}</h1>
               </div>
             </div>
             <Button 
@@ -102,7 +104,7 @@ const Communities = () => {
               className="bg-gradient-primary hover:opacity-90 transition-opacity"
             >
               <Plus className="w-4 h-4 mr-2" />
-              新規作成
+              {t('communities.create')}
             </Button>
           </div>
         </div>
@@ -116,7 +118,7 @@ const Communities = () => {
 
         {/* My Communities */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-foreground mb-4">参加中のコミュニティ</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-4">{t('communities.joined')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {userCommunities.map((community) => (
               <Card key={community.id} className="bg-card/80 backdrop-blur-sm shadow-card hover:shadow-lg transition-shadow">
@@ -142,7 +144,7 @@ const Communities = () => {
                       size="sm"
                     >
                       <Network className="w-4 h-4 mr-2" />
-                      ネットワーク
+                      {t('communities.network')}
                     </Button>
                     <Button 
                       onClick={() => handleLeaveCommunity(community.id, community.name)}
@@ -158,7 +160,7 @@ const Communities = () => {
             {userCommunities.length === 0 && (
               <div className="col-span-full text-center py-8">
                 <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">まだコミュニティに参加していません</p>
+                <p className="text-muted-foreground">{t('communities.noJoined')}</p>
               </div>
             )}
           </div>
@@ -166,7 +168,7 @@ const Communities = () => {
 
         {/* All Communities */}
         <div>
-          <h2 className="text-xl font-semibold text-foreground mb-4">すべてのコミュニティ</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-4">{t('communities.all')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {communities.map((community) => {
               const isMember = userCommunities.some(uc => uc.id === community.id);
@@ -194,7 +196,7 @@ const Communities = () => {
                         size="sm"
                       >
                         <UserPlus className="w-4 h-4 mr-2" />
-                        参加する
+                        {t('communities.join')}
                       </Button>
                     ) : (
                       <div className="flex gap-2">
@@ -204,7 +206,7 @@ const Communities = () => {
                           size="sm"
                         >
                           <Network className="w-4 h-4 mr-2" />
-                          ネットワーク
+                          {t('communities.network')}
                         </Button>
                         <Button 
                           onClick={() => handleLeaveCommunity(community.id, community.name)}
@@ -229,7 +231,7 @@ const Communities = () => {
           <Card className="w-full max-w-md bg-card shadow-xl">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>新しいコミュニティ</CardTitle>
+                <CardTitle>{t('communities.newCommunity')}</CardTitle>
                 <Button 
                   onClick={() => setShowCreateForm(false)}
                   variant="ghost"
@@ -243,23 +245,23 @@ const Communities = () => {
               <form onSubmit={handleCreateCommunity} className="space-y-4">
                 <div>
                   <label className="text-sm font-medium text-foreground">
-                    コミュニティ名
+                    {t('communities.communityName')}
                   </label>
                   <Input
                     value={newCommunityName}
                     onChange={(e) => setNewCommunityName(e.target.value)}
-                    placeholder="例: 東京エンジニア会"
+                    placeholder={t('communities.placeholder.name')}
                     required
                   />
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground">
-                    説明（オプション）
+                    {t('communities.description')}
                   </label>
                   <Input
                     value={newCommunityDescription}
                     onChange={(e) => setNewCommunityDescription(e.target.value)}
-                    placeholder="コミュニティの説明を入力してください"
+                    placeholder={t('communities.placeholder.description')}
                   />
                 </div>
                 <div className="flex gap-2">
@@ -269,14 +271,14 @@ const Communities = () => {
                     variant="outline"
                     className="flex-1"
                   >
-                    キャンセル
+                    {t('communities.cancel')}
                   </Button>
                   <Button 
                     type="submit"
                     className="flex-1 bg-gradient-primary hover:opacity-90 transition-opacity"
                     disabled={!newCommunityName.trim()}
                   >
-                    作成
+                    {t('communities.create')}
                   </Button>
                 </div>
               </form>
