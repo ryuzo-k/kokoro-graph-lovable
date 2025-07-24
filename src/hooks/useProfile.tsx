@@ -64,11 +64,18 @@ export const useProfile = () => {
     if (!user) return { success: false, error: 'Not authenticated' };
 
     try {
+      console.log('Starting GitHub analysis for:', username);
+      
       const { data, error } = await supabase.functions.invoke('analyze-github-profile', {
         body: { username, userId: user.id }
       });
 
-      if (error) throw error;
+      console.log('GitHub analysis response:', { data, error });
+
+      if (error) {
+        console.error('GitHub function error:', error);
+        throw error;
+      }
       
       toast({
         title: "GitHub分析完了",
@@ -80,9 +87,12 @@ export const useProfile = () => {
       return { success: true, data };
     } catch (error) {
       console.error('Error analyzing GitHub:', error);
+      
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      
       toast({
         title: "エラー", 
-        description: "GitHub分析に失敗しました",
+        description: `GitHub分析に失敗しました: ${errorMessage}`,
         variant: "destructive"
       });
       return { success: false, error };
