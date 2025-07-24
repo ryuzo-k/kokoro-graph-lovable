@@ -320,16 +320,16 @@ const Profile = () => {
                               <div className="flex items-center justify-center gap-2 text-yellow-700 dark:text-yellow-300">
                                 <Crown className="w-5 h-5" />
                                 <span className="font-semibold">
-                                  {overallTrustScore >= 95 ? '伝説の信頼者' : 
-                                   overallTrustScore >= 90 ? '信頼の殿堂入り' : 
-                                   '高信頼度ユーザー'}
-                                </span>
-                                <Crown className="w-5 h-5" />
-                              </div>
-                              <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
-                                {overallTrustScore >= 95 ? 'あなたは究極の信頼を築き上げました！' : 
-                                 overallTrustScore >= 90 ? 'コミュニティの信頼できるリーダーです！' : 
-                                 '多くの人から信頼されています！'}
+                                   {overallTrustScore >= 95 ? t('profile.title.legend') : 
+                                    overallTrustScore >= 90 ? t('profile.title.master') : 
+                                    t('profile.title.expert')}
+                                 </span>
+                                 <Crown className="w-5 h-5" />
+                               </div>
+                               <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                                 {overallTrustScore >= 95 ? t('profile.communityContribution') : 
+                                  overallTrustScore >= 90 ? t('profile.communityContribution') : 
+                                  t('profile.communityContribution')}
                               </p>
                             </div>
                           )}
@@ -338,7 +338,7 @@ const Profile = () => {
                             <Badge 
                               className={`mt-3 ${getFraudRiskColor(profile.fraud_risk_level)} text-white`}
                             >
-                              詐欺リスク: {profile.fraud_risk_level}
+                               {t('profile.fraudRiskLevel')}: {profile.fraud_risk_level}
                             </Badge>
                           )}
                         </div>
@@ -352,7 +352,7 @@ const Profile = () => {
                         <div className={`text-xl font-bold ${getScoreColor(profile.github_score)}`}>
                           {profile.github_score}/100
                         </div>
-                        <p className="text-sm text-muted-foreground">開発レベル</p>
+                        <p className="text-sm text-muted-foreground">{t('profile.developmentLevel')}</p>
                       </div>
                     )}
 
@@ -362,7 +362,7 @@ const Profile = () => {
                         <div className={`text-xl font-bold ${getScoreColor(profile.linkedin_score)}`}>
                           {profile.linkedin_score}/100
                         </div>
-                        <p className="text-sm text-muted-foreground">LinkedIn信頼度</p>
+                        <p className="text-sm text-muted-foreground">{t('profile.linkedinTrust')}</p>
                       </div>
                     )}
 
@@ -372,7 +372,7 @@ const Profile = () => {
                         <div className={`text-xl font-bold ${getScoreColor(profile.portfolio_score)}`}>
                           {profile.portfolio_score}/100
                         </div>
-                        <p className="text-sm text-muted-foreground">技術スコア</p>
+                        <p className="text-sm text-muted-foreground">{t('profile.technicalScore')}</p>
                       </div>
                     )}
 
@@ -382,13 +382,13 @@ const Profile = () => {
                       <div className={`text-xl font-bold ${getScoreColor(peopleTrustScore || 0)}`}>
                         {peopleTrustScore || 0}/100
                       </div>
-                      <p className="text-sm text-muted-foreground">相手からの信頼度</p>
+                      <p className="text-sm text-muted-foreground">{t('profile.peopleTrust')}</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {meetingCount}件の評価
+                        {meetingCount}{t('profile.evaluations')}
                       </p>
                       {peopleTrustScore === null && meetingCount === 0 && (
                         <p className="text-xs text-muted-foreground mt-1 italic">
-                          評価データがありません
+                          {t('profile.noEvaluations')}
                         </p>
                       )}
                     </div>
