@@ -143,26 +143,34 @@ const Index = () => {
   }), [people, connections, meetings]);
 
   return (
-    <div className="min-h-screen bg-gradient-bg">
+    <div className="min-h-screen bg-gradient-bg relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 bg-gradient-hero"></div>
+      <div className="absolute top-10 left-10 w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-float"></div>
+      <div className="absolute top-60 right-10 w-80 h-80 bg-accent/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-float" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-trust-high/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-float" style={{ animationDelay: '4s' }}></div>
+      
       {/* Header */}
-      <header className="bg-card/95 backdrop-blur-sm border-b border-border shadow-soft animate-fade-in">
+      <header className="relative z-20 glass-effect border-b border-border/30 shadow-hero animate-slide-up">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 hover-scale cursor-pointer" onClick={() => navigate('/')}>
+            <div className="flex items-center gap-4 hover-lift cursor-pointer group" onClick={() => navigate('/')}>
               <div className="relative">
-                <Heart className="w-8 h-8 text-primary animate-pulse" />
-                <Sparkles className="w-4 h-4 text-primary/60 absolute -top-1 -right-1" />
+                <div className="w-12 h-12 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow pulse-glow">
+                  <Heart className="w-7 h-7 text-primary-foreground" />
+                </div>
+                <Sparkles className="w-5 h-5 text-accent absolute -top-2 -right-2 animate-bounce group-hover:scale-125 transition-transform" />
               </div>
                <div>
-                 <h1 className="text-2xl font-bold text-foreground">{t('app.title')}</h1>
+                 <h1 className="text-2xl font-bold gradient-text">{t('app.title')}</h1>
                  <p className="text-xs text-muted-foreground">{t('app.subtitle')}</p>
                </div>
             </div>
             <div className="flex items-center gap-3">
               {user ? (
                 <>
-                  <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg text-sm">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <div className="hidden md:flex items-center gap-3 px-4 py-2 glass-effect rounded-xl text-sm shadow-soft">
+                    <div className="w-3 h-3 bg-trust-high rounded-full animate-pulse"></div>
                     <User className="w-4 h-4 text-muted-foreground" />
                     <span className="text-foreground font-medium">{user.email?.split('@')[0]}</span>
                   </div>
@@ -170,7 +178,7 @@ const Index = () => {
                     onClick={() => navigate('/communities')}
                     variant="ghost"
                     size="sm"
-                    className="hover-scale"
+                    className="hover-lift glass-effect"
                   >
                     <Users className="w-4 h-4 mr-2" />
                     {t('nav.communities')}
@@ -179,7 +187,7 @@ const Index = () => {
                     onClick={() => navigate('/profile')}
                     variant="ghost"
                     size="sm"
-                    className="hover-scale"
+                    className="hover-lift glass-effect"
                   >
                     <User className="w-4 h-4 mr-2" />
                     {t('nav.profile')}
@@ -188,14 +196,14 @@ const Index = () => {
                     onClick={() => navigate('/settings')}
                     variant="ghost"
                     size="sm"
-                    className="hover-scale"
+                    className="hover-lift glass-effect"
                   >
                     <Settings className="w-4 h-4 mr-2" />
                     {t('nav.settings')}
                   </Button>
                   <Button 
                     onClick={() => setShowForm(true)}
-                    className="bg-gradient-primary hover:opacity-90 transition-all duration-300 hover-scale shadow-lg"
+                    className="bg-gradient-primary hover:opacity-90 transition-all duration-500 hover-scale shadow-hero shimmer relative overflow-hidden"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     <span className="hidden sm:inline">{t('nav.record')}</span>
@@ -205,7 +213,7 @@ const Index = () => {
                     onClick={signOut}
                     variant="outline"
                     size="sm"
-                    className="hover-scale"
+                    className="hover-lift glass-effect"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
                     <span className="hidden sm:inline">{t('nav.logout')}</span>
@@ -214,7 +222,7 @@ const Index = () => {
               ) : (
                 <Button 
                   onClick={() => navigate('/auth')}
-                  className="bg-gradient-primary hover:opacity-90 transition-all duration-300 hover-scale shadow-lg"
+                  className="bg-gradient-primary hover:opacity-90 transition-all duration-500 hover-scale shadow-hero shimmer relative overflow-hidden"
                 >
                   <LogIn className="w-4 h-4 mr-2" />
                   {t('nav.login')}
@@ -225,115 +233,116 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="relative">
+      <main className="relative z-10 container mx-auto px-4 py-6">
         {!user ? (
-          <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-            {/* Background decoration */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"></div>
-            <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
-            <div className="absolute top-40 right-10 w-72 h-72 bg-accent/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style={{ animationDelay: '2s' }}></div>
-            <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-72 h-72 bg-secondary/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style={{ animationDelay: '4s' }}></div>
-            
-            <div className="relative z-10 text-center py-20 animate-fade-in">
-              <div className="max-w-4xl mx-auto px-4 space-y-12">
-                {/* Hero Icon */}
+          <div className="relative min-h-[85vh] flex items-center justify-center">
+            <div className="text-center py-20 animate-bounce-in">
+              <div className="max-w-6xl mx-auto px-4 space-y-16">
+                {/* Hero Icon with enhanced effects */}
                 <div className="relative inline-block">
                   <div className="relative">
-                    <Heart className="w-32 h-32 text-primary mx-auto animate-pulse drop-shadow-2xl" />
-                    <div className="absolute inset-0 w-32 h-32 mx-auto border-2 border-primary/30 rounded-full animate-ping"></div>
-                    <div className="absolute inset-0 w-32 h-32 mx-auto border border-primary/20 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
+                    <div className="w-40 h-40 bg-gradient-primary rounded-full flex items-center justify-center mx-auto shadow-hero pulse-glow animate-float">
+                      <Heart className="w-20 h-20 text-primary-foreground drop-shadow-2xl" />
+                    </div>
+                    <div className="absolute inset-0 w-40 h-40 mx-auto border-2 border-primary/30 rounded-full animate-ping"></div>
+                    <div className="absolute inset-0 w-40 h-40 mx-auto border border-primary/20 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
                   </div>
-                  <Sparkles className="w-8 h-8 text-accent absolute -top-4 -right-4 animate-bounce" />
-                  <Network className="w-6 h-6 text-primary/60 absolute -bottom-2 -left-6 animate-pulse" />
+                  <Sparkles className="w-10 h-10 text-accent absolute -top-6 -right-6 animate-bounce drop-shadow-lg" />
+                  <Network className="w-8 h-8 text-primary/60 absolute -bottom-4 -left-8 animate-pulse drop-shadow-lg" />
+                  <TrendingUp className="w-6 h-6 text-trust-high absolute top-2 left-2 animate-bounce" style={{ animationDelay: '0.5s' }} />
                 </div>
                 
-                {/* Headline */}
-                <div className="space-y-6">
-                  <h1 className="text-6xl md:text-7xl font-bold text-foreground leading-tight tracking-tight">
-                    <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-fade-in">
+                {/* Enhanced Headline */}
+                <div className="space-y-8">
+                  <h1 className="text-7xl md:text-8xl font-bold leading-tight tracking-tight animate-scale-in">
+                    <span className="gradient-text bg-gradient-rainbow bg-clip-text text-transparent animate-shimmer">
                       {t('app.title')}
                     </span>
                   </h1>
-                  <p className="text-2xl md:text-3xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-light">
+                  <p className="text-3xl md:text-4xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light animate-fade-in" style={{ animationDelay: '0.2s' }}>
                     {t('landing.description')}
                   </p>
-                  <div className="flex items-center justify-center gap-2 text-lg text-primary/80">
-                    <span>✨</span>
-                    <span className="italic">人間関係の可視化で、コミュニティをもっと豊かに</span>
-                    <span>✨</span>
+                  <div className="flex items-center justify-center gap-3 text-xl animate-slide-up" style={{ animationDelay: '0.4s' }}>
+                    <span className="animate-bounce">✨</span>
+                    <span className="italic gradient-text font-medium">人間関係の可視化で、コミュニティをもっと豊かに</span>
+                    <span className="animate-bounce" style={{ animationDelay: '0.2s' }}>✨</span>
                   </div>
                 </div>
                 
-                {/* CTA Button */}
-                <div className="space-y-6">
+                {/* Enhanced CTA Button */}
+                <div className="space-y-8 animate-bounce-in" style={{ animationDelay: '0.6s' }}>
                   <Button 
                     onClick={() => navigate('/auth')}
                     size="lg"
-                    className="bg-gradient-primary hover:opacity-90 transition-all duration-500 hover-scale shadow-xl px-12 py-6 text-xl font-semibold rounded-2xl relative overflow-hidden group"
+                    className="bg-gradient-primary hover:opacity-90 hover:shadow-hero transition-all duration-700 hover-scale shadow-hero px-16 py-8 text-2xl font-bold rounded-3xl relative overflow-hidden group shimmer border-2 border-primary/20"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                    <LogIn className="w-6 h-6 mr-3" />
+                    <LogIn className="w-8 h-8 mr-4" />
                     <span>{t('landing.cta')}</span>
                   </Button>
-                  <p className="text-sm text-muted-foreground">
-                    📈 すでに <span className="font-semibold text-primary">1,000+</span> のつながりが記録されています
+                  <p className="text-lg text-muted-foreground">
+                    📈 すでに <span className="font-bold gradient-text text-2xl">1,000+</span> のつながりが記録されています
                   </p>
                 </div>
                 
-                {/* Feature highlights */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 max-w-5xl mx-auto">
-                  <div className="group p-8 bg-gradient-to-br from-card/80 to-card/40 rounded-2xl backdrop-blur-sm border border-border/50 hover-scale transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
-                    <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                      <Network className="w-8 h-8 text-primary" />
+                {/* Enhanced Feature highlights */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-24 max-w-6xl mx-auto">
+                  <div className="group p-10 glass-effect rounded-3xl hover-lift transition-all duration-700 hover:shadow-hero animate-slide-up border border-border/30" style={{ animationDelay: '0.8s' }}>
+                    <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 group-hover:shadow-glow transition-all duration-500 animate-float">
+                      <Network className="w-10 h-10 text-primary pulse-glow" />
                     </div>
-                    <h3 className="font-bold text-xl text-foreground mb-4">{t('landing.feature1.title')}</h3>
-                    <p className="text-muted-foreground leading-relaxed">
+                    <h3 className="font-bold text-2xl gradient-text mb-6">{t('landing.feature1.title')}</h3>
+                    <p className="text-muted-foreground leading-relaxed text-lg">
                       {t('landing.feature1.desc')}
                     </p>
                   </div>
-                  <div className="group p-8 bg-gradient-to-br from-card/80 to-card/40 rounded-2xl backdrop-blur-sm border border-border/50 hover-scale transition-all duration-500 hover:shadow-2xl hover:shadow-accent/10" style={{ animationDelay: '0.2s' }}>
-                    <div className="w-16 h-16 bg-gradient-to-br from-accent/20 to-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                      <TrendingUp className="w-8 h-8 text-accent" />
+                  <div className="group p-10 glass-effect rounded-3xl hover-lift transition-all duration-700 hover:shadow-hero animate-slide-up border border-border/30" style={{ animationDelay: '1s' }}>
+                    <div className="w-20 h-20 bg-gradient-to-br from-accent/20 to-accent/10 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 group-hover:shadow-glow transition-all duration-500 animate-float" style={{ animationDelay: '1s' }}>
+                      <TrendingUp className="w-10 h-10 text-accent pulse-glow" />
                     </div>
-                    <h3 className="font-bold text-xl text-foreground mb-4">{t('landing.feature2.title')}</h3>
-                    <p className="text-muted-foreground leading-relaxed">
+                    <h3 className="font-bold text-2xl gradient-text mb-6">{t('landing.feature2.title')}</h3>
+                    <p className="text-muted-foreground leading-relaxed text-lg">
                       {t('landing.feature2.desc')}
                     </p>
                   </div>
-                  <div className="group p-8 bg-gradient-to-br from-card/80 to-card/40 rounded-2xl backdrop-blur-sm border border-border/50 hover-scale transition-all duration-500 hover:shadow-2xl hover:shadow-secondary/10" style={{ animationDelay: '0.4s' }}>
-                    <div className="w-16 h-16 bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                      <Sparkles className="w-8 h-8 text-secondary" />
+                  <div className="group p-10 glass-effect rounded-3xl hover-lift transition-all duration-700 hover:shadow-hero animate-slide-up border border-border/30" style={{ animationDelay: '1.2s' }}>
+                    <div className="w-20 h-20 bg-gradient-to-br from-trust-high/20 to-trust-medium/10 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 group-hover:shadow-glow transition-all duration-500 animate-float" style={{ animationDelay: '2s' }}>
+                      <Sparkles className="w-10 h-10 text-trust-high pulse-glow" />
                     </div>
-                    <h3 className="font-bold text-xl text-foreground mb-4">{t('landing.feature3.title')}</h3>
-                    <p className="text-muted-foreground leading-relaxed">
+                    <h3 className="font-bold text-2xl gradient-text mb-6">{t('landing.feature3.title')}</h3>
+                    <p className="text-muted-foreground leading-relaxed text-lg">
                       {t('landing.feature3.desc')}
                     </p>
                   </div>
                 </div>
                 
-                {/* Social proof section */}
-                <div className="mt-20 p-8 bg-gradient-to-r from-muted/30 to-muted/50 rounded-2xl backdrop-blur-sm border border-border/30">
-                  <div className="flex flex-col md:flex-row items-center justify-center gap-8">
-                    <div className="flex items-center gap-4">
-                      <div className="flex -space-x-2">
-                        <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-full border-2 border-background"></div>
-                        <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent/80 rounded-full border-2 border-background"></div>
-                        <div className="w-10 h-10 bg-gradient-to-br from-secondary to-secondary/80 rounded-full border-2 border-background"></div>
-                        <div className="w-10 h-10 bg-muted rounded-full border-2 border-background flex items-center justify-center text-xs font-semibold">+99</div>
+                {/* Enhanced Social proof section */}
+                <div className="mt-24 p-12 glass-effect rounded-3xl border border-border/30 shadow-elegant max-w-5xl mx-auto animate-bounce-in" style={{ animationDelay: '1.4s' }}>
+                  <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+                    <div className="flex items-center gap-6">
+                      <div className="flex -space-x-3">
+                        <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-glow rounded-full border-4 border-background shadow-node animate-float"></div>
+                        <div className="w-16 h-16 bg-gradient-to-br from-accent to-accent/80 rounded-full border-4 border-background shadow-node animate-float" style={{ animationDelay: '0.5s' }}></div>
+                        <div className="w-16 h-16 bg-gradient-to-br from-trust-high to-trust-medium rounded-full border-4 border-background shadow-node animate-float" style={{ animationDelay: '1s' }}></div>
+                        <div className="w-16 h-16 bg-gradient-to-br from-muted to-muted-foreground rounded-full border-4 border-background flex items-center justify-center text-sm font-bold text-primary shadow-node animate-float" style={{ animationDelay: '1.5s' }}>+99</div>
                       </div>
                       <div className="text-left">
-                        <p className="font-semibold text-foreground">活発なコミュニティ</p>
-                        <p className="text-sm text-muted-foreground">毎日新しいつながりが生まれています</p>
+                        <p className="font-bold text-2xl gradient-text">活発なコミュニティ</p>
+                        <p className="text-lg text-muted-foreground">毎日新しいつながりが生まれています</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-amber-500">
-                      <Star className="w-5 h-5 fill-current" />
-                      <Star className="w-5 h-5 fill-current" />
-                      <Star className="w-5 h-5 fill-current" />
-                      <Star className="w-5 h-5 fill-current" />
-                      <Star className="w-5 h-5 fill-current" />
-                      <span className="ml-2 text-foreground font-semibold">4.9/5</span>
-                      <span className="text-muted-foreground text-sm">(128件のレビュー)</span>
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1">
+                        <Star className="w-7 h-7 fill-current text-trust-medium pulse-glow" />
+                        <Star className="w-7 h-7 fill-current text-trust-medium pulse-glow" style={{ animationDelay: '0.1s' }} />
+                        <Star className="w-7 h-7 fill-current text-trust-medium pulse-glow" style={{ animationDelay: '0.2s' }} />
+                        <Star className="w-7 h-7 fill-current text-trust-medium pulse-glow" style={{ animationDelay: '0.3s' }} />
+                        <Star className="w-7 h-7 fill-current text-trust-medium pulse-glow" style={{ animationDelay: '0.4s' }} />
+                      </div>
+                      <div className="text-left ml-4">
+                        <span className="text-3xl font-bold gradient-text">4.9/5</span>
+                        <p className="text-muted-foreground">(128件のレビュー)</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -341,8 +350,8 @@ const Index = () => {
             </div>
           </div>
         ) : (
-        <div className="animate-fade-in">
-        <Tabs defaultValue="network" className="space-y-6">
+          <div className="animate-fade-in">
+            <Tabs defaultValue="network" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 lg:w-600 bg-card/50 backdrop-blur-sm">
             <TabsTrigger value="network" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Network className="w-4 h-4" />
