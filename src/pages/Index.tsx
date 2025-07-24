@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import MeetingForm from '@/components/MeetingForm';
 import NetworkGraph from '@/components/NetworkGraph';
-import { Heart, Network, Plus, BarChart3, LogIn, LogOut, User, Users, Sparkles, TrendingUp, MapPin, Calendar, Star, Settings, Bot } from 'lucide-react';
+import { Heart, Network, Plus, BarChart3, LogIn, LogOut, User, Users, Sparkles, TrendingUp, MapPin, Calendar, Star, Settings, Bot, Languages } from 'lucide-react';
 import AIFriendFinder from '@/components/AIFriendFinder';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
@@ -31,7 +31,7 @@ interface Connection {
 const Index = () => {
   const [showForm, setShowForm] = useState(false);
   const { user, signOut, loading } = useAuth();
-  const { t } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const navigate = useNavigate();
   const { meetings, addMeeting } = useMeetings();
   const { people: allPeople } = usePeople();
@@ -167,6 +167,19 @@ const Index = () => {
                </div>
             </div>
             <div className="flex items-center gap-3">
+              {/* Language Toggle */}
+              <Button
+                onClick={() => setLanguage(language === 'ja' ? 'en' : 'ja')}
+                variant="ghost"
+                size="sm"
+                className="hover-lift glass-effect"
+                title={language === 'ja' ? 'Switch to English' : '日本語に切り替え'}
+              >
+                <Languages className="w-4 h-4 mr-2" />
+                <span className="text-xs font-medium">
+                  {language === 'ja' ? 'EN' : 'JP'}
+                </span>
+              </Button>
               {user ? (
                 <>
                   <div className="hidden md:flex items-center gap-3 px-4 py-2 glass-effect rounded-xl text-sm shadow-soft">
@@ -264,7 +277,9 @@ const Index = () => {
                   </p>
                   <div className="flex items-center justify-center gap-3 text-xl animate-slide-up" style={{ animationDelay: '0.4s' }}>
                     <span className="animate-bounce">✨</span>
-                    <span className="italic gradient-text font-medium">人間関係の可視化で、コミュニティをもっと豊かに</span>
+                    <span className="italic gradient-text font-medium">
+                      {language === 'ja' ? '人間関係の可視化で、コミュニティをもっと豊かに' : 'Enriching communities through human relationship visualization'}
+                    </span>
                     <span className="animate-bounce" style={{ animationDelay: '0.2s' }}>✨</span>
                   </div>
                 </div>
@@ -281,7 +296,7 @@ const Index = () => {
                     <span>{t('landing.cta')}</span>
                   </Button>
                   <p className="text-lg text-muted-foreground">
-                    📈 すでに <span className="font-bold gradient-text text-2xl">1,000+</span> のつながりが記録されています
+                    📈 {language === 'ja' ? 'すでに' : 'Already'} <span className="font-bold gradient-text text-2xl">1,000+</span> {language === 'ja' ? 'のつながりが記録されています' : 'connections recorded'}
                   </p>
                 </div>
                 
@@ -327,8 +342,12 @@ const Index = () => {
                         <div className="w-16 h-16 bg-gradient-to-br from-muted to-muted-foreground rounded-full border-4 border-background flex items-center justify-center text-sm font-bold text-primary shadow-node animate-float" style={{ animationDelay: '1.5s' }}>+99</div>
                       </div>
                       <div className="text-left">
-                        <p className="font-bold text-2xl gradient-text">活発なコミュニティ</p>
-                        <p className="text-lg text-muted-foreground">毎日新しいつながりが生まれています</p>
+                        <p className="font-bold text-2xl gradient-text">
+                          {language === 'ja' ? '活発なコミュニティ' : 'Active Community'}
+                        </p>
+                        <p className="text-lg text-muted-foreground">
+                          {language === 'ja' ? '毎日新しいつながりが生まれています' : 'New connections are formed every day'}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -341,7 +360,9 @@ const Index = () => {
                       </div>
                       <div className="text-left ml-4">
                         <span className="text-3xl font-bold gradient-text">4.9/5</span>
-                        <p className="text-muted-foreground">(128件のレビュー)</p>
+                        <p className="text-muted-foreground">
+                          ({language === 'ja' ? '128件のレビュー' : '128 reviews'})
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -357,10 +378,10 @@ const Index = () => {
               <Network className="w-4 h-4" />
               {t('tab.network')}
             </TabsTrigger>
-            <TabsTrigger value="ai-finder" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <Bot className="w-4 h-4" />
-              AI友達発見
-            </TabsTrigger>
+             <TabsTrigger value="ai-finder" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+               <Bot className="w-4 h-4" />
+               {language === 'ja' ? 'AI友達発見' : 'AI Friend Finder'}
+             </TabsTrigger>
             <TabsTrigger value="stats" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <BarChart3 className="w-4 h-4" />
               {t('tab.stats')}
