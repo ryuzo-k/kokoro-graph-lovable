@@ -432,15 +432,26 @@ const NetworkVisualization = () => {
 
       {/* Meeting Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="relative">
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowForm(false);
+            }
+          }}
+        >
+          <div className="relative max-w-2xl w-full">
             <button
               onClick={() => setShowForm(false)}
-              className="absolute -top-2 -right-2 w-8 h-8 bg-card rounded-full shadow-lg flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors z-10"
+              className="absolute -top-3 -right-3 w-10 h-10 bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 z-[60] font-bold text-lg border-2 border-background"
+              aria-label="Close"
             >
               ×
             </button>
-            <MeetingForm onSubmit={handleMeetingSubmit} />
+            <MeetingForm 
+              onSubmit={handleMeetingSubmit}
+              onCancel={() => setShowForm(false)}
+            />
           </div>
         </div>
       )}

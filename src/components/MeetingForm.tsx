@@ -31,9 +31,10 @@ interface MeetingData {
 
 interface MeetingFormProps {
   onSubmit: (data: MeetingData) => void;
+  onCancel?: () => void;
 }
 
-const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
+const MeetingForm = ({ onSubmit, onCancel }: MeetingFormProps) => {
   const { t } = useLanguage();
   const [formData, setFormData] = useState<MeetingData>({
     myName: '',
@@ -331,13 +332,25 @@ const MeetingForm = ({ onSubmit }: MeetingFormProps) => {
             </TabsContent>
           </Tabs>
 
-          <Button 
-            type="submit" 
-            className="w-full mt-6 bg-gradient-primary hover:opacity-90 transition-opacity"
-            disabled={!formData.myName.trim() || !formData.otherName.trim() || !formData.detailed_feedback?.trim()}
-          >
-            {t('meeting.save')}
-          </Button>
+          <div className="flex gap-2 mt-6">
+            {onCancel && (
+              <Button 
+                type="button"
+                variant="outline" 
+                onClick={onCancel}
+                className="flex-1"
+              >
+                {t('meeting.cancel')}
+              </Button>
+            )}
+            <Button 
+              type="submit" 
+              className={`${onCancel ? 'flex-1' : 'w-full'} bg-gradient-primary hover:opacity-90 transition-opacity`}
+              disabled={!formData.myName.trim() || !formData.otherName.trim() || !formData.detailed_feedback?.trim()}
+            >
+              {t('meeting.save')}
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>
