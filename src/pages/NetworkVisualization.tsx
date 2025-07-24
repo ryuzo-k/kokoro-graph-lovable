@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MeetingForm from '@/components/MeetingForm';
 import NetworkGraph from '@/components/NetworkGraph';
-import { ArrowLeft, Plus, Network, BarChart3, Users } from 'lucide-react';
+import NetworkInsights from '@/components/NetworkInsights';
+import { ArrowLeft, Plus, Network, BarChart3, Users, Brain } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useMeetings, type Meeting } from '@/hooks/useMeetings';
 import { useCommunities } from '@/hooks/useCommunities';
@@ -199,10 +200,14 @@ const NetworkVisualization = () => {
 
       <main className="container mx-auto px-4 py-6">
         <Tabs defaultValue="network" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:w-400">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="network" className="flex items-center gap-2">
               <Network className="w-4 h-4" />
               ネットワーク
+            </TabsTrigger>
+            <TabsTrigger value="insights" className="flex items-center gap-2">
+              <Brain className="w-4 h-4" />
+              AI分析
             </TabsTrigger>
             <TabsTrigger value="stats" className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
@@ -242,6 +247,13 @@ const NetworkVisualization = () => {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="insights">
+            <NetworkInsights 
+              communityId={communityId!} 
+              userId={user.id} 
+            />
           </TabsContent>
 
           <TabsContent value="stats">
