@@ -36,6 +36,8 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { Person } from '@/hooks/usePeople';
 import { Meeting, useMeetings } from '@/hooks/useMeetings';
 import { useToast } from '@/hooks/use-toast';
+import { useRelationships } from '@/hooks/useRelationships';
+import RelationshipDetailPanel from './RelationshipDetailPanel';
 
 interface PersonWithStats extends Person {
   averageRating: number;
@@ -60,10 +62,12 @@ const edgeTypes = {
 const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) => {
   const { t, language } = useLanguage();
   const { addMeeting } = useMeetings();
+  const { relationships, getRelationshipBetween } = useRelationships();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
   const [selectedPerson, setSelectedPerson] = useState<PersonWithStats | null>(null);
+  const [showRelationshipDetail, setShowRelationshipDetail] = useState(false);
   const [isConnectMode, setIsConnectMode] = useState(false);
   const [layoutMode, setLayoutMode] = useState<'force' | 'circular' | 'hierarchical' | 'community'>('force');
 
@@ -224,16 +228,27 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
     return layoutNodes.map(n => {
       const person = n.person;
       
-      // Check if this person is connected to others
+      // 新しい関係性データベースから接続情報を取得
+      const allPersonRelationships = relationships.filter(rel => 
+        rel.person1_id === person.id || rel.person2_id === person.id
+      );
+      const isConnected = allPersonRelationships.length > 0;
+      const connectionStrength = allPersonRelationships.reduce((sum, rel) => sum + rel.total_meetings, 0);
+      
+      // 既存のconnectionsデータとの互換性も維持
       const filteredPersonIds = new Set(filteredPeople.map(p => p.id));
       const validConnections = connections.filter(conn => 
         filteredPersonIds.has(conn.person1Id) && filteredPersonIds.has(conn.person2Id)
       );
-      const personConnections = validConnections.filter(conn => 
+      const legacyConnections = validConnections.filter(conn => 
         conn.person1Id === person.id || conn.person2Id === person.id
       );
-      const isConnected = personConnections.length > 0;
-      const connectionStrength = personConnections.reduce((sum, conn) => sum + conn.meetingCount, 0);
+      const legacyIsConnected = legacyConnections.length > 0;
+      const legacyConnectionStrength = legacyConnections.reduce((sum, conn) => sum + conn.meetingCount, 0);
+      
+      // より包括的な接続判定
+      const finalIsConnected = isConnected || legacyIsConnected;
+      const finalConnectionStrength = Math.max(connectionStrength, legacyConnectionStrength);
       
       return {
         id: person.id,
@@ -250,8 +265,8 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
           communities: (person as any).communities || [],
           trustScore: (person as any).trustScore || person.averageRating,
           connectionCount: (person as any).connectionCount || person.meetingCount,
-          isConnected: isConnected,
-          connectionStrength: connectionStrength,
+          isConnected: finalIsConnected,
+          connectionStrength: finalConnectionStrength,
         },
         draggable: true,
       } as Node;
@@ -358,6 +373,7 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
     const person = people.find(p => p.id === node.id);
     if (person) {
       setSelectedPerson(person);
+      setShowRelationshipDetail(true);
       onNodeClick?.(person);
     }
   }, [people, onNodeClick]);
@@ -512,7 +528,19 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
         </Panel>
       </ReactFlow>
 
-      {selectedPerson && (
+      {/* 関係性詳細パネル */}
+      {showRelationshipDetail && selectedPerson && (
+        <RelationshipDetailPanel
+          person={selectedPerson}
+          onClose={() => {
+            setShowRelationshipDetail(false);
+            setSelectedPerson(null);
+          }}
+        />
+      )}
+
+      {/* 従来の人物プロフィール（PersonProfile）も残す */}
+      {selectedPerson && !showRelationshipDetail && (
         <PersonProfile
           person={selectedPerson}
           onClose={() => setSelectedPerson(null)}
