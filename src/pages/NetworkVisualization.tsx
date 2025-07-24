@@ -1,14 +1,15 @@
 import { useState, useCallback, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MeetingForm from '@/components/MeetingForm';
 import NetworkGraph from '@/components/NetworkGraph';
-import { Heart, Network, Plus, BarChart3, LogIn, LogOut, User, Users } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { ArrowLeft, Plus, Network, BarChart3, Users } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
 import { useMeetings, type Meeting } from '@/hooks/useMeetings';
+import { useCommunities } from '@/hooks/useCommunities';
 
 interface Person {
   id: string;
@@ -28,18 +29,28 @@ interface Connection {
   lastMeeting: string;
 }
 
-const Index = () => {
+const NetworkVisualization = () => {
+  const { communityId } = useParams<{ communityId: string }>();
   const [showForm, setShowForm] = useState(false);
-  const { user, signOut, loading } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const { meetings, addMeeting } = useMeetings();
+  const { communities } = useCommunities();
+
+  // Find the current community
+  const currentCommunity = communities.find(c => c.id === communityId);
+
+  // Filter meetings for this community
+  const communityMeetings = useMemo(() => {
+    return meetings.filter(meeting => (meeting as any).community_id === communityId);
+  }, [meetings, communityId]);
 
   // Process meetings to create people and connections
   const { people, connections } = useMemo(() => {
     const peopleMap = new Map<string, Person>();
     const connectionMap = new Map<string, Connection>();
 
-    meetings.forEach(meeting => {
+    communityMeetings.forEach(meeting => {
       // Add people
       [meeting.my_name, meeting.other_name].forEach(name => {
         if (!peopleMap.has(name)) {
@@ -95,7 +106,7 @@ const Index = () => {
       connection.lastMeeting = meeting.created_at;
       
       // Calculate connection average rating
-      const connectionMeetings = meetings.filter(m => 
+      const connectionMeetings = communityMeetings.filter(m => 
         (m.my_name === connection.person1Id && m.other_name === connection.person2Id) ||
         (m.my_name === connection.person2Id && m.other_name === connection.person1Id)
       );
@@ -106,14 +117,17 @@ const Index = () => {
       people: Array.from(peopleMap.values()),
       connections: Array.from(connectionMap.values()),
     };
-  }, [meetings]);
+  }, [communityMeetings]);
 
   const handleMeetingSubmit = useCallback(async (meetingData: any) => {
-    const result = await addMeeting(meetingData);
+    const result = await addMeeting({
+      ...meetingData,
+      community_id: communityId
+    });
     if (result?.success) {
       setShowForm(false);
     }
-  }, [addMeeting]);
+  }, [addMeeting, communityId]);
 
   const stats = useMemo(() => ({
     totalPeople: people.length,
@@ -121,8 +135,29 @@ const Index = () => {
     averageTrust: people.length > 0 
       ? people.reduce((sum, p) => sum + p.averageRating, 0) / people.length 
       : 0,
-    totalMeetings: meetings.length,
-  }), [people, connections, meetings]);
+    totalMeetings: communityMeetings.length,
+  }), [people, connections, communityMeetings]);
+
+  if (!user) {
+    navigate('/auth');
+    return null;
+  }
+
+  if (!currentCommunity) {
+    return (
+      <div className="min-h-screen bg-gradient-bg flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-foreground mb-4">
+            コミュニティが見つかりません
+          </h2>
+          <Button onClick={() => navigate('/communities')}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            コミュニティ一覧に戻る
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-bg">
@@ -130,89 +165,39 @@ const Index = () => {
       <header className="bg-card/95 backdrop-blur-sm border-b border-border shadow-soft">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Heart className="w-8 h-8 text-primary" />
-              <h1 className="text-2xl font-bold text-foreground">Kokoro Graph</h1>
+            <div className="flex items-center gap-4">
+              <Button 
+                onClick={() => navigate('/communities')}
+                variant="ghost"
+                size="sm"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                戻る
+              </Button>
+              <div className="flex items-center gap-3">
+                <Network className="w-8 h-8 text-primary" />
+                <div>
+                  <h1 className="text-2xl font-bold text-foreground">{currentCommunity.name}</h1>
+                  <p className="text-sm text-muted-foreground">{currentCommunity.description}</p>
+                </div>
+                <Badge variant="secondary">
+                  <Users className="w-3 h-3 mr-1" />
+                  {currentCommunity.member_count}
+                </Badge>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              {user ? (
-                <>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <User className="w-4 h-4" />
-                    {user.email}
-                  </div>
-                  <Button 
-                    onClick={() => navigate('/communities')}
-                    variant="outline"
-                    size="sm"
-                  >
-                    <Users className="w-4 h-4 mr-2" />
-                    コミュニティ
-                  </Button>
-                  <Button 
-                    onClick={() => navigate('/profile')}
-                    variant="outline"
-                    size="sm"
-                  >
-                    <User className="w-4 h-4 mr-2" />
-                    プロフィール
-                  </Button>
-                  <Button 
-                    onClick={() => setShowForm(true)}
-                    className="bg-gradient-primary hover:opacity-90 transition-opacity"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    出会いを記録
-                  </Button>
-                  <Button 
-                    onClick={signOut}
-                    variant="outline"
-                    size="sm"
-                  >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    ログアウト
-                  </Button>
-                </>
-              ) : (
-                <Button 
-                  onClick={() => navigate('/auth')}
-                  className="bg-gradient-primary hover:opacity-90 transition-opacity"
-                >
-                  <LogIn className="w-4 h-4 mr-2" />
-                  ログイン
-                </Button>
-              )}
-            </div>
+            <Button 
+              onClick={() => setShowForm(true)}
+              className="bg-gradient-primary hover:opacity-90 transition-opacity"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              出会いを記録
+            </Button>
           </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-6">
-        {!user ? (
-          <div className="text-center py-12">
-            <div className="max-w-md mx-auto space-y-6">
-              <div className="space-y-4">
-                <Heart className="w-16 h-16 text-primary mx-auto" />
-                <h2 className="text-3xl font-bold text-foreground">
-                  あなたの人間関係を
-                  <br />
-                  可視化しませんか？
-                </h2>
-                <p className="text-muted-foreground">
-                  Kokoro Graphで出会いを記録し、信頼関係のネットワークを築いていきましょう。
-                </p>
-              </div>
-              <Button 
-                onClick={() => navigate('/auth')}
-                size="lg"
-                className="bg-gradient-primary hover:opacity-90 transition-opacity"
-              >
-                <LogIn className="w-5 h-5 mr-2" />
-                今すぐ始める
-              </Button>
-            </div>
-          </div>
-        ) : (
         <Tabs defaultValue="network" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 lg:w-400">
             <TabsTrigger value="network" className="flex items-center gap-2">
@@ -239,7 +224,7 @@ const Index = () => {
                       <Network className="w-16 h-16 text-muted-foreground mx-auto" />
                       <div>
                         <h3 className="text-lg font-semibold text-foreground">
-                          ネットワークを作成しましょう
+                          このコミュニティにはまだネットワークがありません
                         </h3>
                         <p className="text-muted-foreground">
                           最初の出会いを記録してネットワークグラフを作成してください
@@ -320,7 +305,7 @@ const Index = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {meetings.slice(-10).reverse().map((meeting) => (
+                  {communityMeetings.slice(-10).reverse().map((meeting) => (
                     <div 
                       key={meeting.id}
                       className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
@@ -339,9 +324,9 @@ const Index = () => {
                       </div>
                     </div>
                   ))}
-                  {meetings.length === 0 && (
+                  {communityMeetings.length === 0 && (
                     <div className="text-center text-muted-foreground py-8">
-                      まだ出会いの記録がありません
+                      このコミュニティにはまだ出会いの記録がありません
                     </div>
                   )}
                 </div>
@@ -349,7 +334,6 @@ const Index = () => {
             </Card>
           </TabsContent>
         </Tabs>
-        )}
       </main>
 
       {/* Meeting Form Modal */}
@@ -370,4 +354,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default NetworkVisualization;

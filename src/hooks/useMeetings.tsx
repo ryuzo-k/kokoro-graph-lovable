@@ -12,6 +12,7 @@ export interface Meeting {
   location: string;
   rating: number;
   created_at: string;
+  community_id?: string;
 }
 
 export interface MeetingData {
@@ -29,6 +30,8 @@ export interface MeetingData {
   integrity?: number;
   // AI analysis
   detailed_feedback?: string;
+  // Community
+  community_id?: string;
 }
 
 export const useMeetings = () => {
@@ -83,7 +86,8 @@ export const useMeetings = () => {
           leadership: meetingData.leadership,
           innovation: meetingData.innovation,
           integrity: meetingData.integrity,
-          detailed_feedback: meetingData.detailed_feedback
+          detailed_feedback: meetingData.detailed_feedback,
+          community_id: meetingData.community_id
         })
         .select()
         .single();
