@@ -212,6 +212,85 @@ const Profile = () => {
             <CardTitle>プロフィール設定</CardTitle>
           </CardHeader>
           <CardContent>
+            {/* Trust Score Overview */}
+            {(profile?.github_score || profile?.linkedin_score || profile?.portfolio_score) && (
+              <Card className="mb-6 bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-primary" />
+                    総合信頼度スコア
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Overall Trust Score */}
+                    <div className="col-span-full">
+                      <div className="text-center p-6 bg-card/50 rounded-lg border border-border">
+                        <div className="text-3xl font-bold text-primary mb-2">
+                          {Math.round(
+                            ((profile?.github_score || 0) + 
+                             (profile?.linkedin_score || 0) + 
+                             (profile?.portfolio_score || 0)) / 
+                            (Number(!!profile?.github_score) + 
+                             Number(!!profile?.linkedin_score) + 
+                             Number(!!profile?.portfolio_score) || 1)
+                          )}/100
+                        </div>
+                        <p className="text-muted-foreground">あなたの総合信頼度</p>
+                        {profile?.fraud_risk_level && (
+                          <Badge 
+                            className={`mt-3 ${getFraudRiskColor(profile.fraud_risk_level)} text-white`}
+                          >
+                            詐欺リスク: {profile.fraud_risk_level}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Individual Scores */}
+                    {profile?.github_score && (
+                      <div className="text-center p-4 bg-card/30 rounded-lg">
+                        <Github className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                        <div className={`text-xl font-bold ${getScoreColor(profile.github_score)}`}>
+                          {profile.github_score}/100
+                        </div>
+                        <p className="text-sm text-muted-foreground">開発レベル</p>
+                      </div>
+                    )}
+
+                    {profile?.linkedin_score && (
+                      <div className="text-center p-4 bg-card/30 rounded-lg">
+                        <Linkedin className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                        <div className={`text-xl font-bold ${getScoreColor(profile.linkedin_score)}`}>
+                          {profile.linkedin_score}/100
+                        </div>
+                        <p className="text-sm text-muted-foreground">LinkedIn信頼度</p>
+                      </div>
+                    )}
+
+                    {profile?.portfolio_score && (
+                      <div className="text-center p-4 bg-card/30 rounded-lg">
+                        <Globe className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                        <div className={`text-xl font-bold ${getScoreColor(profile.portfolio_score)}`}>
+                          {profile.portfolio_score}/100
+                        </div>
+                        <p className="text-sm text-muted-foreground">技術スコア</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Score Explanation */}
+                  <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+                    <h4 className="text-sm font-semibold mb-2">スコアについて</h4>
+                    <p className="text-xs text-muted-foreground">
+                      総合信頼度は、GitHub開発レベル、LinkedIn信頼度、ポートフォリオ技術スコアの平均値です。
+                      各プラットフォームの分析結果を組み合わせて、あなたの専門性と信頼性を評価します。
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             <Tabs defaultValue="basic" className="w-full">
               <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="basic">基本情報</TabsTrigger>
