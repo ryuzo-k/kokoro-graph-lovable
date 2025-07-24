@@ -144,7 +144,7 @@ const PersonNetworkView = ({ centerPerson, connectedPeople, userCommunities }: P
   }, [centerPerson, connectedPeople]);
 
   return (
-    <div className="w-full h-96 border border-border rounded-lg overflow-hidden">
+    <div className="w-full h-[600px] border border-border rounded-lg overflow-hidden">
       <ReactFlow
         nodes={nodes}
         edges={edges}
