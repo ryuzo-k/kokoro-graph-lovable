@@ -368,13 +368,37 @@ const Profile = () => {
                               {/* Analysis breakdown */}
                               {profile.analysis_details.analysis && (
                                 <div className="pt-2 border-t">
-                                  <div className="grid grid-cols-2 gap-2 text-xs">
-                                    <div>アカウント年数: {profile.analysis_details.analysis.accountAge}/20</div>
-                                    <div>リポジトリ: {profile.analysis_details.analysis.repositories}/25</div>
-                                    <div>スター: {profile.analysis_details.analysis.stars}/20</div>
-                                    <div>言語多様性: {profile.analysis_details.analysis.languageDiversity}/15</div>
-                                    <div>フォロワー: {profile.analysis_details.analysis.followers}/10</div>
-                                    <div>活動状況: {profile.analysis_details.analysis.recentActivity}/10</div>
+                                  <h5 className="text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">あなたの獲得点数</h5>
+                                  <div className="grid grid-cols-2 gap-3 text-xs">
+                                    <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
+                                      <span>アカウント年数:</span>
+                                      <span className="font-medium text-blue-600">{profile.analysis_details.analysis.accountAge}/20</span>
+                                    </div>
+                                    <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
+                                      <span>リポジトリ:</span>
+                                      <span className="font-medium text-green-600">{profile.analysis_details.analysis.repositories}/25</span>
+                                    </div>
+                                    <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
+                                      <span>スター:</span>
+                                      <span className="font-medium text-orange-600">{profile.analysis_details.analysis.stars}/20</span>
+                                    </div>
+                                    <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
+                                      <span>言語多様性:</span>
+                                      <span className="font-medium text-purple-600">{profile.analysis_details.analysis.languageDiversity}/15</span>
+                                    </div>
+                                    <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
+                                      <span>フォロワー:</span>
+                                      <span className="font-medium text-indigo-600">{profile.analysis_details.analysis.followers}/10</span>
+                                    </div>
+                                    <div className="flex justify-between bg-white dark:bg-gray-800 p-2 rounded border">
+                                      <span>活動状況:</span>
+                                      <span className="font-medium text-teal-600">{profile.analysis_details.analysis.recentActivity}/10</span>
+                                    </div>
+                                  </div>
+                                  <div className="mt-3 pt-2 border-t text-center">
+                                    <span className="text-sm font-semibold">
+                                      合計: <span className={`text-lg ${getScoreColor(profile.github_score)}`}>{profile.github_score}/100</span>
+                                    </span>
                                   </div>
                                 </div>
                               )}
