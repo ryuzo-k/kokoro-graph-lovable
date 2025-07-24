@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MeetingForm from '@/components/MeetingForm';
 import NetworkGraph from '@/components/NetworkGraph';
-import { Heart, Network, Plus, BarChart3 } from 'lucide-react';
+import { Heart, Network, Plus, BarChart3, LogIn, LogOut, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 interface Meeting {
   id: string;
@@ -38,6 +40,8 @@ const Index = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [showForm, setShowForm] = useState(false);
   const { toast } = useToast();
+  const { user, signOut, loading } = useAuth();
+  const navigate = useNavigate();
 
   // Process meetings to create people and connections
   const { people, connections } = useMemo(() => {
@@ -148,18 +152,69 @@ const Index = () => {
               <Heart className="w-8 h-8 text-primary" />
               <h1 className="text-2xl font-bold text-foreground">Kokoro Graph</h1>
             </div>
-            <Button 
-              onClick={() => setShowForm(true)}
-              className="bg-gradient-primary hover:opacity-90 transition-opacity"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              出会いを記録
-            </Button>
+            <div className="flex items-center gap-3">
+              {user ? (
+                <>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <User className="w-4 h-4" />
+                    {user.email}
+                  </div>
+                  <Button 
+                    onClick={() => setShowForm(true)}
+                    className="bg-gradient-primary hover:opacity-90 transition-opacity"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    出会いを記録
+                  </Button>
+                  <Button 
+                    onClick={signOut}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    ログアウト
+                  </Button>
+                </>
+              ) : (
+                <Button 
+                  onClick={() => navigate('/auth')}
+                  className="bg-gradient-primary hover:opacity-90 transition-opacity"
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  ログイン
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-6">
+        {!user ? (
+          <div className="text-center py-12">
+            <div className="max-w-md mx-auto space-y-6">
+              <div className="space-y-4">
+                <Heart className="w-16 h-16 text-primary mx-auto" />
+                <h2 className="text-3xl font-bold text-foreground">
+                  あなたの人間関係を
+                  <br />
+                  可視化しませんか？
+                </h2>
+                <p className="text-muted-foreground">
+                  Kokoro Graphで出会いを記録し、信頼関係のネットワークを築いていきましょう。
+                </p>
+              </div>
+              <Button 
+                onClick={() => navigate('/auth')}
+                size="lg"
+                className="bg-gradient-primary hover:opacity-90 transition-opacity"
+              >
+                <LogIn className="w-5 h-5 mr-2" />
+                今すぐ始める
+              </Button>
+            </div>
+          </div>
+        ) : (
         <Tabs defaultValue="network" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 lg:w-400">
             <TabsTrigger value="network" className="flex items-center gap-2">
@@ -296,6 +351,7 @@ const Index = () => {
             </Card>
           </TabsContent>
         </Tabs>
+        )}
       </main>
 
       {/* Meeting Form Modal */}
