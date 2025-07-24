@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useLanguage } from '@/hooks/useLanguage';
 import { 
   BaseEdge, 
   EdgeLabelRenderer, 
@@ -13,6 +14,7 @@ interface ConnectionEdgeData {
 }
 
 const ConnectionEdge = memo((props: EdgeProps) => {
+  const { t } = useLanguage();
   const {
     id,
     sourceX,
@@ -71,11 +73,11 @@ const ConnectionEdge = memo((props: EdgeProps) => {
             }}
           >
             <div className="font-semibold text-foreground">
-              {connectionData.strength} meetings
+              {connectionData.strength} {t('person.meetings')}
             </div>
             {connectionData.averageRating > 0 && (
               <div className="text-muted-foreground">
-                {connectionData.averageRating.toFixed(1)}★ avg
+                {connectionData.averageRating.toFixed(1)}★ {t('profile.averageRating')}
               </div>
             )}
           </div>
