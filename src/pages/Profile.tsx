@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
+import { useMeetings } from '@/hooks/useMeetings';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Camera, Save, ArrowLeft, Github, Linkedin, Globe, Search, Shield, TrendingUp } from 'lucide-react';
+import { Camera, Save, ArrowLeft, Github, Linkedin, Globe, Search, Shield, TrendingUp, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 const Profile = () => {
   const { user } = useAuth();
   const { profile, loading, updateProfile, analyzeGitHub, analyzeLinkedIn, analyzePortfolio } = useProfile();
+  const { meetings } = useMeetings();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
@@ -173,6 +175,27 @@ const Profile = () => {
     return 'text-red-600';
   };
 
+  // Calculate people trust score from meetings
+  const calculatePeopleTrustScore = () => {
+    if (!profile?.display_name || !meetings.length) return null;
+
+    // Find meetings where this user is rated by others
+    const receivedRatings = meetings.filter(meeting => 
+      meeting.other_name === profile.display_name && meeting.user_id !== user?.id
+    );
+
+    if (receivedRatings.length === 0) return null;
+
+    // Calculate average rating and convert to 100-point scale
+    const avgRating = receivedRatings.reduce((sum, meeting) => sum + meeting.rating, 0) / receivedRatings.length;
+    return Math.round((avgRating / 5) * 100); // Convert 1-5 scale to 0-100 scale
+  };
+
+  const peopleTrustScore = calculatePeopleTrustScore();
+  const meetingCount = meetings.filter(meeting => 
+    meeting.other_name === profile?.display_name && meeting.user_id !== user?.id
+  ).length;
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -230,10 +253,12 @@ const Profile = () => {
                           {Math.round(
                             ((profile?.github_score || 0) + 
                              (profile?.linkedin_score || 0) + 
-                             (profile?.portfolio_score || 0)) / 
+                             (profile?.portfolio_score || 0) +
+                             (peopleTrustScore || 0)) / 
                             (Number(!!profile?.github_score) + 
                              Number(!!profile?.linkedin_score) + 
-                             Number(!!profile?.portfolio_score) || 1)
+                             Number(!!profile?.portfolio_score) +
+                             Number(!!peopleTrustScore) || 1)
                           )}/100
                         </div>
                         <p className="text-muted-foreground">あなたの総合信頼度</p>
@@ -277,14 +302,28 @@ const Profile = () => {
                         <p className="text-sm text-muted-foreground">技術スコア</p>
                       </div>
                     )}
+
+                    {/* People Trust Score */}
+                    {peopleTrustScore && (
+                      <div className="text-center p-4 bg-card/30 rounded-lg">
+                        <Users className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                        <div className={`text-xl font-bold ${getScoreColor(peopleTrustScore)}`}>
+                          {peopleTrustScore}/100
+                        </div>
+                        <p className="text-sm text-muted-foreground">人からの信頼度</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {meetingCount}件の評価
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   {/* Score Explanation */}
                   <div className="mt-4 p-3 bg-muted/50 rounded-lg">
                     <h4 className="text-sm font-semibold mb-2">スコアについて</h4>
                     <p className="text-xs text-muted-foreground">
-                      総合信頼度は、GitHub開発レベル、LinkedIn信頼度、ポートフォリオ技術スコアの平均値です。
-                      各プラットフォームの分析結果を組み合わせて、あなたの専門性と信頼性を評価します。
+                      総合信頼度は、GitHub開発レベル、LinkedIn信頼度、ポートフォリオ技術スコア、人からの信頼度の平均値です。
+                      各プラットフォームの分析結果と実際の人間関係での評価を組み合わせて、あなたの専門性と信頼性を評価します。
                     </p>
                   </div>
                 </CardContent>
