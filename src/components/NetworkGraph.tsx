@@ -86,6 +86,11 @@ const NetworkGraph = ({ people, connections, onNodeClick }: NetworkGraphProps) =
           meetingCount: person.meetingCount,
           location: person.location,
           avatar: person.avatar_url,
+          company: person.company,
+          position: person.position,
+          communities: (person as any).communities || [],
+          trustScore: (person as any).trustScore || person.averageRating,
+          connectionCount: (person as any).connectionCount || person.meetingCount,
         },
         draggable: true,
       };

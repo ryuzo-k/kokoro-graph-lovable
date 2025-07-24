@@ -13,6 +13,15 @@ export interface Meeting {
   rating: number;
   created_at: string;
   community_id?: string;
+  // Multi-dimensional trust scores
+  trustworthiness?: number;
+  expertise?: number;
+  communication?: number;
+  collaboration?: number;
+  leadership?: number;
+  innovation?: number;
+  integrity?: number;
+  detailed_feedback?: string;
 }
 
 export interface MeetingData {

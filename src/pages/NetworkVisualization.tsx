@@ -49,11 +49,12 @@ const NetworkVisualization = () => {
     const peopleMap = new Map<string, PersonWithStats>();
     const connectionMap = new Map<string, Connection>();
 
-    communityMeetings.forEach(meeting => {
-      // Add people
+    // すべてのミーティングから人物とコミュニティ情報を収集
+    meetings.forEach(meeting => {
+      // 人物データの処理
       [meeting.my_name, meeting.other_name].forEach(name => {
         if (!peopleMap.has(name)) {
-          // Try to find detailed info from allPeople
+          // 詳細情報を取得
           const detailedPerson = allPeople.find(p => p.name === name);
           
           peopleMap.set(name, {
@@ -76,35 +77,100 @@ const NetworkVisualization = () => {
           });
         }
       });
+    });
 
-      // Update person data  
-      const myPerson = peopleMap.get(meeting.my_name)!;
-      const otherPerson = peopleMap.get(meeting.other_name)!;
-
-      myPerson.meetings.push(meeting);
-      otherPerson.meetings.push(meeting);
-      myPerson.meetingCount++;
-      otherPerson.meetingCount++;
-
-      if (meeting.location && !myPerson.location) {
-        myPerson.location = meeting.location;
-      }
-      if (meeting.location && !otherPerson.location) {
-        otherPerson.location = meeting.location;
-      }
-
-      // Calculate average ratings
-      const myRatings = myPerson.meetings.map(m => 
-        m.my_name === myPerson.name ? m.rating : 5 - m.rating + 1
+    // 各人物の統計とコミュニティ情報を計算
+    peopleMap.forEach((person, name) => {
+      const personMeetings = meetings.filter(m => 
+        m.my_name === name || m.other_name === name
       );
-      myPerson.averageRating = myRatings.reduce((a, b) => a + b, 0) / myRatings.length;
+      
+      person.meetings = personMeetings;
+      person.meetingCount = personMeetings.length;
 
-      const otherRatings = otherPerson.meetings.map(m => 
-        m.other_name === otherPerson.name ? m.rating : 5 - m.rating + 1
-      );
-      otherPerson.averageRating = otherRatings.reduce((a, b) => a + b, 0) / otherRatings.length;
+      // 多次元信用スコア計算
+      let totalTrust = 0, totalExpertise = 0, totalComm = 0, totalCollab = 0;
+      let totalLeadership = 0, totalInnovation = 0, totalIntegrity = 0;
+      let scoredMeetings = 0;
 
-      // Add connections
+      personMeetings.forEach(meeting => {
+        if (meeting.trustworthiness) {
+          totalTrust += meeting.trustworthiness;
+          totalExpertise += meeting.expertise || 3;
+          totalComm += meeting.communication || 3;
+          totalCollab += meeting.collaboration || 3;
+          totalLeadership += meeting.leadership || 3;
+          totalInnovation += meeting.innovation || 3;
+          totalIntegrity += meeting.integrity || 3;
+          scoredMeetings++;
+        }
+      });
+
+      // 複合信用スコア（重み付き平均）
+      if (scoredMeetings > 0) {
+        const trustworthiness = totalTrust / scoredMeetings;
+        const expertise = totalExpertise / scoredMeetings;
+        const communication = totalComm / scoredMeetings;
+        const collaboration = totalCollab / scoredMeetings;
+        const leadership = totalLeadership / scoredMeetings;
+        const innovation = totalInnovation / scoredMeetings;
+        const integrity = totalIntegrity / scoredMeetings;
+
+        // 重み付き信用スコア（誠実性と信頼性を重視）
+        person.averageRating = (
+          trustworthiness * 0.25 +
+          integrity * 0.20 +
+          expertise * 0.15 +
+          communication * 0.15 +
+          collaboration * 0.15 +
+          leadership * 0.10
+        );
+      } else {
+        // 従来の評価方式
+        const ratings = personMeetings.map(m => m.rating);
+        person.averageRating = ratings.length > 0 
+          ? ratings.reduce((a, b) => a + b, 0) / ratings.length 
+          : 0;
+      }
+
+      // 参加コミュニティを取得
+      const personCommunities = new Set<string>();
+      personMeetings.forEach(meeting => {
+        const meetingCommunity = communities.find(c => c.id === (meeting as any).community_id);
+        if (meetingCommunity) {
+          // コミュニティ名を短縮
+          let shortName = meetingCommunity.name;
+          if (shortName.includes(' - ')) {
+            shortName = shortName.split(' - ')[1] || shortName.split(' - ')[0];
+          }
+          if (shortName.includes('コミュニティ')) {
+            shortName = shortName.replace('コミュニティ', '');
+          }
+          personCommunities.add(shortName.trim());
+        }
+      });
+
+      // PersonNode用のデータ拡張
+      (person as any).communities = Array.from(personCommunities);
+      (person as any).trustScore = person.averageRating;
+      (person as any).connectionCount = new Set(
+        personMeetings.map(m => m.my_name === name ? m.other_name : m.my_name)
+      ).size;
+
+      // 場所情報の更新
+      const locationMeetings = personMeetings.filter(m => m.location);
+      if (locationMeetings.length > 0 && !person.location) {
+        person.location = locationMeetings[0].location;
+      }
+    });
+
+    // 現在のコミュニティの人物のみを抽出（フィルタリング）
+    const filteredPeople = Array.from(peopleMap.values()).filter(person => {
+      return person.meetings.some(meeting => (meeting as any).community_id === communityId);
+    });
+
+    // コネクション処理
+    communityMeetings.forEach(meeting => {
       const connectionKey = [meeting.my_name, meeting.other_name].sort().join('-');
       if (!connectionMap.has(connectionKey)) {
         connectionMap.set(connectionKey, {
@@ -120,7 +186,7 @@ const NetworkVisualization = () => {
       connection.meetingCount++;
       connection.lastMeeting = meeting.created_at;
       
-      // Calculate connection average rating
+      // 接続の平均評価
       const connectionMeetings = communityMeetings.filter(m => 
         (m.my_name === connection.person1Id && m.other_name === connection.person2Id) ||
         (m.my_name === connection.person2Id && m.other_name === connection.person1Id)
@@ -129,10 +195,10 @@ const NetworkVisualization = () => {
     });
 
     return {
-      people: Array.from(peopleMap.values()),
+      people: filteredPeople,
       connections: Array.from(connectionMap.values()),
     };
-  }, [communityMeetings, allPeople]);
+  }, [communityMeetings, allPeople, communities, communityId, meetings]);
 
   const handleMeetingSubmit = useCallback(async (meetingData: any) => {
     const result = await addMeeting({
