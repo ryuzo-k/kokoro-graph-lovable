@@ -106,23 +106,28 @@ serve(async (req) => {
   }
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-    );
-
+    // Get the Authorization header
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      throw new Error('No authorization header');
+      throw new Error('Missing Authorization header');
     }
 
-    // Get user from auth header
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(
-      authHeader.replace('Bearer ', '')
+    // Initialize Supabase client with the user's auth token for proper RLS
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: authHeader },
+        },
+      }
     );
 
+    // Verify the user is authenticated
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
     if (authError || !user) {
-      throw new Error('Unauthorized');
+      console.error('Authentication error:', authError);
+      throw new Error('Authentication failed');
     }
 
     const { linkedinUrl, searchDepth = 1, demoMode = false } = await req.json();
@@ -236,7 +241,7 @@ serve(async (req) => {
             location: connection.location,
             bio: connection.bio,
             skills: connection.skills || [],
-            linkedin_url: connection.linkedinUrl,
+            linkedin_url: linkedinUrl, // Use the original LinkedIn URL
             avatar_url: connection.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(connection.name)}&background=random`
           })
           .select()

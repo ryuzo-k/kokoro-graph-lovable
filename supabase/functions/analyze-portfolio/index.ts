@@ -15,11 +15,35 @@ serve(async (req) => {
   }
 
   try {
+    // Get the Authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('Missing Authorization header');
+    }
+
+    // Initialize Supabase client with the user's auth token
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: authHeader },
+        },
+      }
+    );
+
+    // Verify the user is authenticated
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !user) {
+      console.error('Authentication error:', authError);
+      throw new Error('Authentication failed');
+    }
+
     const { portfolioUrl, userId } = await req.json();
     
-    if (!portfolioUrl || !userId) {
+    if (!portfolioUrl) {
       return new Response(
-        JSON.stringify({ error: 'Portfolio URL and userId are required' }),
+        JSON.stringify({ error: 'Portfolio URL is required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -132,13 +156,8 @@ Red flags for fraud:
       finalScore = Math.max(0, finalScore - 15);
     }
 
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    // Update user profile with portfolio analysis
-    const { error: updateError } = await supabase
+    // Update user profile with portfolio analysis using authenticated client
+    const { error: updateError } = await supabaseClient
       .from('profiles')
       .update({
         portfolio_url: portfolioUrl,
@@ -151,7 +170,7 @@ Red flags for fraud:
           content_length: textContent.length
         }
       })
-      .eq('user_id', userId);
+      .eq('user_id', user.id); // Use authenticated user ID
 
     if (updateError) {
       console.error('Error updating profile:', updateError);

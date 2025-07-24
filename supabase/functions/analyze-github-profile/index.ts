@@ -44,11 +44,35 @@ serve(async (req) => {
   }
 
   try {
+    // Get the Authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('Missing Authorization header');
+    }
+
+    // Initialize Supabase client with the user's auth token
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: authHeader },
+        },
+      }
+    );
+
+    // Verify the user is authenticated
+    const { data: { user: authUser }, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !authUser) {
+      console.error('Authentication error:', authError);
+      throw new Error('Authentication failed');
+    }
+
     const { username, userId } = await req.json();
     
-    if (!username || !userId) {
+    if (!username) {
       return new Response(
-        JSON.stringify({ error: 'Username and userId are required' }),
+        JSON.stringify({ error: 'Username is required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -60,7 +84,7 @@ serve(async (req) => {
     if (!userResponse.ok) {
       throw new Error(`GitHub user not found: ${username}`);
     }
-    const user: GitHubUser = await userResponse.json();
+    const githubUser: GitHubUser = await userResponse.json();
 
     const reposResponse = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`);
     if (!reposResponse.ok) {
@@ -69,15 +93,10 @@ serve(async (req) => {
     const repos: GitHubRepo[] = await reposResponse.json();
 
     // Calculate development score
-    const analysisResult = calculateGitHubScore(user, repos);
+    const analysisResult = calculateGitHubScore(githubUser, repos);
     
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    // Update user profile with GitHub analysis
-    const { error: updateError } = await supabase
+    // Update user profile with GitHub analysis using authenticated client
+    const { error: updateError } = await supabaseClient
       .from('profiles')
       .update({
         github_username: username,
@@ -88,7 +107,7 @@ serve(async (req) => {
           github_analysis: analysisResult.analysis
         }
       })
-      .eq('user_id', userId);
+      .eq('user_id', authUser.id); // Use authenticated user ID
 
     if (updateError) {
       console.error('Error updating profile:', updateError);

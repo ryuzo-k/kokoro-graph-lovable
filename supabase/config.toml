@@ -46,14 +46,5 @@ enable_refresh_token_rotation = true
 refresh_token_reuse_interval = 10
 enable_manual_linking = false
 
-[functions.analyze-feedback]
-verify_jwt = false
-
-[functions.analyze-github-profile]
-verify_jwt = false
-
-[functions.analyze-portfolio]
-verify_jwt = false
-
-[functions.analyze-linkedin-profile]
-verify_jwt = false
+# Edge functions now require authentication by default for security
+# Remove verify_jwt = false to enable proper authentication
