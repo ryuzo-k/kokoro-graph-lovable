@@ -349,42 +349,6 @@ const Index = () => {
                   </div>
                 </div>
                 
-                {/* Enhanced Social proof section */}
-                <div className="mt-24 p-12 glass-effect rounded-3xl border border-border/30 shadow-elegant max-w-5xl mx-auto animate-bounce-in" style={{ animationDelay: '1.4s' }}>
-                  <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-                    <div className="flex items-center gap-6">
-                      <div className="flex -space-x-3">
-                        <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-glow rounded-full border-4 border-background shadow-node animate-float"></div>
-                        <div className="w-16 h-16 bg-gradient-to-br from-accent to-accent/80 rounded-full border-4 border-background shadow-node animate-float" style={{ animationDelay: '0.5s' }}></div>
-                        <div className="w-16 h-16 bg-gradient-to-br from-trust-high to-trust-medium rounded-full border-4 border-background shadow-node animate-float" style={{ animationDelay: '1s' }}></div>
-                        <div className="w-16 h-16 bg-gradient-to-br from-muted to-muted-foreground rounded-full border-4 border-background flex items-center justify-center text-sm font-bold text-primary shadow-node animate-float" style={{ animationDelay: '1.5s' }}>+99</div>
-                      </div>
-                      <div className="text-left">
-                        <p className="font-bold text-2xl gradient-text">
-                          {language === 'ja' ? '活発なコミュニティ' : 'Active Community'}
-                        </p>
-                        <p className="text-lg text-muted-foreground">
-                          {language === 'ja' ? '毎日新しいつながりが生まれています' : 'New connections are formed every day'}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-7 h-7 fill-current text-trust-medium pulse-glow" />
-                        <Star className="w-7 h-7 fill-current text-trust-medium pulse-glow" style={{ animationDelay: '0.1s' }} />
-                        <Star className="w-7 h-7 fill-current text-trust-medium pulse-glow" style={{ animationDelay: '0.2s' }} />
-                        <Star className="w-7 h-7 fill-current text-trust-medium pulse-glow" style={{ animationDelay: '0.3s' }} />
-                        <Star className="w-7 h-7 fill-current text-trust-medium pulse-glow" style={{ animationDelay: '0.4s' }} />
-                      </div>
-                      <div className="text-left ml-4">
-                        <span className="text-3xl font-bold gradient-text">4.9/5</span>
-                        <p className="text-muted-foreground">
-                          ({language === 'ja' ? '128件のレビュー' : '128 reviews'})
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
