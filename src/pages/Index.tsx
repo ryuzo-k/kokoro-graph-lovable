@@ -272,16 +272,19 @@ const Index = () => {
                       {t('app.title')}
                     </span>
                   </h1>
-                  <p className="text-3xl md:text-4xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                    {t('landing.description')}
-                  </p>
-                  <div className="flex items-center justify-center gap-3 text-xl animate-slide-up" style={{ animationDelay: '0.4s' }}>
-                    <span className="animate-bounce">✨</span>
-                    <span className="italic gradient-text font-medium">
-                      {language === 'ja' ? '人間関係の可視化で、コミュニティをもっと豊かに' : 'Enriching communities through human relationship visualization'}
-                    </span>
-                    <span className="animate-bounce" style={{ animationDelay: '0.2s' }}>✨</span>
-                  </div>
+                   <p className="text-3xl md:text-4xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                     {language === 'ja' ? 
+                       'ソーシャルネットワーク理論とマルチエージェントシステムによる人間関係の数値化プロトタイプ' : 
+                       'Social Network Theory & Multi-Agent Systems for Human Relationship Quantification Prototype'
+                     }
+                   </p>
+                   <div className="flex items-center justify-center gap-3 text-xl animate-slide-up" style={{ animationDelay: '0.4s' }}>
+                     <span className="animate-bounce">🔬</span>
+                     <span className="italic gradient-text font-medium">
+                       {language === 'ja' ? 'グラフ理論 × 信頼度量化 × コミュニティ分析' : 'Graph Theory × Trust Metrics × Community Analysis'}
+                     </span>
+                     <span className="animate-bounce" style={{ animationDelay: '0.2s' }}>🔬</span>
+                   </div>
                 </div>
                 
                 {/* Enhanced CTA Button */}
@@ -295,9 +298,9 @@ const Index = () => {
                     <LogIn className="w-8 h-8 mr-4" />
                     <span>{t('landing.cta')}</span>
                   </Button>
-                  <p className="text-lg text-muted-foreground">
-                    📈 {language === 'ja' ? 'すでに' : 'Already'} <span className="font-bold gradient-text text-2xl">1,000+</span> {language === 'ja' ? 'のつながりが記録されています' : 'connections recorded'}
-                  </p>
+                   <p className="text-lg text-muted-foreground">
+                     🧮 {language === 'ja' ? '現在' : 'Current dataset:'} <span className="font-bold gradient-text text-2xl">1,000+</span> {language === 'ja' ? 'の関係性データポイント | 信頼度アルゴリズム稼働中' : 'relationship data points | Trust algorithms active'}
+                   </p>
                 </div>
                 
                 {/* Enhanced Feature highlights */}
@@ -306,28 +309,43 @@ const Index = () => {
                     <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 group-hover:shadow-glow transition-all duration-500 animate-float">
                       <Network className="w-10 h-10 text-primary pulse-glow" />
                     </div>
-                    <h3 className="font-bold text-2xl gradient-text mb-6">{t('landing.feature1.title')}</h3>
-                    <p className="text-muted-foreground leading-relaxed text-lg">
-                      {t('landing.feature1.desc')}
-                    </p>
+                     <h3 className="font-bold text-2xl gradient-text mb-6">
+                       {language === 'ja' ? 'ネットワーク分析エンジン' : 'Network Analysis Engine'}
+                     </h3>
+                     <p className="text-muted-foreground leading-relaxed text-lg">
+                       {language === 'ja' ? 
+                         'D3.js Force-Directed Layoutによる動的可視化。Centrality算出、Community Detection、影響力スコアリングを実装' : 
+                         'Dynamic visualization using D3.js Force-Directed Layout. Implementing centrality calculations, community detection, and influence scoring'
+                       }
+                     </p>
                   </div>
                   <div className="group p-10 glass-effect rounded-3xl hover-lift transition-all duration-700 hover:shadow-hero animate-slide-up border border-border/30" style={{ animationDelay: '1s' }}>
                     <div className="w-20 h-20 bg-gradient-to-br from-accent/20 to-accent/10 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 group-hover:shadow-glow transition-all duration-500 animate-float" style={{ animationDelay: '1s' }}>
                       <TrendingUp className="w-10 h-10 text-accent pulse-glow" />
                     </div>
-                    <h3 className="font-bold text-2xl gradient-text mb-6">{t('landing.feature2.title')}</h3>
-                    <p className="text-muted-foreground leading-relaxed text-lg">
-                      {t('landing.feature2.desc')}
-                    </p>
+                     <h3 className="font-bold text-2xl gradient-text mb-6">
+                       {language === 'ja' ? '信頼度数値化システム' : 'Trust Quantification System'}
+                     </h3>
+                     <p className="text-muted-foreground leading-relaxed text-lg">
+                       {language === 'ja' ? 
+                         '7次元評価（専門性・信頼性・コミュニケーション・協働性・リーダーシップ・革新性・誠実性）による多面的信頼度算出' : 
+                         'Multi-dimensional trust calculation using 7 metrics: Expertise, Trustworthiness, Communication, Collaboration, Leadership, Innovation, and Integrity'
+                       }
+                     </p>
                   </div>
                   <div className="group p-10 glass-effect rounded-3xl hover-lift transition-all duration-700 hover:shadow-hero animate-slide-up border border-border/30" style={{ animationDelay: '1.2s' }}>
                     <div className="w-20 h-20 bg-gradient-to-br from-trust-high/20 to-trust-medium/10 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 group-hover:shadow-glow transition-all duration-500 animate-float" style={{ animationDelay: '2s' }}>
                       <Sparkles className="w-10 h-10 text-trust-high pulse-glow" />
                     </div>
-                    <h3 className="font-bold text-2xl gradient-text mb-6">{t('landing.feature3.title')}</h3>
-                    <p className="text-muted-foreground leading-relaxed text-lg">
-                      {t('landing.feature3.desc')}
-                    </p>
+                     <h3 className="font-bold text-2xl gradient-text mb-6">
+                       {language === 'ja' ? 'AI駆動分析基盤' : 'AI-Driven Analytics Platform'}
+                     </h3>
+                     <p className="text-muted-foreground leading-relaxed text-lg">
+                       {language === 'ja' ? 
+                         'OpenAI APIとSupabaseを活用したリアルタイム関係性分析。ブリッジ検出、コミュニティクラスタリング、推薦アルゴリズムを統合' : 
+                         'Real-time relationship analysis powered by OpenAI API and Supabase. Integrating bridge detection, community clustering, and recommendation algorithms'
+                       }
+                     </p>
                   </div>
                 </div>
                 
