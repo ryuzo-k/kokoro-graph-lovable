@@ -176,12 +176,15 @@ const Index = () => {
               <Button
                 onClick={() => window.open('https://kokororesearch.org/', '_blank')}
                 variant="outline"
-                size="sm"
-                className="hover-lift glass-effect"
-                title="Kokoro Graph公式サイト"
+                size="default"
+                className="hover-lift glass-effect px-6 py-2"
+                title="Kokoro Graph Official Homepage"
               >
-                <Network className="w-4 h-4 mr-2" />
-                <span className="text-xs font-medium hidden sm:inline">公式サイト</span>
+                <Network className="w-5 h-5 mr-3" />
+                <div className="flex flex-col items-start">
+                  <span className="text-sm font-semibold">Official Homepage</span>
+                  <span className="text-xs text-muted-foreground">(kokororesearch.org)</span>
+                </div>
               </Button>
               {/* Language Toggle */}
               <Button
