@@ -196,7 +196,7 @@ const Index = () => {
               >
                 <Languages className="w-4 h-4 mr-2" />
                 <span className="text-xs font-medium">
-                  {language === 'ja' ? 'EN' : 'JP'}
+                  {language === 'ja' ? 'EN' : '日本語'}
                 </span>
               </Button>
               {user ? (

@@ -726,7 +726,7 @@ const translations = {
 };
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<Language>('ja');
+  const [language, setLanguage] = useState<Language>('en');
 
   useEffect(() => {
     // Get language from localStorage or detect from browser
@@ -734,13 +734,8 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     if (savedLanguage) {
       setLanguage(savedLanguage);
     } else {
-      // Auto-detect language based on browser locale
-      const browserLanguage = navigator.language.toLowerCase();
-      if (browserLanguage.startsWith('ja')) {
-        setLanguage('ja');
-      } else {
-        setLanguage('en');
-      }
+      // Default to English instead of auto-detect
+      setLanguage('en');
     }
   }, []);
 
