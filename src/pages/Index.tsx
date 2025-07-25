@@ -276,8 +276,8 @@ const Index = () => {
                    <p className="text-3xl md:text-4xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light animate-fade-in" style={{ animationDelay: '0.2s' }}>
                      {isTechnicalView ? (
                        language === 'ja' ? 
-                         'ソーシャルネットワーク理論とマルチエージェントシステムによる人間関係の数値化プロトタイプ' : 
-                         'Social Network Theory & Multi-Agent Systems for Human Relationship Quantification Prototype'
+                         '次世代ソーシャルネットワーク理論とマルチエージェントシステムによる人間関係の数値化研究プロトタイプ' : 
+                         'Next-generation Social Network Theory & Multi-Agent Systems for Human Relationship Quantification Research Prototype'
                      ) : (
                        language === 'ja' ? 
                          'まちやコミュニティで「誰が誰に会ったか」を記録し、人間関係の全体像と信頼スコアをビジュアルで把握' : 
@@ -288,7 +288,7 @@ const Index = () => {
                      <span className="animate-bounce">{isTechnicalView ? '🔬' : '✨'}</span>
                      <span className="italic gradient-text font-medium">
                        {isTechnicalView ? (
-                         language === 'ja' ? 'グラフ理論 × 信頼度量化 × コミュニティ分析' : 'Graph Theory × Trust Metrics × Community Analysis'
+                         language === 'ja' ? '実験的グラフ理論 × 高度信頼度量化アルゴリズム × コミュニティ検出AI' : 'Experimental Graph Theory × Advanced Trust Quantification × Community Detection AI'
                        ) : (
                          language === 'ja' ? '人間関係の可視化で、コミュニティをもっと豊かに' : 'Enriching communities through human relationship visualization'
                        )}
@@ -332,9 +332,9 @@ const Index = () => {
                   </Button>
                    <p className="text-lg text-muted-foreground">
                      {isTechnicalView ? (
-                       <>🧮 {language === 'ja' ? '現在' : 'Current dataset:'} <span className="font-bold gradient-text text-2xl">1,000+</span> {language === 'ja' ? 'の関係性データポイント | 信頼度アルゴリズム稼働中' : 'relationship data points | Trust algorithms active'}</>
+                       <>🧮 {language === 'ja' ? '継続的な関係性データ収集 | 研究開発中の信頼度アルゴリズム | リアルタイム分析システム稼働中' : 'Continuous relationship data collection | Trust algorithms under R&D | Real-time analysis system operational'}</>
                      ) : (
-                       <>📈 {language === 'ja' ? 'すでに' : 'Already'} <span className="font-bold gradient-text text-2xl">1,000+</span> {language === 'ja' ? 'のつながりが記録されています' : 'connections recorded'}</>
+                       <>📈 {language === 'ja' ? 'コミュニティのつながりを日々記録・分析しています' : 'Recording and analyzing community connections daily'}</>
                      )}
                    </p>
                 </div>
@@ -347,7 +347,7 @@ const Index = () => {
                     </div>
                      <h3 className="font-bold text-2xl gradient-text mb-6">
                        {isTechnicalView ? (
-                         language === 'ja' ? 'ネットワーク分析エンジン' : 'Network Analysis Engine'
+                         language === 'ja' ? '実験的ネットワーク分析エンジン' : 'Experimental Network Analysis Engine'
                        ) : (
                          language === 'ja' ? 'ネットワーク可視化' : 'Network Visualization'
                        )}
@@ -355,8 +355,8 @@ const Index = () => {
                      <p className="text-muted-foreground leading-relaxed text-lg">
                        {isTechnicalView ? (
                          language === 'ja' ? 
-                           'D3.js Force-Directed Layoutによる動的可視化。Centrality算出、Community Detection、影響力スコアリングを実装' : 
-                           'Dynamic visualization using D3.js Force-Directed Layout. Implementing centrality calculations, community detection, and influence scoring'
+                           '独自開発のD3.js Force-Directed Layout拡張。最新のCentrality算出アルゴリズム、教師なしCommunity Detection、影響力伝播モデルを研究実装' : 
+                           'Custom-developed D3.js Force-Directed Layout extensions. Latest centrality calculation algorithms, unsupervised community detection, and influence propagation models under research implementation'
                        ) : (
                          language === 'ja' ? 
                            '人と人のつながりを美しいグラフで表示。誰がどのようにつながっているかが一目でわかります' : 
@@ -370,7 +370,7 @@ const Index = () => {
                     </div>
                      <h3 className="font-bold text-2xl gradient-text mb-6">
                        {isTechnicalView ? (
-                         language === 'ja' ? '信頼度数値化システム' : 'Trust Quantification System'
+                         language === 'ja' ? '実験的信頼度数値化システム' : 'Experimental Trust Quantification System'
                        ) : (
                          language === 'ja' ? '信頼スコア' : 'Trust Score'
                        )}
@@ -378,8 +378,8 @@ const Index = () => {
                      <p className="text-muted-foreground leading-relaxed text-lg">
                        {isTechnicalView ? (
                          language === 'ja' ? 
-                           '7次元評価（専門性・信頼性・コミュニケーション・協働性・リーダーシップ・革新性・誠実性）による多面的信頼度算出' : 
-                           'Multi-dimensional trust calculation using 7 metrics: Expertise, Trustworthiness, Communication, Collaboration, Leadership, Innovation, and Integrity'
+                           '独自の多次元信頼度評価フレームワーク（専門性・信頼性・コミュニケーション・協働性・リーダーシップ・革新性・誠実性）による研究レベルの信頼度算出システム' : 
+                           'Proprietary multi-dimensional trust evaluation framework using research-level trust calculation system across 7 dimensions: Expertise, Trustworthiness, Communication, Collaboration, Leadership, Innovation, and Integrity'
                        ) : (
                          language === 'ja' ? 
                            '会った人への評価を記録し、信頼度を数値化。コミュニティ内での信頼関係が見えるようになります' : 
@@ -393,7 +393,7 @@ const Index = () => {
                     </div>
                      <h3 className="font-bold text-2xl gradient-text mb-6">
                        {isTechnicalView ? (
-                         language === 'ja' ? 'AI駆動分析基盤' : 'AI-Driven Analytics Platform'
+                         language === 'ja' ? '先端AI駆動関係性分析プラットフォーム' : 'Advanced AI-Driven Relationship Analytics Platform'
                        ) : (
                          language === 'ja' ? 'AI分析' : 'AI Analysis'
                        )}
@@ -401,8 +401,8 @@ const Index = () => {
                      <p className="text-muted-foreground leading-relaxed text-lg">
                        {isTechnicalView ? (
                          language === 'ja' ? 
-                           'OpenAI APIとSupabaseを活用したリアルタイム関係性分析。ブリッジ検出、コミュニティクラスタリング、推薦アルゴリズムを統合' : 
-                           'Real-time relationship analysis powered by OpenAI API and Supabase. Integrating bridge detection, community clustering, and recommendation algorithms'
+                           '最新のLLMとベクトルデータベースを統合した関係性分析エンジン。実験的ブリッジ検出アルゴリズム、階層クラスタリング、強化学習ベース推薦システムを研究開発中' : 
+                           'Cutting-edge relationship analysis engine integrating latest LLMs and vector databases. Experimental bridge detection algorithms, hierarchical clustering, and reinforcement learning-based recommendation systems under active R&D'
                        ) : (
                          language === 'ja' ? 
                            'AIがあなたの人間関係を分析し、新しい出会いやコミュニティを提案します' : 
