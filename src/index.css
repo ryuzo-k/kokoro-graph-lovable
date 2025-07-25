@@ -8,61 +8,62 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 250 100% 98%;
-    --foreground: 230 15% 15%;
+    /* Monochrome Black & White Design System */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 230 15% 15%;
+    --card-foreground: 0 0% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 230 15% 15%;
+    --popover-foreground: 0 0% 15%;
 
-    --primary: 260 60% 65%;
+    --primary: 0 0% 20%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 260 80% 75%;
+    --primary-glow: 0 0% 30%;
 
-    --secondary: 280 25% 92%;
-    --secondary-foreground: 260 60% 65%;
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 0 0% 20%;
 
-    --muted: 250 30% 96%;
-    --muted-foreground: 230 15% 55%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 50%;
 
-    --accent: 200 80% 60%;
+    --accent: 0 0% 25%;
     --accent-foreground: 0 0% 100%;
 
-    --trust-high: 140 70% 55%;
-    --trust-medium: 45 90% 60%;
-    --trust-low: 15 85% 65%;
-    --trust-neutral: 220 15% 70%;
+    --trust-high: 0 0% 30%;
+    --trust-medium: 0 0% 50%;
+    --trust-low: 0 0% 70%;
+    --trust-neutral: 0 0% 60%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 85% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 250 30% 88%;
-    --input: 250 30% 88%;
-    --ring: 260 60% 65%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 20%;
 
     /* Network specific colors */
-    --network-bg: 250 50% 97%;
-    --network-node: 260 60% 65%;
-    --network-edge: 260 30% 80%;
-    --network-highlight: 260 80% 70%;
+    --network-bg: 0 0% 98%;
+    --network-node: 0 0% 20%;
+    --network-edge: 0 0% 80%;
+    --network-highlight: 0 0% 10%;
 
-    /* Gradients - More sophisticated and beautiful */
+    /* Gradients - Monochrome sophistication */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 50%, hsl(var(--accent)) 100%);
     --gradient-trust: linear-gradient(90deg, hsl(var(--trust-low)), hsl(var(--trust-high)));
     --gradient-bg: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%);
-    --gradient-hero: radial-gradient(ellipse at center, hsl(var(--primary) / 0.15) 0%, transparent 60%);
-    --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.8) 100%);
+    --gradient-hero: radial-gradient(ellipse at center, hsl(var(--primary) / 0.05) 0%, transparent 60%);
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.9) 100%);
     --gradient-accent: linear-gradient(90deg, hsl(var(--accent)) 0%, hsl(var(--primary)) 50%, hsl(var(--accent)) 100%);
-    --gradient-rainbow: linear-gradient(45deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 25%, hsl(var(--trust-high)) 50%, hsl(var(--trust-medium)) 75%, hsl(var(--primary)) 100%);
+    --gradient-rainbow: linear-gradient(45deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 25%, hsl(var(--foreground)) 50%, hsl(var(--primary-glow)) 75%, hsl(var(--primary)) 100%);
 
-    /* Shadows - More depth and beauty */
-    --shadow-soft: 0 4px 20px -2px hsl(var(--primary) / 0.1);
-    --shadow-card: 0 8px 30px -5px hsl(var(--primary) / 0.15);
-    --shadow-node: 0 6px 25px -3px hsl(var(--network-node) / 0.2);
-    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.4);
-    --shadow-hero: 0 25px 50px -12px hsl(var(--primary) / 0.3);
+    /* Shadows - Elegant monochrome depth */
+    --shadow-soft: 0 4px 20px -2px hsl(var(--foreground) / 0.08);
+    --shadow-card: 0 8px 30px -5px hsl(var(--foreground) / 0.12);
+    --shadow-node: 0 6px 25px -3px hsl(var(--foreground) / 0.15);
+    --shadow-glow: 0 0 40px hsl(var(--foreground) / 0.2);
+    --shadow-hero: 0 25px 50px -12px hsl(var(--foreground) / 0.15);
     --shadow-elegant: 0 20px 60px -15px hsl(var(--foreground) / 0.1);
 
     /* Animation values */
@@ -72,69 +73,64 @@ All colors MUST be HSL.
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
+    --sidebar-foreground: 0 0% 15%;
+    --sidebar-primary: 0 0% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 0 0% 95%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 91%;
+    --sidebar-ring: 0 0% 20%;
   }
 
   .dark {
-    --background: 230 25% 8%;
-    --foreground: 250 50% 95%;
+    /* Dark mode monochrome */
+    --background: 0 0% 8%;
+    --foreground: 0 0% 95%;
 
-    --card: 230 25% 10%;
-    --card-foreground: 250 50% 95%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 230 25% 10%;
-    --popover-foreground: 250 50% 95%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 260 80% 75%;
-    --primary-foreground: 230 25% 8%;
-    --primary-glow: 260 90% 80%;
+    --primary: 0 0% 90%;
+    --primary-foreground: 0 0% 8%;
+    --primary-glow: 0 0% 80%;
 
-    --secondary: 230 25% 15%;
-    --secondary-foreground: 250 50% 95%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 230 25% 15%;
-    --muted-foreground: 230 15% 65%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 200 80% 70%;
-    --accent-foreground: 230 25% 8%;
+    --accent: 0 0% 85%;
+    --accent-foreground: 0 0% 8%;
 
-    --trust-high: 140 60% 65%;
-    --trust-medium: 45 80% 70%;
-    --trust-low: 15 75% 70%;
-    --trust-neutral: 220 20% 60%;
+    --trust-high: 0 0% 80%;
+    --trust-medium: 0 0% 60%;
+    --trust-low: 0 0% 40%;
+    --trust-neutral: 0 0% 50%;
 
     --destructive: 0 75% 65%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 230 25% 18%;
-    --input: 230 25% 18%;
-    --ring: 260 80% 75%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 0 0% 90%;
 
-    --network-bg: 230 30% 6%;
-    --network-node: 260 80% 75%;
-    --network-edge: 260 40% 50%;
-    --network-highlight: 260 90% 80%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --network-bg: 0 0% 6%;
+    --network-node: 0 0% 90%;
+    --network-edge: 0 0% 30%;
+    --network-highlight: 0 0% 95%;
+    
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 0 0% 90%;
+    --sidebar-primary-foreground: 0 0% 8%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 0 0% 90%;
   }
 }
 
