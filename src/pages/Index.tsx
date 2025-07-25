@@ -157,8 +157,12 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4 hover-lift cursor-pointer group" onClick={() => navigate('/')}>
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow pulse-glow">
-                  <Heart className="w-7 h-7 text-primary-foreground" />
+                <div className="w-12 h-12 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow pulse-glow overflow-hidden">
+                  <img 
+                    src="/lovable-uploads/1fa58782-1ba2-4e17-b665-8e79c81d2180.png" 
+                    alt="Kokoro Graph Logo" 
+                    className="w-8 h-8 filter invert brightness-0 contrast-100"
+                  />
                 </div>
                 <Sparkles className="w-5 h-5 text-accent absolute -top-2 -right-2 animate-bounce group-hover:scale-125 transition-transform" />
               </div>
