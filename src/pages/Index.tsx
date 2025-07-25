@@ -30,6 +30,7 @@ interface Connection {
 
 const Index = () => {
   const [showForm, setShowForm] = useState(false);
+  const [isTechnicalView, setIsTechnicalView] = useState(false);
   const { user, signOut, loading } = useAuth();
   const { t, language, setLanguage } = useLanguage();
   const navigate = useNavigate();
@@ -273,18 +274,49 @@ const Index = () => {
                     </span>
                   </h1>
                    <p className="text-3xl md:text-4xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                     {language === 'ja' ? 
-                       'ソーシャルネットワーク理論とマルチエージェントシステムによる人間関係の数値化プロトタイプ' : 
-                       'Social Network Theory & Multi-Agent Systems for Human Relationship Quantification Prototype'
-                     }
+                     {isTechnicalView ? (
+                       language === 'ja' ? 
+                         'ソーシャルネットワーク理論とマルチエージェントシステムによる人間関係の数値化プロトタイプ' : 
+                         'Social Network Theory & Multi-Agent Systems for Human Relationship Quantification Prototype'
+                     ) : (
+                       language === 'ja' ? 
+                         'まちやコミュニティで「誰が誰に会ったか」を記録し、人間関係の全体像と信頼スコアをビジュアルで把握' : 
+                         'Record "who met whom" in towns and communities, and visually understand the overall picture of human relationships and trust scores'
+                     )}
                    </p>
                    <div className="flex items-center justify-center gap-3 text-xl animate-slide-up" style={{ animationDelay: '0.4s' }}>
-                     <span className="animate-bounce">🔬</span>
+                     <span className="animate-bounce">{isTechnicalView ? '🔬' : '✨'}</span>
                      <span className="italic gradient-text font-medium">
-                       {language === 'ja' ? 'グラフ理論 × 信頼度量化 × コミュニティ分析' : 'Graph Theory × Trust Metrics × Community Analysis'}
+                       {isTechnicalView ? (
+                         language === 'ja' ? 'グラフ理論 × 信頼度量化 × コミュニティ分析' : 'Graph Theory × Trust Metrics × Community Analysis'
+                       ) : (
+                         language === 'ja' ? '人間関係の可視化で、コミュニティをもっと豊かに' : 'Enriching communities through human relationship visualization'
+                       )}
                      </span>
-                     <span className="animate-bounce" style={{ animationDelay: '0.2s' }}>🔬</span>
+                     <span className="animate-bounce" style={{ animationDelay: '0.2s' }}>{isTechnicalView ? '🔬' : '✨'}</span>
                    </div>
+                </div>
+                
+                {/* View Toggle Buttons */}
+                <div className="flex items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.5s' }}>
+                  <Button
+                    onClick={() => setIsTechnicalView(false)}
+                    variant={!isTechnicalView ? "default" : "outline"}
+                    size="sm"
+                    className="hover-lift glass-effect"
+                  >
+                    <Users className="w-4 h-4 mr-2" />
+                    {language === 'ja' ? '一般向け' : 'General'}
+                  </Button>
+                  <Button
+                    onClick={() => setIsTechnicalView(true)}
+                    variant={isTechnicalView ? "default" : "outline"}
+                    size="sm"
+                    className="hover-lift glass-effect"
+                  >
+                    <BarChart3 className="w-4 h-4 mr-2" />
+                    {language === 'ja' ? '技術者向け' : 'Technical'}
+                  </Button>
                 </div>
                 
                 {/* Enhanced CTA Button */}
@@ -299,7 +331,11 @@ const Index = () => {
                     <span>{t('landing.cta')}</span>
                   </Button>
                    <p className="text-lg text-muted-foreground">
-                     🧮 {language === 'ja' ? '現在' : 'Current dataset:'} <span className="font-bold gradient-text text-2xl">1,000+</span> {language === 'ja' ? 'の関係性データポイント | 信頼度アルゴリズム稼働中' : 'relationship data points | Trust algorithms active'}
+                     {isTechnicalView ? (
+                       <>🧮 {language === 'ja' ? '現在' : 'Current dataset:'} <span className="font-bold gradient-text text-2xl">1,000+</span> {language === 'ja' ? 'の関係性データポイント | 信頼度アルゴリズム稼働中' : 'relationship data points | Trust algorithms active'}</>
+                     ) : (
+                       <>📈 {language === 'ja' ? 'すでに' : 'Already'} <span className="font-bold gradient-text text-2xl">1,000+</span> {language === 'ja' ? 'のつながりが記録されています' : 'connections recorded'}</>
+                     )}
                    </p>
                 </div>
                 
@@ -310,13 +346,22 @@ const Index = () => {
                       <Network className="w-10 h-10 text-primary pulse-glow" />
                     </div>
                      <h3 className="font-bold text-2xl gradient-text mb-6">
-                       {language === 'ja' ? 'ネットワーク分析エンジン' : 'Network Analysis Engine'}
+                       {isTechnicalView ? (
+                         language === 'ja' ? 'ネットワーク分析エンジン' : 'Network Analysis Engine'
+                       ) : (
+                         language === 'ja' ? 'ネットワーク可視化' : 'Network Visualization'
+                       )}
                      </h3>
                      <p className="text-muted-foreground leading-relaxed text-lg">
-                       {language === 'ja' ? 
-                         'D3.js Force-Directed Layoutによる動的可視化。Centrality算出、Community Detection、影響力スコアリングを実装' : 
-                         'Dynamic visualization using D3.js Force-Directed Layout. Implementing centrality calculations, community detection, and influence scoring'
-                       }
+                       {isTechnicalView ? (
+                         language === 'ja' ? 
+                           'D3.js Force-Directed Layoutによる動的可視化。Centrality算出、Community Detection、影響力スコアリングを実装' : 
+                           'Dynamic visualization using D3.js Force-Directed Layout. Implementing centrality calculations, community detection, and influence scoring'
+                       ) : (
+                         language === 'ja' ? 
+                           '人と人のつながりを美しいグラフで表示。誰がどのようにつながっているかが一目でわかります' : 
+                           'Display connections between people in beautiful graphs. See at a glance who is connected and how'
+                       )}
                      </p>
                   </div>
                   <div className="group p-10 glass-effect rounded-3xl hover-lift transition-all duration-700 hover:shadow-hero animate-slide-up border border-border/30" style={{ animationDelay: '1s' }}>
@@ -324,13 +369,22 @@ const Index = () => {
                       <TrendingUp className="w-10 h-10 text-accent pulse-glow" />
                     </div>
                      <h3 className="font-bold text-2xl gradient-text mb-6">
-                       {language === 'ja' ? '信頼度数値化システム' : 'Trust Quantification System'}
+                       {isTechnicalView ? (
+                         language === 'ja' ? '信頼度数値化システム' : 'Trust Quantification System'
+                       ) : (
+                         language === 'ja' ? '信頼スコア' : 'Trust Score'
+                       )}
                      </h3>
                      <p className="text-muted-foreground leading-relaxed text-lg">
-                       {language === 'ja' ? 
-                         '7次元評価（専門性・信頼性・コミュニケーション・協働性・リーダーシップ・革新性・誠実性）による多面的信頼度算出' : 
-                         'Multi-dimensional trust calculation using 7 metrics: Expertise, Trustworthiness, Communication, Collaboration, Leadership, Innovation, and Integrity'
-                       }
+                       {isTechnicalView ? (
+                         language === 'ja' ? 
+                           '7次元評価（専門性・信頼性・コミュニケーション・協働性・リーダーシップ・革新性・誠実性）による多面的信頼度算出' : 
+                           'Multi-dimensional trust calculation using 7 metrics: Expertise, Trustworthiness, Communication, Collaboration, Leadership, Innovation, and Integrity'
+                       ) : (
+                         language === 'ja' ? 
+                           '会った人への評価を記録し、信頼度を数値化。コミュニティ内での信頼関係が見えるようになります' : 
+                           'Record evaluations of people you meet and quantify trust. Visualize trust relationships within your community'
+                       )}
                      </p>
                   </div>
                   <div className="group p-10 glass-effect rounded-3xl hover-lift transition-all duration-700 hover:shadow-hero animate-slide-up border border-border/30" style={{ animationDelay: '1.2s' }}>
@@ -338,13 +392,22 @@ const Index = () => {
                       <Sparkles className="w-10 h-10 text-trust-high pulse-glow" />
                     </div>
                      <h3 className="font-bold text-2xl gradient-text mb-6">
-                       {language === 'ja' ? 'AI駆動分析基盤' : 'AI-Driven Analytics Platform'}
+                       {isTechnicalView ? (
+                         language === 'ja' ? 'AI駆動分析基盤' : 'AI-Driven Analytics Platform'
+                       ) : (
+                         language === 'ja' ? 'AI分析' : 'AI Analysis'
+                       )}
                      </h3>
                      <p className="text-muted-foreground leading-relaxed text-lg">
-                       {language === 'ja' ? 
-                         'OpenAI APIとSupabaseを活用したリアルタイム関係性分析。ブリッジ検出、コミュニティクラスタリング、推薦アルゴリズムを統合' : 
-                         'Real-time relationship analysis powered by OpenAI API and Supabase. Integrating bridge detection, community clustering, and recommendation algorithms'
-                       }
+                       {isTechnicalView ? (
+                         language === 'ja' ? 
+                           'OpenAI APIとSupabaseを活用したリアルタイム関係性分析。ブリッジ検出、コミュニティクラスタリング、推薦アルゴリズムを統合' : 
+                           'Real-time relationship analysis powered by OpenAI API and Supabase. Integrating bridge detection, community clustering, and recommendation algorithms'
+                       ) : (
+                         language === 'ja' ? 
+                           'AIがあなたの人間関係を分析し、新しい出会いやコミュニティを提案します' : 
+                           'AI analyzes your relationships and suggests new encounters and communities'
+                       )}
                      </p>
                   </div>
                 </div>
