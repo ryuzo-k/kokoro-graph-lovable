@@ -172,6 +172,17 @@ const Index = () => {
                </div>
             </div>
             <div className="flex items-center gap-3">
+              {/* Official Website Link */}
+              <Button
+                onClick={() => window.open('https://kokororesearch.org/', '_blank')}
+                variant="outline"
+                size="sm"
+                className="hover-lift glass-effect"
+                title="Kokoro Graph公式サイト"
+              >
+                <Network className="w-4 h-4 mr-2" />
+                <span className="text-xs font-medium hidden sm:inline">公式サイト</span>
+              </Button>
               {/* Language Toggle */}
               <Button
                 onClick={() => setLanguage(language === 'ja' ? 'en' : 'ja')}
